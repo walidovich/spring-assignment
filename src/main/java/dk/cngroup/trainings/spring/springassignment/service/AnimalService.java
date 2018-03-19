@@ -5,13 +5,12 @@ import org.springframework.http.ResponseEntity;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 public interface AnimalService {
-    List<Animal> getAnimals();
+    ResponseEntity<List<Animal>> getAnimals();
     ResponseEntity<Animal> getAnimalById(long id);
-    List<Animal> getAnimalsByName(String name);
-    Animal addAnimal(@Valid Animal animal);
+    ResponseEntity<List<Animal>> getAnimalsByName(String name);
+    ResponseEntity<Animal> addAnimal(@Valid Animal animal);
     ResponseEntity<Animal> deleteAnimalById(long id);
-    Animal updateAnimalById(long id, @Valid Animal animal);
+    ResponseEntity<Animal> updateAnimalById(long id, @Valid Animal animal);
 }

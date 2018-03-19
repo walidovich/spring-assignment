@@ -11,11 +11,14 @@ public class Animal {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Size(min = 2)
+    @Size(min = NAME_MINIMUM_SIZE)
     private String name;
 
-    @Size(max = 10000)
+    @Size(max = DESCRIPTION_MAXIMUM_SIZE)
     private String description; //TODO check null
+
+    public final static int NAME_MINIMUM_SIZE=2;
+    public final static int DESCRIPTION_MAXIMUM_SIZE=10000;
 
     public Animal() {
     }

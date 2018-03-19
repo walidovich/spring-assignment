@@ -12,7 +12,6 @@ import java.util.List;
 @RequestMapping("/animals")
 public class AnimalController {
 
-
     private AnimalService animalService;
 
     public AnimalController(AnimalService animalService) {
@@ -20,12 +19,12 @@ public class AnimalController {
     }
 
     @RequestMapping(path = "/", method = RequestMethod.POST)
-    public Animal addAnimal(@RequestBody @Valid Animal animal){
+    public ResponseEntity<Animal> addAnimal(@RequestBody @Valid Animal animal){
         return animalService.addAnimal(animal);
     }
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public List<Animal> getAnimals(){
+    public ResponseEntity<List<Animal>> getAnimals(){
         return animalService.getAnimals();
     }
 
@@ -35,7 +34,8 @@ public class AnimalController {
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-    public Animal updateAnimalById(@PathVariable("id") long id, @RequestBody @Valid Animal animal){
+    public ResponseEntity<Animal> updateAnimalById(@PathVariable("id") long id,
+                                                   @RequestBody @Valid Animal animal){
         return animalService.updateAnimalById(id, animal);
     }
 
@@ -44,8 +44,8 @@ public class AnimalController {
         return animalService.getAnimalById(id);
     }
 
-    @RequestMapping(path = "/search/{name}", method = RequestMethod.GET) //TODO rename endpoint, use GET parameters
-    public List<Animal> getAnimalByName(@PathVariable("name") String name){
+    @RequestMapping(path = "/search/{name}", method = RequestMethod.GET)
+    public ResponseEntity<List<Animal>> getAnimalByName(@PathVariable("name") String name){
         return animalService.getAnimalsByName(name);
     }
 }

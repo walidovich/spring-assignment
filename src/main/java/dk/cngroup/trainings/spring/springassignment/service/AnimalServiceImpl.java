@@ -19,8 +19,9 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     @Override
-    public List<Animal> getAnimals() {
-        return animalRepository.findAll();
+    public ResponseEntity<List<Animal>> getAnimals() {
+        return new ResponseEntity<>(animalRepository.findAll(),
+                HttpStatus.OK);
     }
 
     @Override
@@ -33,18 +34,30 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     @Override
-    public List<Animal> getAnimalsByName(String name) {
-       return  animalRepository.findAllByName(name);
+    public ResponseEntity<List<Animal>> getAnimalsByName(String name) {
+        if(animalRepository.findAllByName(name)!=null)
+            return  new ResponseEntity<>(animalRepository.findAllByName(name),
+                    HttpStatus.OK);
+        else
+            return ResponseEntity.notFound().build();
     }
 
     @Override
-    public Animal addAnimal(Animal animal) {
-        if(!animalRepository.existsById(animal.getId()))
-            return animalRepository.save(animal); //TODO generate IDs on your own
+    public ResponseEntity<Animal> addAnimal(Animal animal) {
+        if(animal.getName().length()>=Animal.NAME_MINIMUM_SIZE
+                && animal.getDescription().length()<Animal.DESCRIPTION_MAXIMUM_SIZE
+                && !doesContainPenguin(animal.getDescription())){
+            if (!animalRepository.existsById(animal.getId()))
+                return new ResponseEntity<>(animalRepository.save(animal),
+                        HttpStatus.OK); //TODO generate IDs on your own
+            else {
+                // Call addAnimal with new id untill it's saved
+                animal.setId(animal.getId() + 1);
+                return this.addAnimal(animal);
+            }
+        }
         else {
-            // Call addAnimal with new id untill it's saved
-            animal.setId(animal.getId()+1);
-            return this.addAnimal(animal);
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -58,10 +71,23 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     @Override
-    public Animal updateAnimalById(long id, @Valid Animal animal) {
-        if(animalRepository.existsById(id)){
-            animal.setId(id);
+    public ResponseEntity<Animal> updateAnimalById(long id, @Valid Animal animal) {
+        if(animal.getName().length()>=Animal.NAME_MINIMUM_SIZE
+                && animal.getDescription().length()<Animal.DESCRIPTION_MAXIMUM_SIZE
+                && !doesContainPenguin(animal.getDescription())) {
+            if (animalRepository.existsById(id)) {
+                animal.setId(id);
+                return new ResponseEntity<>(animalRepository.save(animal), HttpStatus.OK);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        }else{
+            return ResponseEntity.badRequest().build();
         }
-        return animalRepository.save(animal);
+    }
+
+    private boolean doesContainPenguin(String description) {
+        String descriptionToLowerCase=description.toLowerCase();
+        return descriptionToLowerCase.contains("penguin");
     }
 }
