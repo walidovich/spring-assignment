@@ -8,10 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -148,12 +146,10 @@ public class AnimalServiceImplTest {
         Assert.assertEquals(ResponseEntity.badRequest().build().getStatusCode()
                 , responseEntity2.getStatusCode());
 
-
         // Sad path: (Adding an animal with long description, more than 10000)
         // Arrange
         String longDescription = new String();
         longDescription += StringUtils.repeat("*", 10001);
-        System.out.println(longDescription);
 
         pigeon = new Animal(7L, "Pigeon",
                 longDescription);
@@ -169,6 +165,19 @@ public class AnimalServiceImplTest {
         Assert.assertFalse(responseEntity3.hasBody());
         Assert.assertEquals(ResponseEntity.badRequest().build().getStatusCode(),
                 responseEntity3.getStatusCode());
+
+        // Sad path: Adding an animal with description containing Penguin
+        Animal penguin = new Animal(8L, "Penguin", "Royal Penguins of the north pole");
+
+        // Arrange
+        Mockito.when(animalRepositoryMock.save(penguin)).thenReturn(null);
+
+        // Act
+        ResponseEntity<Animal> responseEntity4 = animalService.addAnimal(penguin);
+
+        // Assert
+        Assert.assertEquals(ResponseEntity.badRequest().build().getStatusCode()
+                , responseEntity4.getStatusCode());
     }
 
     @Test

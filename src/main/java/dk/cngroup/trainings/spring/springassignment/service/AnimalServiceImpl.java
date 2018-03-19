@@ -43,7 +43,7 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     @Override
-    public ResponseEntity<Animal> addAnimal(Animal animal) {
+    public ResponseEntity<Animal> addAnimal(Animal animal){
         if(animal.getName().length()>=Animal.NAME_MINIMUM_SIZE
                 && animal.getDescription().length()<Animal.DESCRIPTION_MAXIMUM_SIZE
                 && !doesContainPenguin(animal.getDescription())){
@@ -51,7 +51,7 @@ public class AnimalServiceImpl implements AnimalService {
                 return new ResponseEntity<>(animalRepository.save(animal),
                         HttpStatus.OK); //TODO generate IDs on your own
             else {
-                // Call addAnimal with new id untill it's saved
+                // Call addAnimal recursively with new id untill it's saved
                 animal.setId(animal.getId() + 1);
                 return this.addAnimal(animal);
             }
