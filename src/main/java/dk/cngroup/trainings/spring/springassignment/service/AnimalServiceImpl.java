@@ -2,12 +2,11 @@ package dk.cngroup.trainings.spring.springassignment.service;
 
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class AnimalServiceImpl implements AnimalService {
@@ -19,37 +18,25 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     @Override
-    public ResponseEntity<List<Animal>> getAnimals() {
-        return new ResponseEntity<>(animalRepository.findAll(),
-                HttpStatus.OK);
+    public List<Animal> getAnimals() {
+        return animalRepository.findAll();
     }
 
     @Override
-    public ResponseEntity<Animal> getAnimalById(long id) {
-        if(animalRepository.existsById(id)) {
-            return new ResponseEntity<>(animalRepository.findById(id).get(),
-                    HttpStatus.OK);
-        } else
-            return ResponseEntity.notFound().build();
+    public Optional<Animal> getAnimalById(long id) {
+            return animalRepository.findById(id);
     }
 
     @Override
-    public ResponseEntity<List<Animal>> getAnimalsByName(String name) {
-        if(animalRepository.findAllByName(name)!=null)
-            return  new ResponseEntity<>(animalRepository.findAllByName(name),
-                    HttpStatus.OK);
-        else
-            return ResponseEntity.notFound().build();
+    public List<Animal> getAnimalsByName(String name) {
+            return animalRepository.findAllByName(name);
     }
 
     @Override
-    public ResponseEntity<Animal> addAnimal(Animal animal){
-        if(animal.getName().length()>=Animal.NAME_MINIMUM_SIZE
-                && animal.getDescription().length()<Animal.DESCRIPTION_MAXIMUM_SIZE
-                && !doesContainPenguin(animal.getDescription())){
+    public Optional<Animal> addAnimal(Animal animal){
+        if(isValid(animal)){
             if (!animalRepository.existsById(animal.getId()))
-                return new ResponseEntity<>(animalRepository.save(animal),
-                        HttpStatus.OK); //TODO generate IDs on your own
+                return Optional.ofNullable(animalRepository.save(animal));
             else {
                 // Call addAnimal recursively with new id untill it's saved
                 animal.setId(animal.getId() + 1);
@@ -57,37 +44,34 @@ public class AnimalServiceImpl implements AnimalService {
             }
         }
         else {
-            return ResponseEntity.badRequest().build();
+            return null;
         }
     }
 
     @Override
-    public ResponseEntity<Animal> deleteAnimalById(long id) {
+    public boolean deleteAnimalById(long id) {
         if(animalRepository.existsById(id)) {
             animalRepository.deleteById(id);
-            return ResponseEntity.ok().build();
+            return true;
         }else
-            return ResponseEntity.notFound().build();
+            return false;
     }
 
     @Override
-    public ResponseEntity<Animal> updateAnimalById(long id, @Valid Animal animal) {
-        if(animal.getName().length()>=Animal.NAME_MINIMUM_SIZE
-                && animal.getDescription().length()<Animal.DESCRIPTION_MAXIMUM_SIZE
-                && !doesContainPenguin(animal.getDescription())) {
-            if (animalRepository.existsById(id)) {
-                animal.setId(id);
-                return new ResponseEntity<>(animalRepository.save(animal), HttpStatus.OK);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        }else{
-            return ResponseEntity.badRequest().build();
+    public Optional<Animal> updateAnimalById(long id, @Valid Animal animal) {
+        if(isValid(animal) && animalRepository.existsById(id)) {
+            // Change the updated animal id and override it in the database.
+            animal.setId(id);
+            return Optional.ofNullable(animalRepository.save(animal));
+        } else {
+            return null;
         }
     }
 
-    private boolean doesContainPenguin(String description) {
-        String descriptionToLowerCase=description.toLowerCase();
-        return descriptionToLowerCase.contains("penguin");
+    @Override
+    public boolean isValid(@Valid Animal animal) {
+        return animal.getName().length()>=Animal.NAME_MINIMUM_SIZE
+                && animal.getDescription().length()<Animal.DESCRIPTION_MAXIMUM_SIZE
+                && !animal.getDescription().toLowerCase().contains("penguin");
     }
 }

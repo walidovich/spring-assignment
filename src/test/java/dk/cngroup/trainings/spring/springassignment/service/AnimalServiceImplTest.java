@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,11 +48,11 @@ public class AnimalServiceImplTest {
         Mockito.when(animalRepositoryMock.findAll()).thenReturn(animals);
 
         // Act
-        ResponseEntity<List<Animal>> responseEntityActual = animalService.getAnimals();
+        List<Animal> actualList = animalService.getAnimals();
 
         // Assert
-        Assert.assertThat(responseEntityActual.getBody(), Matchers.hasSize(4));
-        Assert.assertEquals(responseEntityActual.getBody().get(2).getName(), "Eagle");
+        Assert.assertThat(actualList, Matchers.hasSize(4));
+        Assert.assertEquals(actualList.get(2).getName(), "Eagle");
     }
 
     @Test
@@ -65,12 +64,12 @@ public class AnimalServiceImplTest {
                 .thenReturn(Optional.ofNullable(animals.get(2)));
 
         // Act
-        ResponseEntity<Animal> responseEntity1 = animalService.getAnimalById(3L);
+        Optional<Animal> animal = animalService.getAnimalById(3L);
 
         // Assert
-        Assert.assertTrue(responseEntity1.hasBody());
-        Assert.assertEquals("Eagle", responseEntity1.getBody().getName());
-        Assert.assertThat(responseEntity1.getBody().getId(),
+        Assert.assertTrue(animal.isPresent());
+        Assert.assertEquals("Eagle", animal.get().getName());
+        Assert.assertThat(animal.get().getId(),
                 Matchers.equalTo(3L));
 
         // Sad path:
@@ -80,12 +79,10 @@ public class AnimalServiceImplTest {
                 .thenReturn(null);
 
         // Act
-        ResponseEntity<Animal> responseEntity2 = animalService.getAnimalById(7L);
+        Optional<Animal> animal2 = animalService.getAnimalById(7L);
 
         // Assert
-        Assert.assertFalse(responseEntity2.hasBody());
-        Assert.assertEquals(ResponseEntity.notFound().build().getStatusCode(),
-                responseEntity2.getStatusCode());
+        Assert.assertNull(animal2);
     }
 
     @Test
@@ -96,24 +93,22 @@ public class AnimalServiceImplTest {
         Mockito.when(animalRepositoryMock.findAllByName("Lion")).thenReturn(lions);
 
         // Act
-        ResponseEntity<List<Animal>> responseEntity1 =
+        List<Animal> animals =
                 animalService.getAnimalsByName("Lion");
 
         // Assert
-        Assert.assertEquals(ResponseEntity.ok().build().getStatusCode()
-                , responseEntity1.getStatusCode());
-        Assert.assertThat(responseEntity1.getBody(), Matchers.hasSize(2));
+        Assert.assertThat(animals, Matchers.hasSize(2));
 
         // Sad path:
         // Arrange
         Mockito.when(animalRepositoryMock.findAllByName("Dauphin")).thenReturn(null);
 
         // Act
-        ResponseEntity<List<Animal>> responseEntity2 =
+        List<Animal> animals2 =
                 animalService.getAnimalsByName("Dauphin");
 
         // Assert
-        Assert.assertFalse(responseEntity2.hasBody());
+        Assert.assertNull(animals2);
     }
 
     @Test
@@ -126,12 +121,11 @@ public class AnimalServiceImplTest {
         Mockito.when(animalRepositoryMock.save(dauphin)).thenReturn(dauphin);
 
         // Act
-        ResponseEntity<Animal> responseEntity = animalService.addAnimal(dauphin);
+        Optional<Animal> animal = animalService.addAnimal(dauphin);
 
         // Assert
-        Assert.assertEquals(ResponseEntity.ok().build().getStatusCode()
-                , responseEntity.getStatusCode());
-        Assert.assertEquals("Dauphin", responseEntity.getBody().getName());
+        Assert.assertNotNull(animal);
+        Assert.assertEquals("Dauphin", animal.get().getName());
 
         // Sad path: Adding an animal with short name, less than 2 characters
         Animal pigeon = new Animal(6L, "p", "Smartest aqua mammal");
@@ -140,11 +134,10 @@ public class AnimalServiceImplTest {
         Mockito.when(animalRepositoryMock.save(pigeon)).thenReturn(null);
 
         // Act
-        ResponseEntity<Animal> responseEntity2 = animalService.addAnimal(pigeon);
+        Optional<Animal> animal2 = animalService.addAnimal(pigeon);
 
         // Assert
-        Assert.assertEquals(ResponseEntity.badRequest().build().getStatusCode()
-                , responseEntity2.getStatusCode());
+        Assert.assertNull(animal2);
 
         // Sad path: (Adding an animal with long description, more than 10000)
         // Arrange
@@ -158,13 +151,11 @@ public class AnimalServiceImplTest {
                 .thenReturn(null);
 
         // Act
-        ResponseEntity<Animal> responseEntity3 =
+        Optional<Animal> animal3 =
                 animalService.addAnimal(pigeon);
 
         // Assert
-        Assert.assertFalse(responseEntity3.hasBody());
-        Assert.assertEquals(ResponseEntity.badRequest().build().getStatusCode(),
-                responseEntity3.getStatusCode());
+        Assert.assertNull(animal3);
 
         // Sad path: Adding an animal with description containing Penguin
         Animal penguin = new Animal(8L, "Penguin", "Royal Penguins of the north pole");
@@ -173,11 +164,10 @@ public class AnimalServiceImplTest {
         Mockito.when(animalRepositoryMock.save(penguin)).thenReturn(null);
 
         // Act
-        ResponseEntity<Animal> responseEntity4 = animalService.addAnimal(penguin);
+        Optional<Animal> animal4 = animalService.addAnimal(penguin);
 
         // Assert
-        Assert.assertEquals(ResponseEntity.badRequest().build().getStatusCode()
-                , responseEntity4.getStatusCode());
+        Assert.assertNull(animal4);
     }
 
     @Test
@@ -188,24 +178,20 @@ public class AnimalServiceImplTest {
         Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(true);
 
         // Act
-        ResponseEntity<Animal> responseEntity1 = animalService.deleteAnimalById(2L);
+        boolean isDeleted = animalService.deleteAnimalById(2L);
 
         // Assert
-        Mockito.verify(animalRepositoryMock, Mockito.times(1)).deleteById(2L);
-        Assert.assertEquals(ResponseEntity.ok().build().getStatusCode(),
-                responseEntity1.getStatusCode());
+        Assert.assertTrue(isDeleted);
 
         //Sad path:
         id = 10L;
         Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(false);
 
         // Act
-        ResponseEntity<Animal> responseEntity2 = animalService.deleteAnimalById(id);
+        boolean isDeleted2 = animalService.deleteAnimalById(id);
 
         // Assert
-        Mockito.verify(animalRepositoryMock, Mockito.times(1)).deleteById(2L);
-        Assert.assertEquals(ResponseEntity.notFound().build().getStatusCode(),
-                responseEntity2.getStatusCode());
+        Assert.assertFalse(isDeleted2);
     }
 
     @Test
@@ -225,14 +211,12 @@ public class AnimalServiceImplTest {
 
         // Act
         updatedAnimal.setId(100L);
-        ResponseEntity<Animal> responseEntity1 =
+        Optional<Animal> animal =
                 animalService.updateAnimalById(id, updatedAnimal);
 
         // Assert
-        Assert.assertTrue(responseEntity1.hasBody());
-        Assert.assertEquals(ResponseEntity.ok().build().getStatusCode(),
-                responseEntity1.getStatusCode());
-        Assert.assertEquals("Falcon", responseEntity1.getBody().getName());
+        Assert.assertNotNull(animal);
+        Assert.assertEquals("Falcon", animal.get().getName());
 
         // Sad path: Updating an animal with non existing id
         // Arrange
@@ -244,14 +228,10 @@ public class AnimalServiceImplTest {
                 .thenReturn(null);
 
         // Act
-        ResponseEntity<Animal> responseEntity2 =
+        Optional<Animal> animal2 =
                 animalService.updateAnimalById(id, updatedAnimal);
 
         // Assert
-        Assert.assertFalse(responseEntity2.hasBody());
-        Assert.assertEquals(ResponseEntity.notFound().build().getStatusCode(),
-                responseEntity2.getStatusCode());
-
-
+        Assert.assertNull(animal2);
     }
 }
