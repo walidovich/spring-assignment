@@ -35,9 +35,9 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public Optional<Animal> addAnimal(Animal animal){
         if(isValid(animal)){
-            if (!animalRepository.existsById(animal.getId()))
+            if (!animalRepository.existsById(animal.getId())) {
                 return Optional.ofNullable(animalRepository.save(animal));
-            else {
+            }else {
                 // Call addAnimal recursively with new id untill it's saved
                 animal.setId(animal.getId() + 1);
                 return this.addAnimal(animal);

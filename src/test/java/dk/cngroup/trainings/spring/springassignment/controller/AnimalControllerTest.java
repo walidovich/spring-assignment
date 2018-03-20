@@ -35,7 +35,6 @@ public class AnimalControllerTest {
 
     MockMvc mockMvc;
     List<Animal> animals;
-    Animal shark= new Animal(6L,"Shark", "Predator of the sea");
 
     @MockBean
     private AnimalService animalService;
@@ -56,12 +55,6 @@ public class AnimalControllerTest {
         Animal penguin= new Animal(7L,"Penguin","Royal penguins of the north pole");
         Animal updatedLion=new Animal(8L,"Atlas Lion","King of Africa");
 
-        // Getting all animals should return list of animals empty or not
-        Mockito.when(animalService.getAnimals())
-                .thenReturn(animals);
-        // Adding a valid animal should return the animal itself
-        Mockito.when(animalService.addAnimal(shark))
-                .thenReturn(java.util.Optional.ofNullable(shark));
         // Deleting an existing animal should return true
         Mockito.when(animalService.deleteAnimalById(3L))
                 .thenReturn(true);
@@ -91,7 +84,10 @@ public class AnimalControllerTest {
 
     @Test
     public void testGetAnimals() throws Exception {
-        mockMvc.perform(get("/animals/"))
+        // Getting all animals should return list of animals empty or not
+        Mockito.when(animalService.getAnimals())
+                .thenReturn(animals);
+        mockMvc.perform(get("/animals"))
                 .andExpect(status().isOk()
                 )
                 .andExpect(jsonPath("$", hasSize(5)))
@@ -100,12 +96,18 @@ public class AnimalControllerTest {
 
     @Test
     public void testAddAnimal() throws Exception {
+        Animal shark= new Animal(22L,"Shark", "Predator of the sea");
         ObjectMapper objectMapper = new ObjectMapper();
         String sharkString= objectMapper.writeValueAsString(shark);
 
-        System.out.println("\n>>>>>>>>> "+animalService.addAnimal(shark));
+        Mockito.when(animalService.isValid(shark)).thenReturn(true);
+        // Adding a valid animal should return the animal itself
+        Mockito.when(animalService.addAnimal(shark))
+                .thenReturn(java.util.Optional.ofNullable(shark));
 
-        mockMvc.perform(post("/animals/")
+        System.out.println(">>>>>>>>>>"+animalService.isValid(shark));
+
+        mockMvc.perform(post("/animals")
         .content(sharkString)
         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
