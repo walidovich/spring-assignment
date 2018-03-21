@@ -232,11 +232,8 @@ public class AnimalControllerTest {
         // Happy path:
         List<Animal> searchedAnimals= Arrays.asList(animals.get(0),animals.get(4));
         // Getting animals by an existing name should return a list for existing name
-        Mockito.when(animalService.getAnimalsByName("Lion")) // any(String.class)
+        Mockito.when(animalService.getAnimalsByName("Lion"))
                 .thenReturn(searchedAnimals);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String searchedAnimalsString= objectMapper.writeValueAsString(searchedAnimals);
 
         mockMvc.perform(get("/animals/search/Lion"))
                 .andExpect(status().isOk())
@@ -246,7 +243,7 @@ public class AnimalControllerTest {
 
         // Sad path:
         // Getting animals by name should return 404
-        Mockito.when(animalService.getAnimalsByName("Dog")) // any(String.class)
+        Mockito.when(animalService.getAnimalsByName("Dog"))
                 .thenReturn(Arrays.asList());
 
         mockMvc.perform(get("/animals/search/Dog"))
