@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
 import liquibase.util.StringUtils;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,39 +56,17 @@ public class AnimalControllerTest {
         animals= Arrays.asList(lion,tiger,elephant,dauphin,mountainLion);
 
         // objects helpers
-        Animal updatedLion=new Animal(8L,"Atlas Lion","King of Africa");
 
-        // Getting an existing animal by id should return that animal
-        Mockito.when(animalService.getAnimalById(tiger.getId()))
-                .thenReturn(java.util.Optional.ofNullable(tiger));
-        // Getting animals by name should return a list for existing name
-        Mockito.when(animalService.getAnimalsByName("Lion"))
-                .thenReturn(Arrays.asList(lion,mountainLion));
+
         // Getting animals by non extsing name should return null;
         Mockito.when(animalService.getAnimalsByName("Penguin"))
                 .thenReturn(null);
-        // Updating an animal by providing an existing id should return the updated animal
-        Mockito.when(animalService.updateAnimalById(mountainLion.getId(),
-                updatedLion)).thenReturn(java.util.Optional.ofNullable(updatedLion));
         // Deleting an animal by an existing id should return true
         Mockito.when(animalService.deleteAnimalById(dauphin.getId()))
                 .thenReturn(true);
         // Deleting an animal by a non existing id should return false
         Mockito.when(animalService.deleteAnimalById(10L))
                 .thenReturn(false);
-    }
-
-
-    @Test
-    public void testGetAnimals() throws Exception {
-        // Getting all animals should return list of animals empty or not
-        Mockito.when(animalService.getAnimals())
-                .thenReturn(animals);
-        mockMvc.perform(get("/animals"))
-                .andExpect(status().isOk()
-                )
-                .andExpect(jsonPath("$", hasSize(5)))
-                .andExpect(jsonPath("$[2].name", is("Elephant")));
     }
 
     @Test
@@ -104,8 +83,8 @@ public class AnimalControllerTest {
                 .thenReturn(java.util.Optional.ofNullable(shark));
 
         mockMvc.perform(post("/animals/")
-        .content(sharkString)
-        .contentType(MediaType.APPLICATION_JSON))
+                .content(sharkString)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("Shark")));
 
@@ -145,6 +124,17 @@ public class AnimalControllerTest {
     }
 
     @Test
+    public void testGetAnimals() throws Exception {
+        // Getting all animals should return list of animals empty or not
+        Mockito.when(animalService.getAnimals())
+                .thenReturn(animals);
+        mockMvc.perform(get("/animals"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(5)))
+                .andExpect(jsonPath("$[2].name", is("Elephant")));
+    }
+
+    @Test
     public void testDeleteAnimalById() throws Exception{
         // Happy path
         // Deleting an existing animal id should return true
@@ -163,7 +153,7 @@ public class AnimalControllerTest {
                 .contains("success"));
 
         // Sad path
-        // Deleting a non existing animal id should false
+        // Deleting a non existing animal id should return false
         Mockito.when(animalService.deleteAnimalById(19L))
                 .thenReturn(false);
 
@@ -177,5 +167,89 @@ public class AnimalControllerTest {
         Assert.assertTrue(mvcResult.getResponse()
                 .getContentAsString().toLowerCase()
                 .contains("fail"));
+    }
+
+    @Test
+    public void testUpdateAnimalById() throws Exception{
+        // Happy path
+        Animal updatedLion=new Animal(8L,"Atlas Lion",
+                "Morocco's king of the mountains");
+        updatedLion.setId(animals.get(4).getId());
+
+        // Mock the isValid method
+        Mockito.when(animalService.isValid(any(Animal.class))).thenReturn(true);
+        // Saving the updated animal should return itself
+        Mockito.when(animalService.addAnimal(any(Animal.class)))
+                .thenReturn(java.util.Optional.ofNullable(updatedLion));
+        // Updating an animal by providing an existing id should return the updated animal
+        Mockito.when(animalService.updateAnimalById(any(Long.class),
+                any(Animal.class))).thenReturn(java.util.Optional.ofNullable(updatedLion));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String updatedLionString= objectMapper.writeValueAsString(updatedLion);
+        mockMvc.perform(put("/animals/5")
+                .content(updatedLionString)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(updatedLion.getId().intValue())))
+                .andExpect(jsonPath("$.name", is(updatedLion.getName())));
+
+        // Sad path to be implemented in case of id non existing.
+        // Sad path for invalid animal with existing id doesn't need testing because it
+        // uses AddAnimal for validation every time.
+    }
+
+    @Test
+    public void testGetAnimalById() throws Exception{
+        // Happy path:
+        // Getting an existing animal by id should return that animal
+        Mockito.when(animalService.getAnimalById(any(Long.class)))
+                .thenReturn(java.util.Optional.ofNullable(animals.get(3)));
+
+        Animal searchedAnimal= animals.get(3);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String searchedAnimalString= objectMapper.writeValueAsString(searchedAnimal);
+
+        mockMvc.perform(get("/animals/3")
+                .content(searchedAnimalString)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(animals.get(3).getId().intValue())))
+                .andExpect(jsonPath("$.name", is(animals.get(3).getName())));
+
+        // Sad path:
+        // Getting an animal by a non existing id should return null
+        Mockito.when(animalService.getAnimalById(any(Long.class))).thenReturn(null);
+
+        mockMvc.perform(get("/animals/22")
+                .content(searchedAnimalString)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetAnimalsByName() throws Exception{
+        // Happy path:
+        List<Animal> searchedAnimals= Arrays.asList(animals.get(0),animals.get(4));
+        // Getting animals by an existing name should return a list for existing name
+        Mockito.when(animalService.getAnimalsByName("Lion")) // any(String.class)
+                .thenReturn(searchedAnimals);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String searchedAnimalsString= objectMapper.writeValueAsString(searchedAnimals);
+
+        mockMvc.perform(get("/animals/search/Lion"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[1].description",
+                        Matchers.startsWith("Mountain")));
+
+        // Sad path:
+        // Getting animals by name should return 404
+        Mockito.when(animalService.getAnimalsByName("Dog")) // any(String.class)
+                .thenReturn(Arrays.asList());
+
+        mockMvc.perform(get("/animals/search/Dog"))
+                .andExpect(status().isNotFound());
     }
 }
