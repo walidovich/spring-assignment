@@ -39,9 +39,9 @@ public class AnimalController {
     @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteAnimalById(@PathVariable("id") long id){
         if(animalService.deleteAnimalById(id))
-            return new ResponseEntity<>("Deleted.",HttpStatus.OK);
+            return new ResponseEntity<>("Success",HttpStatus.OK);
         else
-            return new ResponseEntity<>("Not deleted: Id not found.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Fail: Id not found.",HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)

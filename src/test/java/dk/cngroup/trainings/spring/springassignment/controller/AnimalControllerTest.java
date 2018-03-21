@@ -3,6 +3,8 @@ package dk.cngroup.trainings.spring.springassignment.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
+import liquibase.util.StringUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -21,8 +24,8 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -52,15 +55,8 @@ public class AnimalControllerTest {
         animals= Arrays.asList(lion,tiger,elephant,dauphin,mountainLion);
 
         // objects helpers
-        Animal penguin= new Animal(7L,"Penguin","Royal penguins of the north pole");
         Animal updatedLion=new Animal(8L,"Atlas Lion","King of Africa");
 
-        // Deleting an existing animal should return true
-        Mockito.when(animalService.deleteAnimalById(3L))
-                .thenReturn(true);
-        // Adding an animal containing penguin should return null
-        Mockito.when(animalService.addAnimal(penguin))
-                .thenReturn(null);
         // Getting an existing animal by id should return that animal
         Mockito.when(animalService.getAnimalById(tiger.getId()))
                 .thenReturn(java.util.Optional.ofNullable(tiger));
@@ -96,23 +92,90 @@ public class AnimalControllerTest {
 
     @Test
     public void testAddAnimal() throws Exception {
+        // Happy path
         Animal shark= new Animal(22L,"Shark", "Predator of the sea");
         ObjectMapper objectMapper = new ObjectMapper();
         String sharkString= objectMapper.writeValueAsString(shark);
 
-        Mockito.when(animalService.isValid(shark)).thenReturn(true);
+        // Mock the isValid method
+        Mockito.when(animalService.isValid(any(Animal.class))).thenReturn(true);
         // Adding a valid animal should return the animal itself
-        Mockito.when(animalService.addAnimal(shark))
+        Mockito.when(animalService.addAnimal(any(Animal.class)))
                 .thenReturn(java.util.Optional.ofNullable(shark));
 
-        System.out.println(">>>>>>>>>>"+animalService.isValid(shark));
-
-        mockMvc.perform(post("/animals")
+        mockMvc.perform(post("/animals/")
         .content(sharkString)
         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name",
-                        is("Shark")));
+                .andExpect(jsonPath("$.name", is("Shark")));
+
+        // Sad path: short name
+        shark.setName("S");
+        sharkString= objectMapper.writeValueAsString(shark);
+
+        // Mock the isValid method to return false
+        Mockito.when(animalService.isValid(any(Animal.class))).thenReturn(false);
+        // Mocking addAnimal to return null
+        Mockito.when(animalService.addAnimal(any(Animal.class)))
+                .thenReturn(null);
+
+        mockMvc.perform(post("/animals/")
+                .content(sharkString)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        // Sad path: Long description
+        shark.setName("Shark");
+        shark.setDescription(new String(StringUtils.repeat("*",10001)));
+        sharkString= objectMapper.writeValueAsString(shark);
+
+        mockMvc.perform(post("/animals/")
+                .content(sharkString)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        // Sad path: description containing penguin
+        Animal penguin= new Animal(7L,"Penguin","Royal penguins of the north pole");
+        String penguinString= objectMapper.writeValueAsString(penguin);
+
+        mockMvc.perform(post("/animals/")
+                .content(penguinString)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void testDeleteAnimalById() throws Exception{
+        // Happy path
+        // Deleting an existing animal id should return true
+        Mockito.when(animalService.deleteAnimalById(3L))
+                .thenReturn(true);
+
+        MvcResult mvcResult=
+                mockMvc.perform(delete("/animals/3")
+                .content("")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Assert.assertTrue(mvcResult.getResponse()
+                .getContentAsString().toLowerCase()
+                .contains("success"));
+
+        // Sad path
+        // Deleting a non existing animal id should false
+        Mockito.when(animalService.deleteAnimalById(19L))
+                .thenReturn(false);
+
+        mvcResult=
+                mockMvc.perform(delete("/animals/19")
+                        .content("")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isBadRequest())
+                        .andReturn();
+
+        Assert.assertTrue(mvcResult.getResponse()
+                .getContentAsString().toLowerCase()
+                .contains("fail"));
+    }
 }
