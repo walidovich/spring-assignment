@@ -7,11 +7,17 @@ import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import static com.sun.javaws.JnlpxArgs.verify;
+import static org.mockito.Mockito.times;
 
 public class AnimalServiceImplTest {
 
@@ -35,7 +41,7 @@ public class AnimalServiceImplTest {
         animals = Arrays.asList(lion, shark, eagle, mountainLion);
         lions = Arrays.asList(lion, mountainLion);
 
-        animalRepositoryMock.save(lion);
+        animalRepositoryMock.save(lion); //TODO remove this doesnt do anything
         animalRepositoryMock.save(shark);
         animalRepositoryMock.save(eagle);
         animalRepositoryMock.save(mountainLion);
@@ -72,7 +78,7 @@ public class AnimalServiceImplTest {
         Assert.assertThat(animal.get().getId(),
                 Matchers.equalTo(3L));
 
-        // Sad path:
+        // Sad path: //TODO move it to other tests
         // Arrange
         Mockito.when(animalRepositoryMock.existsById(7L)).thenReturn(false);
         Mockito.when(animalRepositoryMock.findById(7L))
@@ -101,7 +107,7 @@ public class AnimalServiceImplTest {
 
         // Sad path:
         // Arrange
-        Mockito.when(animalRepositoryMock.findAllByName("Dauphin")).thenReturn(null);
+        Mockito.when(animalRepositoryMock.findAllByName("Dauphin")).thenReturn(null); //TODO change it to empty list
 
         // Act
         List<Animal> animals2 =

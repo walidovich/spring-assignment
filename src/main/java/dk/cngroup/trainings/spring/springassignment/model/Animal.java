@@ -12,7 +12,7 @@ public class Animal {
     private Long id;
 
     @Size(min = NAME_MINIMUM_SIZE)
-    private String name;
+    private String name; //TODO check null with @NotNull
 
     @Size(max = DESCRIPTION_MAXIMUM_SIZE)
     private String description; //TODO check null

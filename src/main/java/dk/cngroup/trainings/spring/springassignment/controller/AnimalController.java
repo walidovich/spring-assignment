@@ -22,9 +22,9 @@ public class AnimalController {
 
     @RequestMapping(path = "", method = RequestMethod.POST)
     public ResponseEntity<Animal> addAnimal(@RequestBody @Valid Animal animal){
-        if(animalService.isValid(animal)){
+        if(animalService.isValid(animal)){ //TODO duplication
             return new ResponseEntity<>(animalService.addAnimal(animal).get(),
-                    HttpStatus.OK);
+                    HttpStatus.OK); //TODO return OK only ifPresent is true
         }else{
             return ResponseEntity.badRequest().build();
         }
@@ -41,17 +41,17 @@ public class AnimalController {
         if(animalService.deleteAnimalById(id))
             return new ResponseEntity<>("Success",HttpStatus.OK);
         else
-            return new ResponseEntity<>("Fail: Id not found.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Fail: Id not found.",HttpStatus.BAD_REQUEST); //TODO 404 code
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Animal> updateAnimalById(@PathVariable("id") long id,
                                                    @RequestBody @Valid Animal animal){
         Optional<Animal> updatedAnimal= animalService.updateAnimalById(id, animal);
-        if(updatedAnimal!=null)
+        if(updatedAnimal!=null) //TODO replace with isPresent
             return new ResponseEntity<>(updatedAnimal.get(), HttpStatus.OK);
         else
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build(); //TODO if you want, redesign to return 404 when not found and bad request when invalid
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
