@@ -1,6 +1,7 @@
 package dk.cngroup.trainings.spring.springassignment.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -12,10 +13,11 @@ public class Animal {
     private Long id;
 
     @Size(min = NAME_MINIMUM_SIZE)
-    private String name; //TODO check null with @NotNull
+    @NotNull
+    private String name;
 
     @Size(max = DESCRIPTION_MAXIMUM_SIZE)
-    private String description; //TODO check null
+    private String description;
 
     public final static int NAME_MINIMUM_SIZE=2;
     public final static int DESCRIPTION_MAXIMUM_SIZE=10000;

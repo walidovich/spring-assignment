@@ -7,17 +7,11 @@ import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import static com.sun.javaws.JnlpxArgs.verify;
-import static org.mockito.Mockito.times;
 
 public class AnimalServiceImplTest {
 
@@ -40,174 +34,138 @@ public class AnimalServiceImplTest {
 
         animals = Arrays.asList(lion, shark, eagle, mountainLion);
         lions = Arrays.asList(lion, mountainLion);
-
-        animalRepositoryMock.save(lion); //TODO remove this doesnt do anything
-        animalRepositoryMock.save(shark);
-        animalRepositoryMock.save(eagle);
-        animalRepositoryMock.save(mountainLion);
     }
 
     @Test
     public void testGetAnimals() {
-
-        // Arrange
         Mockito.when(animalRepositoryMock.findAll()).thenReturn(animals);
 
-        // Act
         List<Animal> actualList = animalService.getAnimals();
 
-        // Assert
         Assert.assertThat(actualList, Matchers.hasSize(4));
         Assert.assertEquals(actualList.get(2).getName(), "Eagle");
     }
 
     @Test
-    public void testGetAnimalById() {
+    public void testGetAnimalByExistingId() {
         // Happy path:
-        // Arrange
         Mockito.when(animalRepositoryMock.existsById(3L)).thenReturn(true);
         Mockito.when(animalRepositoryMock.findById(3L))
                 .thenReturn(Optional.ofNullable(animals.get(2)));
 
-        // Act
         Optional<Animal> animal = animalService.getAnimalById(3L);
 
-        // Assert
         Assert.assertTrue(animal.isPresent());
         Assert.assertEquals("Eagle", animal.get().getName());
         Assert.assertThat(animal.get().getId(),
                 Matchers.equalTo(3L));
+    }
 
-        // Sad path: //TODO move it to other tests
-        // Arrange
+    @Test
+    public void testGetAnimalByNonExistingId() {
+        // Sad path:
         Mockito.when(animalRepositoryMock.existsById(7L)).thenReturn(false);
         Mockito.when(animalRepositoryMock.findById(7L))
                 .thenReturn(null);
 
-        // Act
         Optional<Animal> animal2 = animalService.getAnimalById(7L);
 
-        // Assert
         Assert.assertNull(animal2);
     }
 
     @Test
-    public void testGetAnimalsByName() {
-
+    public void testGetAnimalsByExistingName() {
         // Happy path:
-        // Arrange
         Mockito.when(animalRepositoryMock.findAllByName("Lion")).thenReturn(lions);
 
-        // Act
         List<Animal> animals =
                 animalService.getAnimalsByName("Lion");
 
-        // Assert
         Assert.assertThat(animals, Matchers.hasSize(2));
+    }
 
-        // Sad path:
-        // Arrange
-        Mockito.when(animalRepositoryMock.findAllByName("Dauphin")).thenReturn(null); //TODO change it to empty list
+    @Test
+    public void testGetAnimalsByNonExistingName() {
+        // Sad path: searching non existing animals name
+        Mockito.when(animalRepositoryMock.findAllByName("Dauphin"))
+                .thenReturn(Arrays.asList());
 
-        // Act
         List<Animal> animals2 =
                 animalService.getAnimalsByName("Dauphin");
 
-        // Assert
-        Assert.assertNull(animals2);
+        Assert.assertTrue(animals2.isEmpty());
     }
 
     @Test
-    public void testAddAnimal() {
-
+    public void testAddValidAnimal() {
         // Happy path:
         Animal dauphin = new Animal(5L, "Dauphin", "Smartest aqua mammal");
 
-        // Arrange
         Mockito.when(animalRepositoryMock.save(dauphin)).thenReturn(dauphin);
 
-        // Act
-        Optional<Animal> animal = animalService.addAnimal(dauphin);
+        Assert.assertTrue(animalService.addAnimal(dauphin).isPresent());
+        Assert.assertEquals("Dauphin",
+                animalService.addAnimal(dauphin).get().getName());
+    }
 
-        // Assert
-        Assert.assertNotNull(animal);
-        Assert.assertEquals("Dauphin", animal.get().getName());
-
+    @Test
+    public void testAddAnimalWithShortName() {
         // Sad path: Adding an animal with short name, less than 2 characters
         Animal pigeon = new Animal(6L, "p", "Smartest aqua mammal");
 
-        // Arrange
         Mockito.when(animalRepositoryMock.save(pigeon)).thenReturn(null);
 
-        // Act
-        Optional<Animal> animal2 = animalService.addAnimal(pigeon);
+        Assert.assertFalse(animalService.addAnimal(pigeon).isPresent());
+    }
 
-        // Assert
-        Assert.assertNull(animal2);
-
+    @Test
+    public void testAddAnimalWithLongDescription() {
         // Sad path: (Adding an animal with long description, more than 10000)
-        // Arrange
-        String longDescription = new String();
-        longDescription += StringUtils.repeat("*", 10001);
-
-        pigeon = new Animal(7L, "Pigeon",
-                longDescription);
+        Animal pigeon = new Animal(6L, "p",
+                StringUtils.repeat("*", 10001));
 
         Mockito.when(animalRepositoryMock.save(pigeon))
                 .thenReturn(null);
+        Assert.assertFalse(animalService.addAnimal(pigeon).isPresent());
+    }
 
-        // Act
-        Optional<Animal> animal3 =
-                animalService.addAnimal(pigeon);
-
-        // Assert
-        Assert.assertNull(animal3);
-
+    @Test
+    public void testAddAnimalWithDescriptionContainingPenguin() {
         // Sad path: Adding an animal with description containing Penguin
-        Animal penguin = new Animal(8L, "Penguin", "Royal Penguins of the north pole");
+        Animal penguin = new Animal(8L, "Penguin",
+                "Royal Penguins of the north pole");
 
-        // Arrange
         Mockito.when(animalRepositoryMock.save(penguin)).thenReturn(null);
 
-        // Act
-        Optional<Animal> animal4 = animalService.addAnimal(penguin);
-
-        // Assert
-        Assert.assertNull(animal4);
+        Assert.assertFalse(animalService.addAnimal(penguin).isPresent());
     }
 
     @Test
-    public void deleteAnimal() {
-
-        long id = 2L;
+    public void deleteAnimalByExistingId() {
         //Happy path:
+        long id = 2L;
         Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(true);
 
-        // Act
-        boolean isDeleted = animalService.deleteAnimalById(2L);
-
-        // Assert
-        Assert.assertTrue(isDeleted);
-
-        //Sad path:
-        id = 10L;
-        Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(false);
-
-        // Act
-        boolean isDeleted2 = animalService.deleteAnimalById(id);
-
-        // Assert
-        Assert.assertFalse(isDeleted2);
+        Assert.assertTrue(animalService.deleteAnimalById(id));
     }
 
     @Test
-    public void testUpdateAnimalById() {
+    public void deleteAnimalByNonExistingId() {
+        //Sad path:
+        long id = 10L; // Non existing id
+        Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(false);
+
+        Assert.assertFalse(animalService.deleteAnimalById(id));
+    }
+
+    @Test
+    public void testUpdateAnimalByExistingId() {
         // Happy path:
-        // Arrange
         long id = 3L;
         Animal oldAnimal = animals.get(2);
         Animal updatedAnimal = new Animal(100L, "Falcon",
                 "Fastest animal on earth");
+
         Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(true);
         Mockito.when(animalRepositoryMock.findById(id))
                 .thenReturn(Optional.ofNullable(oldAnimal));
@@ -215,29 +173,32 @@ public class AnimalServiceImplTest {
         Mockito.when(animalRepositoryMock.save(updatedAnimal))
                 .thenReturn(updatedAnimal);
 
-        // Act
         updatedAnimal.setId(100L);
         Optional<Animal> animal =
                 animalService.updateAnimalById(id, updatedAnimal);
 
-        // Assert
         Assert.assertNotNull(animal);
         Assert.assertEquals("Falcon", animal.get().getName());
+    }
 
+    @Test
+    public void testUpdateAnimalByNonExistingId() {
         // Sad path: Updating an animal with non existing id
-        // Arrange
-        id = 10L; // non existing
-        updatedAnimal = new Animal(100L, "Falcon",
+        long id = 10L; // non existing
+        Animal updatedAnimal = new Animal(100L, "Falcon",
                 "Fastest animal on earth");
         Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(false);
         Mockito.when(animalRepositoryMock.findById(id))
-                .thenReturn(null);
+                .thenReturn(Optional.empty());
 
-        // Act
         Optional<Animal> animal2 =
                 animalService.updateAnimalById(id, updatedAnimal);
 
-        // Assert
-        Assert.assertNull(animal2);
+        Assert.assertFalse(animal2.isPresent());
     }
+
+    /*
+    Testing updating an animal by existing id and an invalid animal is not needed because
+     it uses addAnimal method in which adding invalid animal is already tested
+     */
 }

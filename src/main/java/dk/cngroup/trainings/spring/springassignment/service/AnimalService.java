@@ -13,5 +13,4 @@ public interface AnimalService {
     Optional<Animal> addAnimal(@Valid Animal animal);
     boolean deleteAnimalById(long id);
     Optional<Animal> updateAnimalById(long id, @Valid Animal animal);
-    boolean isValid(@Valid Animal animal);
 }
