@@ -3,6 +3,7 @@ package dk.cngroup.trainings.spring.springassignment.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "animals")
@@ -11,13 +12,13 @@ public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @Size(min = NAME_MINIMUM_SIZE)
     @NotNull
     private String name;
-
     @Size(max = DESCRIPTION_MAXIMUM_SIZE)
     private String description;
+    @ManyToMany(mappedBy = "animals", cascade = CascadeType.PERSIST)
+    private List<CareTaker> careTakers;
 
     public final static int NAME_MINIMUM_SIZE=2;
     public final static int DESCRIPTION_MAXIMUM_SIZE=10000;
@@ -29,6 +30,14 @@ public class Animal {
         this.id=id;
         this.name = name;
         this.description = description;
+    }
+
+    public List<CareTaker> getCareTakers() {
+        return careTakers;
+    }
+
+    public void setCareTakers(List<CareTaker> careTakers) {
+        this.careTakers = careTakers;
     }
 
     public Long getId() {

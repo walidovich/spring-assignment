@@ -18,6 +18,14 @@
                 <constraints nullable="false" unique="false"/>
             </column>
         </createTable>
+        <createTable tableName="careTakers">
+            <column name="id" type="long">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+        </createTable>
     </changeSet>
     <changeSet id="02" author="walid">
         <createSequence sequenceName="HIBERNATE_SEQUENCE"/>

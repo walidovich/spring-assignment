@@ -46,18 +46,6 @@ public class AnimalController {
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Animal> updateAnimalById(@PathVariable("id") long id,
                                                    @RequestBody @Valid Animal animal){
-        /*
-        Optional<Animal> updatedAnimal= animalService.updateAnimalById(id, animal);
-        if(updatedAnimal.isPresent()) {
-            return new ResponseEntity<>(updatedAnimal.get(), HttpStatus.OK);
-        }else if(animalService.getAnimalById(id).isPresent()){
-            // updatedAnimal is empty but the id exists, means bad request
-            return ResponseEntity.badRequest().build();
-        }else{
-            // updatedAnimal is empty, and id doesn't exist, means not found
-            return ResponseEntity.notFound().build();
-        }
-        */
         if(animalService.getAnimalById(id).isPresent()){
             animal.setId(id);
             return this.addAnimal(animal);
