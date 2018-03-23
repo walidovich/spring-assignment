@@ -33,17 +33,22 @@ public class CareTakerServiceImpl implements CareTakerService {
 	}
 
 	@Override
-	public Optional<CareTaker> updateCareTaker(CareTaker careTaker) {
+	public Optional<CareTaker> updateCareTakerById(CareTaker careTaker) {
 		return Optional.empty();
 	}
 
 	@Override
-	public List<Animal> getAnimalsInCare() {
+	public boolean deleteCareTakerById(long id) {
+		return false;
+	}
+
+	@Override
+	public List<Animal> getAnimalsInCareByCareTakerId(long id) {
 		return null;
 	}
 
 	@Override
-	public List<Animal> addAnimalToCare(long careTakerId, long animalId) {
+	public Optional<Animal> addAnimalToCare(long id, Animal animal) {
 		return null;
 	}
 }

@@ -13,9 +13,11 @@ public interface CareTakerService {
 
 	Optional<CareTaker> addCareTaker(CareTaker careTaker);
 
-	Optional<CareTaker> updateCareTaker(CareTaker careTaker);
+	Optional<CareTaker> updateCareTakerById(CareTaker careTaker);
 
-	List<Animal> getAnimalsInCare();
+	boolean deleteCareTakerById(long id);
 
-	List<Animal> addAnimalToCare(long careTakerId, long animalId);
+	List<Animal> getAnimalsInCareByCareTakerId(long id);
+
+	Optional<Animal> addAnimalToCare(long id, Animal animal);
 }
