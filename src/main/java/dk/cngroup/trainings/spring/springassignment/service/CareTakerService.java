@@ -13,7 +13,7 @@ public interface CareTakerService {
 
 	Optional<CareTaker> addCareTaker(CareTaker careTaker);
 
-	Optional<CareTaker> updateCareTakerById(CareTaker careTaker);
+	Optional<CareTaker> updateCareTakerById(long id, CareTaker careTaker);
 
 	boolean deleteCareTakerById(long id);
 

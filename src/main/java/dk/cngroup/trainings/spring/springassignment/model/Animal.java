@@ -1,6 +1,11 @@
 package dk.cngroup.trainings.spring.springassignment.model;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -8,18 +13,17 @@ import java.util.List;
 @Entity
 @Table(name = "animals")
 public class Animal {
-
 	public final static int NAME_MINIMUM_SIZE = 2;
 	public final static int DESCRIPTION_MAXIMUM_SIZE = 10000;
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	@Size(min = NAME_MINIMUM_SIZE)
 	@NotNull
 	private String name;
 	@Size(max = DESCRIPTION_MAXIMUM_SIZE)
 	private String description;
-	@ManyToMany(mappedBy = "animals", cascade = CascadeType.PERSIST)
+	@JsonIgnore
+	@ManyToMany(mappedBy = "animals")
 	private List<CareTaker> careTakers;
 
 	public Animal() {
@@ -29,6 +33,10 @@ public class Animal {
 		this.id = id;
 		this.name = name.trim();
 		this.description = description.trim();
+	}
+
+	public void addCareTaker(CareTaker careTaker) {
+		careTakers.add(careTaker);
 	}
 
 	public List<CareTaker> getCareTakers() {

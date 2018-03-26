@@ -6,19 +6,18 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
-@Table(name = "careTakers")
+@Table(name = "caretakers")
 public class CareTaker {
 	public final static int NAME_MINIMUM_SIZE = 1;
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	@NotNull
 	@Size(min = NAME_MINIMUM_SIZE)
 	private String name;
-	@ManyToMany(cascade = CascadeType.PERSIST)
+	@ManyToMany
 	@JoinTable(
-			name = "careTaker_animal",
-			joinColumns = @JoinColumn(name = "careTaker_id", referencedColumnName = "id"),
+			name = "caretaker_animal",
+			joinColumns = @JoinColumn(name = "caretaker_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "animal_id", referencedColumnName = "id"))
 	private List<Animal> animals;
 
@@ -28,6 +27,18 @@ public class CareTaker {
 	public CareTaker(long id, String name) {
 		this.id = id;
 		this.name = name.trim();
+	}
+
+	public void addAnimalToCare(Animal animal) {
+		animals.add(animal);
+	}
+
+	public List<Animal> getAnimals() {
+		return animals;
+	}
+
+	public void setAnimals(List<Animal> animals) {
+		this.animals = animals;
 	}
 
 	public long getId() {
@@ -44,13 +55,5 @@ public class CareTaker {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public List<Animal> getAnimals() {
-		return animals;
-	}
-
-	public void setAnimals(List<Animal> animals) {
-		this.animals = animals;
 	}
 }

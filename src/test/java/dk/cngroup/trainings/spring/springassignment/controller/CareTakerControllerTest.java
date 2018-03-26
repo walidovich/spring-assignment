@@ -141,7 +141,7 @@ public class CareTakerControllerTest {
 				.thenReturn(Optional.ofNullable(careTakers.get(3)));
 		Mockito.when(careTakerService.addCareTaker(any(CareTaker.class)))
 				.thenReturn(java.util.Optional.ofNullable(updatedJohn));
-		Mockito.when(careTakerService.updateCareTakerById(any(CareTaker.class)))
+		Mockito.when(careTakerService.updateCareTakerById(any(Long.class), any(CareTaker.class)))
 				.thenReturn(java.util.Optional.ofNullable(updatedJohn));
 
 		mockMvc.perform(put("/careTakers/4")
@@ -162,7 +162,8 @@ public class CareTakerControllerTest {
 
 		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
 				.thenReturn(Optional.empty());
-		Mockito.when(careTakerService.updateCareTakerById(any(CareTaker.class)))
+		Mockito.when(careTakerService.updateCareTakerById(any(Long.class),
+				any(CareTaker.class)))
 				.thenReturn(Optional.empty());
 
 		mockMvc.perform(put("/careTakers/9")
@@ -209,7 +210,7 @@ public class CareTakerControllerTest {
 	public void testAddAnimalToCareByExistingIdAndValidAnimal() throws Exception {
 		// Happy path
 		Animal monkey = new Animal(1L, "Monkey", "Smartest animal");
-		
+
 		ObjectMapper objectMapper = new ObjectMapper();
 		String monkeyString = objectMapper.writeValueAsString(monkey);
 
@@ -228,11 +229,12 @@ public class CareTakerControllerTest {
 	}
 
 	@Test
-	public void testGetAnimalsInCare() throws Exception {
+	public void testGetAnimalsInCareByCareTakerId() throws Exception {
 		// Always happy
-		careTakers.get(1).setAnimals(animals);
 		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
 				.thenReturn(Optional.ofNullable(careTakers.get(1)));
+		Mockito.when(careTakerService.getAnimalsInCareByCareTakerId(any(Long.class)))
+				.thenReturn(animals);
 
 		mockMvc.perform(get("/careTakers/1/animals"))
 				.andExpect(status().isOk())

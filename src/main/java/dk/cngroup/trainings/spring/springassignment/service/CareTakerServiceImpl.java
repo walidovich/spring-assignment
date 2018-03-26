@@ -3,6 +3,9 @@ package dk.cngroup.trainings.spring.springassignment.service;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
+import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalValidationService;
+import dk.cngroup.trainings.spring.springassignment.service.helper.CareTakerValidationService;
+import dk.cngroup.trainings.spring.springassignment.service.helper.IdGenerator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,27 +22,42 @@ public class CareTakerServiceImpl implements CareTakerService {
 
 	@Override
 	public List<CareTaker> getCareTakers() {
-		return null;
+		return careTakerRepository.findAll();
 	}
 
 	@Override
 	public Optional<CareTaker> getCareTakerById(long id) {
-		return Optional.empty();
+		return careTakerRepository.findById(id);
 	}
 
 	@Override
 	public Optional<CareTaker> addCareTaker(CareTaker careTaker) {
-		return Optional.empty();
+		if (CareTakerValidationService.isValid(careTaker)) {
+			careTaker.setId(IdGenerator.getId());
+			return Optional.ofNullable(careTakerRepository.save(careTaker));
+		} else {
+			return Optional.empty();
+		}
 	}
 
 	@Override
-	public Optional<CareTaker> updateCareTakerById(CareTaker careTaker) {
-		return Optional.empty();
+	public Optional<CareTaker> updateCareTakerById(long id, CareTaker careTaker) {
+		if (careTakerRepository.existsById(id)) {
+			careTaker.setId(id);
+			return Optional.ofNullable(careTakerRepository.save(careTaker));
+		} else {
+			return Optional.empty();
+		}
 	}
 
 	@Override
 	public boolean deleteCareTakerById(long id) {
-		return false;
+		if (careTakerRepository.existsById(id)) {
+			careTakerRepository.deleteById(id);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -49,6 +67,16 @@ public class CareTakerServiceImpl implements CareTakerService {
 
 	@Override
 	public Optional<Animal> addAnimalToCare(long id, Animal animal) {
-		return null;
+		Optional<CareTaker> careTaker = careTakerRepository.findById(id);
+		if (careTaker.isPresent()) {
+			if (AnimalValidationService.isValid(animal)) {
+				careTaker.get().addAnimalToCare(animal);
+				careTakerRepository.save(careTaker.get());
+				return Optional.ofNullable(animal);
+			} else {
+				return Optional.empty();
+			}
+		}
+		return Optional.empty();
 	}
 }

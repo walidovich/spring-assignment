@@ -3,6 +3,7 @@ package dk.cngroup.trainings.spring.springassignment.service;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
 import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalValidationService;
+import dk.cngroup.trainings.spring.springassignment.service.helper.IdGenerator;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class AnimalServiceImpl implements AnimalService {
 	@Override
 	public Optional<Animal> addAnimal(Animal animal) {
 		if (AnimalValidationService.isValid(animal)) {
+			animal.setId(IdGenerator.getId());
 			return Optional.ofNullable(animalRepository.save(animal));
 		} else {
 			return Optional.empty();

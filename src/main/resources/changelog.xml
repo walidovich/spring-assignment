@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
@@ -18,12 +18,18 @@
                 <constraints nullable="false" unique="false"/>
             </column>
         </createTable>
-        <createTable tableName="careTakers">
+        <createTable tableName="caretakers">
             <column name="id" type="long">
                 <constraints nullable="false" unique="true" primaryKey="true"/>
             </column>
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" unique="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="caretaker_animal">
+            <column name="caretaker_id" type="long">
+            </column>
+            <column name="animal_id" type="long">
             </column>
         </createTable>
     </changeSet>

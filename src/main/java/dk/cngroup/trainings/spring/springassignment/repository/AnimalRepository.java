@@ -10,15 +10,18 @@ import java.util.Optional;
 @Repository
 public interface AnimalRepository extends CrudRepository<Animal, Long> {
 
-    List<Animal> findAll();
+	@Override
+	List<Animal> findAll();
 
-    Optional<Animal> findById(Long id);
+	@Override
+	Optional<Animal> findById(Long id);
 
-    List<Animal> findAllByName(String name);
+	List<Animal> findAllByName(String name);
 
-    Animal save(Animal animal);
+	@Override
+	Animal save(Animal animal);
 
-    void deleteById(long id);
+	void deleteById(long id);
 
-    boolean existsById(long id);
+	boolean existsById(long id);
 }
