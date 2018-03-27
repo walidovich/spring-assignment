@@ -218,7 +218,7 @@ public class CareTakerControllerTest {
 				.thenReturn(Optional.ofNullable(careTakers.get(1)));
 		Mockito.when(animalService.addAnimal(any(Animal.class)))
 				.thenReturn(Optional.ofNullable(monkey));
-		Mockito.when(careTakerService.addAnimalToCare(any(Long.class),
+		Mockito.when(careTakerService.addNewAnimalToExistingCareTaker(any(Long.class),
 				any(Animal.class))).thenReturn(Optional.ofNullable(monkey));
 
 		mockMvc.perform(post("/careTakers/2/animals")
@@ -227,19 +227,4 @@ public class CareTakerControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.name", is("Monkey")));
 	}
-
-	@Test
-	public void testGetAnimalsInCareByCareTakerId() throws Exception {
-		// Always happy
-		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
-				.thenReturn(Optional.ofNullable(careTakers.get(1)));
-		Mockito.when(careTakerService.getAnimalsInCareByCareTakerId(any(Long.class)))
-				.thenReturn(animals);
-
-		mockMvc.perform(get("/careTakers/1/animals"))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$", hasSize(3)))
-				.andExpect(jsonPath("$[1].name", startsWith("Eagle")));
-	}
-
 }

@@ -1,11 +1,15 @@
 package dk.cngroup.trainings.spring.springassignment.service;
 
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
+import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
+import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
 import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalValidationService;
+import dk.cngroup.trainings.spring.springassignment.service.helper.CareTakerValidationService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.IdGenerator;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +17,11 @@ import java.util.Optional;
 public class AnimalServiceImpl implements AnimalService {
 
 	private AnimalRepository animalRepository;
+	private CareTakerRepository careTakerRepository;
 
-	public AnimalServiceImpl(AnimalRepository animalRepository) {
+	public AnimalServiceImpl(AnimalRepository animalRepository, CareTakerRepository careTakerRepository) {
 		this.animalRepository = animalRepository;
+		this.careTakerRepository = careTakerRepository;
 	}
 
 	@Override
@@ -64,5 +70,24 @@ public class AnimalServiceImpl implements AnimalService {
 		} else {
 			return Optional.empty();
 		}
+	}
+
+	@Override
+	public Optional<CareTaker> addNewCareTakerToExistingAnimal(long id, CareTaker careTaker) {
+		Optional<Animal> animal = animalRepository.findById(id);
+		if (CareTakerValidationService.isValid(careTaker)) {
+			careTaker.setId(IdGenerator.getId());
+			List<Animal> animals = Arrays.asList(animal.get());
+			careTaker.setAnimals(animals);
+			CareTaker addedCareTaker = careTakerRepository.save(careTaker);
+			return Optional.ofNullable(addedCareTaker);
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public String addExistingCareTakerToExistingAnimal(long careTakerId, long animalId) {
+		return null;
 	}
 }

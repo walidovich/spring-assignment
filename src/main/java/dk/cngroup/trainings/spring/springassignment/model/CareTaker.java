@@ -29,7 +29,7 @@ public class CareTaker {
 		this.name = name.trim();
 	}
 
-	public void addAnimalToCare(Animal animal) {
+	public void addAnimalToCareTaker(Animal animal) {
 		animals.add(animal);
 	}
 
@@ -55,5 +55,13 @@ public class CareTaker {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "CareTaker{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				'}';
 	}
 }

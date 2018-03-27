@@ -2,7 +2,6 @@ package dk.cngroup.trainings.spring.springassignment.controller;
 
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
-import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
 import dk.cngroup.trainings.spring.springassignment.service.CareTakerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +16,9 @@ import java.util.Optional;
 public class CareTakerController {
 
 	private CareTakerService careTakerService;
-	private AnimalService animalService;
 
-	public CareTakerController(CareTakerService careTakerService, AnimalService animalService) {
+	public CareTakerController(CareTakerService careTakerService) {
 		this.careTakerService = careTakerService;
-		this.animalService = animalService;
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.GET)
@@ -69,14 +66,12 @@ public class CareTakerController {
 	}
 
 	@RequestMapping(path = "/{id}/animals", method = RequestMethod.POST)
-	public ResponseEntity<Animal> addAnimalToCare(@PathVariable("id") long id,
-												  @RequestBody @Valid Animal animal) {
+	public ResponseEntity<Animal> addNewAnimalToExistingCareTaker(@PathVariable("id") long id,
+																  @RequestBody @Valid Animal animal) {
 		if (careTakerService.getCareTakerById(id).isPresent()) {
-			Optional<Animal> addedAnimal = animalService.addAnimal(animal);
+			Optional<Animal> addedAnimal = careTakerService.addNewAnimalToExistingCareTaker(id, animal);
 			if (addedAnimal.isPresent()) {
-				return new ResponseEntity<>(
-						careTakerService.addAnimalToCare(id, addedAnimal.get()).get(),
-						HttpStatus.OK);
+				return new ResponseEntity<>(addedAnimal.get(), HttpStatus.OK);
 			} else {
 				return ResponseEntity.badRequest().build();
 			}
@@ -93,6 +88,21 @@ public class CareTakerController {
 					, HttpStatus.OK);
 		} else {
 			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@RequestMapping(path = "/{careTakerId}/animals/{animalId}", method = RequestMethod.PUT)
+	public ResponseEntity<String> addExistingAnimalToExistingCareTaker(@PathVariable("careTakerId") long careTakerId,
+																	   @PathVariable("animalId") long animalId) {
+		String result = careTakerService.addExistingAnimalToExistingCareTaker(careTakerId, animalId);
+		if (careTakerService.getCareTakerById(careTakerId).isPresent()) {
+			if (careTakerService.getAnimalById(animalId).isPresent()) {
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+			}
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
 		}
 	}
 }

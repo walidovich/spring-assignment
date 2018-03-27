@@ -17,7 +17,9 @@ public interface CareTakerService {
 
 	boolean deleteCareTakerById(long id);
 
-	List<Animal> getAnimalsInCareByCareTakerId(long id);
+	Optional<Animal> addNewAnimalToExistingCareTaker(long id, Animal animal);
 
-	Optional<Animal> addAnimalToCare(long id, Animal animal);
+	Optional<Animal> getAnimalById(long animalId);
+
+	String addExistingAnimalToExistingCareTaker(long careTakerId, long animalId);
 }

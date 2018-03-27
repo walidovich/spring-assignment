@@ -1,6 +1,7 @@
 package dk.cngroup.trainings.spring.springassignment.controller;
 
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
+import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,5 +76,37 @@ public class AnimalController {
 		} else {
 			return ResponseEntity.notFound().build();
 		}
+	}
+
+	@RequestMapping(path = "/{id}/careTakers", method = RequestMethod.POST)
+	public ResponseEntity<CareTaker> addNewCareTakerToExistingAnimal(@PathVariable("id") long id,
+																	 @RequestBody @Valid CareTaker careTaker) {
+		if (animalService.getAnimalById(id).isPresent()) {
+			Optional<CareTaker> addedCareTaker = animalService.addNewCareTakerToExistingAnimal(id, careTaker);
+			if (addedCareTaker.isPresent()) {
+				return new ResponseEntity<>(addedCareTaker.get(), HttpStatus.OK);
+			} else {
+				return ResponseEntity.badRequest().build();
+			}
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@RequestMapping(value = "/{id}/careTakers", method = RequestMethod.GET)
+	public ResponseEntity<List<CareTaker>> getCareTakersByAnimalId(@PathVariable("id") long id) {
+		Optional<Animal> animalById = animalService.getAnimalById(id);
+		if (animalById.isPresent()) {
+			return new ResponseEntity<>(animalById.get().getCareTakers()
+					, HttpStatus.OK);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@RequestMapping(path = "/{animalId}/animals/{careTakerId}", method = RequestMethod.PUT)
+	public ResponseEntity<String> addExistingAnimalToExistingCareTaker(@PathVariable("animalId") long animalId,
+																	   @PathVariable("careTakerId") long careTakerId) {
+		return careTakerController.addExistingAnimalToExistingCareTaker(careTakerId, animalId);
 	}
 }

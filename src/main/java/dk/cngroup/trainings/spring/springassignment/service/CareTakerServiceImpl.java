@@ -15,9 +15,11 @@ import java.util.Optional;
 public class CareTakerServiceImpl implements CareTakerService {
 
 	private CareTakerRepository careTakerRepository;
+	private AnimalService animalService;
 
-	public CareTakerServiceImpl(CareTakerRepository careTakerRepository) {
+	public CareTakerServiceImpl(CareTakerRepository careTakerRepository, AnimalService animalService) {
 		this.careTakerRepository = careTakerRepository;
+		this.animalService = animalService;
 	}
 
 	@Override
@@ -61,22 +63,39 @@ public class CareTakerServiceImpl implements CareTakerService {
 	}
 
 	@Override
-	public List<Animal> getAnimalsInCareByCareTakerId(long id) {
-		return null;
+	public Optional<Animal> addNewAnimalToExistingCareTaker(long id, Animal animal) {
+		Optional<CareTaker> careTaker = careTakerRepository.findById(id);
+		if (AnimalValidationService.isValid(animal)) {
+			Optional<Animal> addedAnimal = animalService.addAnimal(animal);
+			careTaker.get().addAnimalToCareTaker(addedAnimal.get());
+			careTakerRepository.save(careTaker.get());
+			return Optional.ofNullable(addedAnimal.get());
+		} else {
+			return Optional.empty();
+		}
 	}
 
 	@Override
-	public Optional<Animal> addAnimalToCare(long id, Animal animal) {
-		Optional<CareTaker> careTaker = careTakerRepository.findById(id);
-		if (careTaker.isPresent()) {
-			if (AnimalValidationService.isValid(animal)) {
-				careTaker.get().addAnimalToCare(animal);
-				careTakerRepository.save(careTaker.get());
-				return Optional.ofNullable(animal);
+	public Optional<Animal> getAnimalById(long animalId) {
+		return animalService.getAnimalById(animalId);
+	}
+
+	@Override
+	public String addExistingAnimalToExistingCareTaker(long careTakerId, long animalId) {
+		Optional<CareTaker> careTaker = careTakerRepository.findById(careTakerId);
+		Optional<Animal> animal = animalService.getAnimalById(animalId);
+		if (!careTaker.isPresent()) {
+			return "Failed: CareTaker id doesn't exist";
+		} else if (!animal.isPresent()) {
+			return "Failed: Animal id doesn't exist";
+		} else {
+			if (careTaker.get().getAnimals().stream().anyMatch(a -> a.getId().equals(animalId))) {
+				return "Warning: Animal id:" + animalId + " already added to careTaker id:" + careTakerId;
 			} else {
-				return Optional.empty();
+				careTaker.get().addAnimalToCareTaker(animal.get());
+				careTakerRepository.save(careTaker.get());
+				return "Success";
 			}
 		}
-		return Optional.empty();
 	}
 }
