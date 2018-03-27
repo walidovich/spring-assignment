@@ -85,9 +85,9 @@ public class CareTakerServiceImpl implements CareTakerService {
 		Optional<CareTaker> careTaker = careTakerRepository.findById(careTakerId);
 		Optional<Animal> animal = animalService.getAnimalById(animalId);
 		if (!careTaker.isPresent()) {
-			return "Failed: CareTaker id doesn't exist";
+			return "Failed: CareTaker id:" + careTakerId + " doesn't exist";
 		} else if (!animal.isPresent()) {
-			return "Failed: Animal id doesn't exist";
+			return "Failed: Animal id:" + animalId + " doesn't exist";
 		} else {
 			if (careTaker.get().getAnimals().stream().anyMatch(a -> a.getId().equals(animalId))) {
 				return "Warning: Animal id:" + animalId + " already added to careTaker id:" + careTakerId;

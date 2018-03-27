@@ -16,11 +16,9 @@ import java.util.Optional;
 public class AnimalController {
 
 	private AnimalService animalService;
-	private CareTakerController careTakerController;
 
-	public AnimalController(AnimalService animalService, CareTakerController careTakerController) {
+	public AnimalController(AnimalService animalService) {
 		this.animalService = animalService;
-		this.careTakerController = careTakerController;
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.POST)
@@ -68,8 +66,8 @@ public class AnimalController {
 		}
 	}
 
-	@RequestMapping(path = "/search/{name}", method = RequestMethod.GET)
-	public ResponseEntity<List<Animal>> getAnimalByName(@PathVariable("name") String name) {
+	@RequestMapping(path = "/name", method = RequestMethod.GET)
+	public ResponseEntity<List<Animal>> getAnimalsByName(@RequestParam("name") String name) {
 		List<Animal> sameNameAnimals = animalService.getAnimalsByName(name);
 		if (!sameNameAnimals.isEmpty()) {
 			return new ResponseEntity<>(sameNameAnimals, HttpStatus.OK);
@@ -104,9 +102,22 @@ public class AnimalController {
 		}
 	}
 
-	@RequestMapping(path = "/{animalId}/animals/{careTakerId}", method = RequestMethod.PUT)
-	public ResponseEntity<String> addExistingAnimalToExistingCareTaker(@PathVariable("animalId") long animalId,
+	/*
+	Is it Ok if I injected CareTakerController and I used its method
+	addExistingAnimalToExistingCareTaker(@PathVariable("careTakerId") long careTakerId,
+	@PathVariable("animalId") long animalId) to not replicate the same logic with just
+	the order of the ids reversed?
+	In your comment you said controllers should not depend on each other.
+	 */
+	@RequestMapping(path = "/{animalId}/careTakers/{careTakerId}", method = RequestMethod.PUT)
+	public ResponseEntity<String> addExistingCareTakerToExistingAnimal(@PathVariable("animalId") long animalId,
 																	   @PathVariable("careTakerId") long careTakerId) {
-		return careTakerController.addExistingAnimalToExistingCareTaker(careTakerId, animalId);
+		System.out.println(">>>>>>> From animalController");
+		String result = animalService.addExistingCareTakerToExistingAnimal(animalId, careTakerId);
+		if (result.startsWith("Success")) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+		}
 	}
 }

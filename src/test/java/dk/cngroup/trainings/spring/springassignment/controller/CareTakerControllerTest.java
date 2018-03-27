@@ -92,7 +92,7 @@ public class CareTakerControllerTest {
 
 	@Test
 	public void testAddCareTakerWithEmptyName() throws Exception {
-		// Happy path
+		// Sad path
 		CareTaker martin = new CareTaker(1L, "                    ");
 		ObjectMapper objectMapper = new ObjectMapper();
 		String martinString = objectMapper.writeValueAsString(martin);
@@ -140,9 +140,9 @@ public class CareTakerControllerTest {
 		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
 				.thenReturn(Optional.ofNullable(careTakers.get(3)));
 		Mockito.when(careTakerService.addCareTaker(any(CareTaker.class)))
-				.thenReturn(java.util.Optional.ofNullable(updatedJohn));
+				.thenReturn(Optional.ofNullable(updatedJohn));
 		Mockito.when(careTakerService.updateCareTakerById(any(Long.class), any(CareTaker.class)))
-				.thenReturn(java.util.Optional.ofNullable(updatedJohn));
+				.thenReturn(Optional.ofNullable(updatedJohn));
 
 		mockMvc.perform(put("/careTakers/4")
 				.content(updatedJohnString)

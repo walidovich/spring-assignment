@@ -22,5 +22,5 @@ public interface AnimalService {
 
 	Optional<CareTaker> addNewCareTakerToExistingAnimal(long id, @Valid CareTaker careTaker);
 
-	String addExistingCareTakerToExistingAnimal(long careTakerId, long animalId);
+	String addExistingCareTakerToExistingAnimal(long animalId, long careTakerId);
 }

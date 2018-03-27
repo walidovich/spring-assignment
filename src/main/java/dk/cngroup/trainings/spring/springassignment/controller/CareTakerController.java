@@ -94,13 +94,10 @@ public class CareTakerController {
 	@RequestMapping(path = "/{careTakerId}/animals/{animalId}", method = RequestMethod.PUT)
 	public ResponseEntity<String> addExistingAnimalToExistingCareTaker(@PathVariable("careTakerId") long careTakerId,
 																	   @PathVariable("animalId") long animalId) {
+		System.out.println(">>>>>>> From careTakerController");
 		String result = careTakerService.addExistingAnimalToExistingCareTaker(careTakerId, animalId);
-		if (careTakerService.getCareTakerById(careTakerId).isPresent()) {
-			if (careTakerService.getAnimalById(animalId).isPresent()) {
-				return new ResponseEntity<>(result, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
-			}
+		if (result.startsWith("Success")) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
 		}

@@ -87,7 +87,23 @@ public class AnimalServiceImpl implements AnimalService {
 	}
 
 	@Override
-	public String addExistingCareTakerToExistingAnimal(long careTakerId, long animalId) {
-		return null;
+	public String addExistingCareTakerToExistingAnimal(long animalId, long careTakerId) {
+		Optional<Animal> animal = animalRepository.findById(animalId);
+		Optional<CareTaker> careTaker = careTakerRepository.findById(careTakerId);
+		if (!animal.isPresent()) {
+			return "Failed: Animal id doesn't exist";
+		} else if (!careTaker.isPresent()) {
+			return "Failed: CareTaker id doesn't exist";
+		} else {
+			if (animal.get().getCareTakers().stream().anyMatch(c -> c.getId() == careTakerId)) {
+				return "Warning: careTaker id:" + careTakerId + " already added to animal id:" + animalId;
+			} else {
+				List<Animal> animals = careTaker.get().getAnimals();
+				animals.add(animal.get());
+				careTaker.get().setAnimals(animals);
+				careTakerRepository.save(careTaker.get());
+				return "Success";
+			}
+		}
 	}
 }
