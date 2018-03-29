@@ -6,6 +6,7 @@ import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
 import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
 import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidCareTakerException;
+import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalServiceFieldsTrimmer;
 import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalValidationService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.CareTakerValidationService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.IdGenerator;
@@ -43,6 +44,7 @@ public class AnimalServiceImpl implements AnimalService {
 
 	@Override
 	public Optional<Animal> addAnimal(Animal animal) throws InvalidAnimalException {
+		AnimalServiceFieldsTrimmer.trimFields(animal);
 		AnimalValidationService.validate(animal);
 		animal.setId(IdGenerator.getId());
 		return Optional.ofNullable(animalRepository.save(animal));
@@ -88,9 +90,9 @@ public class AnimalServiceImpl implements AnimalService {
 		Optional<Animal> animal = animalRepository.findById(animalId);
 		Optional<CareTaker> careTaker = careTakerRepository.findById(careTakerId);
 		if (!animal.isPresent()) {
-			return "Failed: Animal id doesn't exist";
+			return "Failed: Animal id " + animalId + " doesn't exist";
 		} else if (!careTaker.isPresent()) {
-			return "Failed: CareTaker id doesn't exist";
+			return "Failed: CareTaker id " + careTakerId + " doesn't exist";
 		} else {
 			if (animal.get().getCareTakers().stream().anyMatch(c -> c.getId() == careTakerId)) {
 				return "Warning: careTaker id:" + careTakerId + " already added to animal id:" + animalId;
