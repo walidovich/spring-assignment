@@ -3,6 +3,7 @@ package dk.cngroup.trainings.spring.springassignment.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
+import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
 import liquibase.util.StringUtils;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -104,6 +105,8 @@ public class AnimalControllerTest {
 		Animal penguin = new Animal(7L, "Penguin", "Royal penguin of the north pole");
 		ObjectMapper objectMapper = new ObjectMapper();
 		String penguinString = objectMapper.writeValueAsString(penguin);
+
+		Mockito.when(animalService.addAnimal(any(Animal.class))).thenThrow(InvalidAnimalException.class);
 
 		mockMvc.perform(post("/animals")
 				.content(penguinString)
