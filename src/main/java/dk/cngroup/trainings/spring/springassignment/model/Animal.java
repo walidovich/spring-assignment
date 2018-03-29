@@ -17,8 +17,8 @@ public class Animal {
 	public final static int DESCRIPTION_MAXIMUM_SIZE = 10000;
 	@Id
 	private Long id;
-	@Size(min = NAME_MINIMUM_SIZE)
 	@NotNull
+	@Size(min = NAME_MINIMUM_SIZE)
 	private String name;
 	@Size(max = DESCRIPTION_MAXIMUM_SIZE)
 	private String description;

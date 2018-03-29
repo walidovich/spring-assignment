@@ -3,6 +3,7 @@ package dk.cngroup.trainings.spring.springassignment.service;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
+import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
 import liquibase.util.StringUtils;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -100,7 +101,7 @@ public class AnimalServiceImplTest {
 	}
 
 	@Test
-	public void testAddValidAnimal() {
+	public void testAddValidAnimal() throws InvalidAnimalException {
 		// Happy path:
 		Animal dauphin = new Animal(5L, "Dauphin", "Smartest aqua mammal");
 
@@ -111,36 +112,30 @@ public class AnimalServiceImplTest {
 				animalService.addAnimal(dauphin).get().getName());
 	}
 
-	@Test
-	public void testAddAnimalWithShortName() {
+	@Test(expected = InvalidAnimalException.class)
+	public void testAddAnimalWithShortName() throws InvalidAnimalException {
 		// Sad path: Adding an animal with short name, less than 2 characters
 		Animal pigeon = new Animal(6L, "p", "Smartest aqua mammal");
 
-		Mockito.when(animalRepositoryMock.save(pigeon)).thenReturn(null);
-
-		Assert.assertFalse(animalService.addAnimal(pigeon).isPresent());
+		animalService.addAnimal(pigeon);
 	}
 
-	@Test
-	public void testAddAnimalWithLongDescription() {
+	@Test(expected = InvalidAnimalException.class)
+	public void testAddAnimalWithLongDescription() throws InvalidAnimalException {
 		// Sad path: (Adding an animal with long description, more than 10000)
 		Animal pigeon = new Animal(6L, "p",
 				StringUtils.repeat("*", 10001));
 
-		Mockito.when(animalRepositoryMock.save(pigeon))
-				.thenReturn(null);
-		Assert.assertFalse(animalService.addAnimal(pigeon).isPresent());
+		animalService.addAnimal(pigeon);
 	}
 
-	@Test
-	public void testAddAnimalWithDescriptionContainingPenguin() {
+	@Test(expected = InvalidAnimalException.class)
+	public void testAddAnimalWithDescriptionContainingPenguin() throws InvalidAnimalException {
 		// Sad path: Adding an animal with description containing Penguin
 		Animal penguin = new Animal(8L, "Penguin",
 				"Royal Penguins of the north pole");
 
-		Mockito.when(animalRepositoryMock.save(penguin)).thenReturn(null);
-
-		Assert.assertFalse(animalService.addAnimal(penguin).isPresent());
+		animalService.addAnimal(penguin);
 	}
 
 	@Test
@@ -162,7 +157,7 @@ public class AnimalServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateAnimalByExistingId() {
+	public void testUpdateAnimalByExistingId() throws InvalidAnimalException {
 		// Happy path:
 		long id = 3L;
 		Animal oldAnimal = animals.get(2);
@@ -185,7 +180,7 @@ public class AnimalServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateAnimalByNonExistingId() {
+	public void testUpdateAnimalByNonExistingId() throws InvalidAnimalException {
 		// Sad path: Updating an animal with non existing id
 		long id = 10L; // non existing
 		Animal updatedAnimal = new Animal(100L, "Falcon",

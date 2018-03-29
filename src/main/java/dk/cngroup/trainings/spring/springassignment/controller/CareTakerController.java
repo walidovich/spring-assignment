@@ -3,6 +3,8 @@ package dk.cngroup.trainings.spring.springassignment.controller;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.service.CareTakerService;
+import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
+import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidCareTakerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,29 +30,29 @@ public class CareTakerController {
 
 	@RequestMapping(path = "", method = RequestMethod.POST)
 	public ResponseEntity<CareTaker> addCareTaker(@RequestBody @Valid CareTaker careTaker) {
-		Optional<CareTaker> addedCareTaker = careTakerService.addCareTaker(careTaker);
-		if (addedCareTaker.isPresent()) {
-			return new ResponseEntity<>(addedCareTaker.get(), HttpStatus.OK);
-		} else {
+		try {
+			return new ResponseEntity<>(careTakerService.addCareTaker(careTaker).get(), HttpStatus.OK);
+		} catch (InvalidCareTakerException e) {
 			return ResponseEntity.badRequest().build();
 		}
 	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<CareTaker> updateCareTakerById(@PathVariable("id") long id, @RequestBody @Valid CareTaker careTaker) {
+		if (careTakerService.getCareTakerById(id).isPresent()) {
+			careTaker.setId(id);
+			return this.addCareTaker(careTaker);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<CareTaker> getCareTakerById(@PathVariable("id") long id) {
 		if (careTakerService.getCareTakerById(id).isPresent()) {
 			return new ResponseEntity<>(careTakerService.getCareTakerById(id).get()
 					, HttpStatus.OK);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
-	}
-
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<CareTaker> updateCareTaker(@PathVariable("id") long id, @RequestBody @Valid CareTaker careTaker) {
-		if (careTakerService.getCareTakerById(id).isPresent()) {
-			careTaker.setId(id);
-			return this.addCareTaker(careTaker);
 		} else {
 			return ResponseEntity.notFound().build();
 		}
@@ -69,10 +71,11 @@ public class CareTakerController {
 	public ResponseEntity<Animal> addNewAnimalToExistingCareTaker(@PathVariable("id") long id,
 																  @RequestBody @Valid Animal animal) {
 		if (careTakerService.getCareTakerById(id).isPresent()) {
-			Optional<Animal> addedAnimal = careTakerService.addNewAnimalToExistingCareTaker(id, animal);
-			if (addedAnimal.isPresent()) {
+			Optional<Animal> addedAnimal;
+			try {
+				addedAnimal = careTakerService.addNewAnimalToExistingCareTaker(id, animal);
 				return new ResponseEntity<>(addedAnimal.get(), HttpStatus.OK);
-			} else {
+			} catch (InvalidAnimalException e) {
 				return ResponseEntity.badRequest().build();
 			}
 		} else {

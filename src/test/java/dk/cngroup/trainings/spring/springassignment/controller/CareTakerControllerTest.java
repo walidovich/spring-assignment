@@ -37,10 +37,8 @@ public class CareTakerControllerTest {
 	MockMvc mockMvc;
 	List<CareTaker> careTakers;
 	List<Animal> animals;
-
 	@Autowired
 	private WebApplicationContext webApplicationContext;
-
 	@MockBean
 	private CareTakerService careTakerService;
 	@MockBean
@@ -96,8 +94,6 @@ public class CareTakerControllerTest {
 		CareTaker martin = new CareTaker(1L, "                    ");
 		ObjectMapper objectMapper = new ObjectMapper();
 		String martinString = objectMapper.writeValueAsString(martin);
-
-		Mockito.when(careTakerService.addCareTaker(any(CareTaker.class))).thenReturn(Optional.empty());
 
 		mockMvc.perform(post("/careTakers")
 				.content(martinString)

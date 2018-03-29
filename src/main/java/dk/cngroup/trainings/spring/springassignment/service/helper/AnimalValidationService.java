@@ -1,29 +1,38 @@
 package dk.cngroup.trainings.spring.springassignment.service.helper;
 
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
+import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
 
 public class AnimalValidationService {
 
-	public static boolean isValid(Animal animal) {
-		return isAnimalNotNull(animal)
-				&& isAnimalNameLengthBiggerThanMinimumSize(animal)
-				&& isAnimalDescriptionLengthSmallerThanMaximumSize(animal)
-				&& isAnimalDescriptionNotContainingPenguin(animal);
+	public static void validate(Animal animal) throws InvalidAnimalException {
+		isAnimalNotNull(animal);
+		isAnimalNameLengthBiggerThanMinimumSize(animal);
+		isAnimalDescriptionLengthSmallerThanMaximumSize(animal);
+		isAnimalDescriptionNotContainingPenguin(animal);
 	}
 
-	public static boolean isAnimalDescriptionNotContainingPenguin(Animal animal) {
-		return !animal.getDescription().toLowerCase().contains("penguin");
+	private static void isAnimalDescriptionNotContainingPenguin(Animal animal) throws InvalidAnimalException {
+		if (animal.getDescription().toLowerCase().contains("penguin")) {
+			throw new InvalidAnimalException();
+		}
 	}
 
-	public static boolean isAnimalDescriptionLengthSmallerThanMaximumSize(Animal animal) {
-		return animal.getDescription().length() < Animal.DESCRIPTION_MAXIMUM_SIZE;
+	private static void isAnimalDescriptionLengthSmallerThanMaximumSize(Animal animal) throws InvalidAnimalException {
+		if (animal.getDescription().length() >= Animal.DESCRIPTION_MAXIMUM_SIZE) {
+			throw new InvalidAnimalException();
+		}
 	}
 
-	public static boolean isAnimalNameLengthBiggerThanMinimumSize(Animal animal) {
-		return animal.getName().length() >= Animal.NAME_MINIMUM_SIZE;
+	private static void isAnimalNameLengthBiggerThanMinimumSize(Animal animal) throws InvalidAnimalException {
+		if (animal.getName().length() < Animal.NAME_MINIMUM_SIZE) {
+			throw new InvalidAnimalException();
+		}
 	}
 
-	private static boolean isAnimalNotNull(Animal animal) {
-		return animal != null;
+	private static void isAnimalNotNull(Animal animal) throws InvalidAnimalException {
+		if (animal == null) {
+			throw new InvalidAnimalException();
+		}
 	}
 }

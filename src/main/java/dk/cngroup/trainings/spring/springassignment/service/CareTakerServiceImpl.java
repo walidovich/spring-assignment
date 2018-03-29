@@ -3,6 +3,8 @@ package dk.cngroup.trainings.spring.springassignment.service;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
+import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
+import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidCareTakerException;
 import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalValidationService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.CareTakerValidationService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.IdGenerator;
@@ -33,23 +35,18 @@ public class CareTakerServiceImpl implements CareTakerService {
 	}
 
 	@Override
-	public Optional<CareTaker> addCareTaker(CareTaker careTaker) {
-		if (CareTakerValidationService.isValid(careTaker)) {
-			careTaker.setId(IdGenerator.getId());
-			return Optional.ofNullable(careTakerRepository.save(careTaker));
-		} else {
-			return Optional.empty();
-		}
+	public Optional<CareTaker> addCareTaker(CareTaker careTaker) throws InvalidCareTakerException {
+		CareTakerValidationService.isValid(careTaker);
+		careTaker.setId(IdGenerator.getId());
+		return Optional.ofNullable(careTakerRepository.save(careTaker));
 	}
 
 	@Override
-	public Optional<CareTaker> updateCareTakerById(long id, CareTaker careTaker) {
-		if (careTakerRepository.existsById(id)) {
-			careTaker.setId(id);
-			return Optional.ofNullable(careTakerRepository.save(careTaker));
-		} else {
-			return Optional.empty();
-		}
+	public Optional<CareTaker> updateCareTakerById(long id, CareTaker careTaker) throws InvalidCareTakerException {
+		CareTakerValidationService.isValid(careTaker);
+		careTakerRepository.existsById(id);
+		careTaker.setId(id);
+		return Optional.ofNullable(careTakerRepository.save(careTaker));
 	}
 
 	@Override
@@ -63,21 +60,13 @@ public class CareTakerServiceImpl implements CareTakerService {
 	}
 
 	@Override
-	public Optional<Animal> addNewAnimalToExistingCareTaker(long id, Animal animal) {
+	public Optional<Animal> addNewAnimalToExistingCareTaker(long id, Animal animal) throws InvalidAnimalException {
 		Optional<CareTaker> careTaker = careTakerRepository.findById(id);
-		if (AnimalValidationService.isValid(animal)) {
-			Optional<Animal> addedAnimal = animalService.addAnimal(animal);
-			careTaker.get().addAnimalToCareTaker(addedAnimal.get());
-			careTakerRepository.save(careTaker.get());
-			return Optional.ofNullable(addedAnimal.get());
-		} else {
-			return Optional.empty();
-		}
-	}
-
-	@Override
-	public Optional<Animal> getAnimalById(long animalId) {
-		return animalService.getAnimalById(animalId);
+		AnimalValidationService.validate(animal);
+		Optional<Animal> addedAnimal = animalService.addAnimal(animal);
+		careTaker.get().addAnimalToCareTaker(addedAnimal.get());
+		careTakerRepository.save(careTaker.get());
+		return Optional.ofNullable(addedAnimal.get());
 	}
 
 	@Override

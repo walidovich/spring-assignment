@@ -3,6 +3,8 @@ package dk.cngroup.trainings.spring.springassignment.controller;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
+import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
+import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidCareTakerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +25,21 @@ public class AnimalController {
 
 	@RequestMapping(path = "", method = RequestMethod.POST)
 	public ResponseEntity<Animal> addAnimal(@RequestBody @Valid Animal animal) {
-		Optional<Animal> addedAnimal = animalService.addAnimal(animal);
-		if (addedAnimal.isPresent()) {
-			return new ResponseEntity<>(addedAnimal.get(), HttpStatus.OK);
-		} else {
+		try {
+			return new ResponseEntity<>(animalService.addAnimal(animal).get(), HttpStatus.OK);
+		} catch (InvalidAnimalException e) {
 			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	@RequestMapping(path = "/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Animal> updateAnimalById(@PathVariable("id") long id,
+												   @RequestBody @Valid Animal animal) {
+		if (animalService.getAnimalById(id).isPresent()) {
+			animal.setId(id);
+			return this.addAnimal(animal);
+		} else {
+			return ResponseEntity.notFound().build();
 		}
 	}
 
@@ -42,17 +54,6 @@ public class AnimalController {
 			return new ResponseEntity<>("Success", HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>("Fail: Id not found.", HttpStatus.NOT_FOUND);
-		}
-	}
-
-	@RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<Animal> updateAnimalById(@PathVariable("id") long id,
-												   @RequestBody @Valid Animal animal) {
-		if (animalService.getAnimalById(id).isPresent()) {
-			animal.setId(id);
-			return this.addAnimal(animal);
-		} else {
-			return ResponseEntity.notFound().build();
 		}
 	}
 
@@ -80,10 +81,11 @@ public class AnimalController {
 	public ResponseEntity<CareTaker> addNewCareTakerToExistingAnimal(@PathVariable("id") long id,
 																	 @RequestBody @Valid CareTaker careTaker) {
 		if (animalService.getAnimalById(id).isPresent()) {
-			Optional<CareTaker> addedCareTaker = animalService.addNewCareTakerToExistingAnimal(id, careTaker);
-			if (addedCareTaker.isPresent()) {
+			Optional<CareTaker> addedCareTaker = null;
+			try {
+				addedCareTaker = animalService.addNewCareTakerToExistingAnimal(id, careTaker);
 				return new ResponseEntity<>(addedCareTaker.get(), HttpStatus.OK);
-			} else {
+			} catch (InvalidCareTakerException e) {
 				return ResponseEntity.badRequest().build();
 			}
 		} else {
@@ -102,13 +104,6 @@ public class AnimalController {
 		}
 	}
 
-	/*
-	Is it Ok if I injected CareTakerController and I used its method
-	addExistingAnimalToExistingCareTaker(@PathVariable("careTakerId") long careTakerId,
-	@PathVariable("animalId") long animalId) to not replicate the same logic with just
-	the order of the ids reversed?
-	In your comment you said controllers should not depend on each other.
-	 */
 	@RequestMapping(path = "/{animalId}/careTakers/{careTakerId}", method = RequestMethod.PUT)
 	public ResponseEntity<String> addExistingCareTakerToExistingAnimal(@PathVariable("animalId") long animalId,
 																	   @PathVariable("careTakerId") long careTakerId) {

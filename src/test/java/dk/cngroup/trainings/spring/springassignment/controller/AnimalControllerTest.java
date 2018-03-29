@@ -66,7 +66,7 @@ public class AnimalControllerTest {
 		Mockito.when(animalService.addAnimal(any(Animal.class)))
 				.thenReturn(java.util.Optional.ofNullable(shark));
 
-		mockMvc.perform(post("/animals/")
+		mockMvc.perform(post("/animals")
 				.content(sharkString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -79,10 +79,7 @@ public class AnimalControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String sharkString = objectMapper.writeValueAsString(shark);
 
-		Mockito.when(animalService.addAnimal(any(Animal.class)))
-				.thenReturn(Optional.empty());
-
-		mockMvc.perform(post("/animals/")
+		mockMvc.perform(post("/animals")
 				.content(sharkString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
@@ -91,13 +88,11 @@ public class AnimalControllerTest {
 	@Test
 	public void testAddAnimalWithLongDescription() throws Exception {
 		// Sad path: Long description
-		Animal shark = new Animal(22L, "S", "Predator of the sea");
+		Animal shark = new Animal(22L, "Shark", StringUtils.repeat("*", 10001));
 		ObjectMapper objectMapper = new ObjectMapper();
-		shark.setName("Shark");
-		shark.setDescription(new String(StringUtils.repeat("*", 10001)));
 		String sharkString = objectMapper.writeValueAsString(shark);
 
-		mockMvc.perform(post("/animals/")
+		mockMvc.perform(post("/animals")
 				.content(sharkString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
@@ -106,11 +101,11 @@ public class AnimalControllerTest {
 	@Test
 	public void testAddAnimalWithDescriptionContainingPenguin() throws Exception {
 		// Sad path: description containing penguin
-		Animal penguin = new Animal(7L, "Penguin", "Royal penguins of the north pole");
+		Animal penguin = new Animal(7L, "Penguin", "Royal penguin of the north pole");
 		ObjectMapper objectMapper = new ObjectMapper();
 		String penguinString = objectMapper.writeValueAsString(penguin);
 
-		mockMvc.perform(post("/animals/")
+		mockMvc.perform(post("/animals")
 				.content(penguinString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
