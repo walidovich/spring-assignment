@@ -18,6 +18,8 @@
                 <constraints nullable="false" unique="false"/>
             </column>
         </createTable>
+    </changeSet>
+    <changeSet id="01" author="walid">
         <createTable tableName="caretakers">
             <column name="id" type="long">
                 <constraints nullable="false" unique="true" primaryKey="true"/>
@@ -26,6 +28,8 @@
                 <constraints nullable="false" unique="false"/>
             </column>
         </createTable>
+    </changeSet>
+    <changeSet id="01" author="walid">
         <createTable tableName="caretaker_animal">
             <column name="caretaker_id" type="long">
             </column>

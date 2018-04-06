@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Animals List</title>
+</head>
+<body>
+<h2>Care Takers List:</h2>
+<table border="1">
+    <thead>
+    <td>Id</td>
+    <td>Name</td>
+    <td>Animals</td>
+    </thead>
+    <th:block th:each="careTaker : ${careTakers}">
+        <tr>
+            <td th:text="${careTaker.id}">12</td>
+            <td th:text="${careTaker.name}">Adam</td>
+            <td>
+                <th:block th:if="${careTaker.animals.size()!=0}">
+                    <th:block th:each="animal : ${careTaker.animals}">
+                        <div th:object="${animal}">
+                            Id: <span th:text="*{id}">13</span>,
+                            Name: <span th:text="*{name}">Tiger</span>.
+                        </div>
+                    </th:block>
+                </th:block>
+            </td>
+        </tr>
+    </th:block>
+</table>
+<hr>
+<p></p>
+<a href="/">Back to the Zoo home page</a>
+</body>
+</html>

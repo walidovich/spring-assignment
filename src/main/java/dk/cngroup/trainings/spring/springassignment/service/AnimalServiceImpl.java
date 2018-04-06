@@ -4,8 +4,7 @@ import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
-import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
-import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidCareTakerException;
+import dk.cngroup.trainings.spring.springassignment.service.exception.*;
 import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalServiceFieldsTrimmer;
 import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalValidationService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.CareTakerValidationService;
@@ -33,8 +32,12 @@ public class AnimalServiceImpl implements AnimalService {
 	}
 
 	@Override
-	public Optional<Animal> getAnimalById(long id) {
-		return animalRepository.findById(id);
+	public Optional<Animal> getAnimalById(long id) throws AnimalNotFoundException {
+		if (animalRepository.existsById(id)) {
+			return animalRepository.findById(id);
+		} else {
+			throw new AnimalNotFoundException();
+		}
 	}
 
 	@Override
@@ -51,33 +54,38 @@ public class AnimalServiceImpl implements AnimalService {
 	}
 
 	@Override
-	public boolean deleteAnimalById(long id) {
+	public void deleteAnimalById(long id) throws AnimalNotFoundException {
+		this.checkAnimalExistsById(id);
+		for (CareTaker careTaker : this.getAnimalById(id).get().getCareTakers()) {
+			careTaker.getAnimals().remove(this.getAnimalById(id).get());
+			careTakerRepository.save(careTaker);
+		}
+		animalRepository.deleteById(id);
+	}
+
+	@Override
+	public boolean checkAnimalExistsById(long id) throws AnimalNotFoundException {
 		if (animalRepository.existsById(id)) {
-			animalRepository.deleteById(id);
 			return true;
-		} else
-
-		{
-			return false;
-		}
-	}
-
-	@Override
-	public Optional<Animal> updateAnimalById(long id, Animal animal) throws InvalidAnimalException {
-		AnimalValidationService.validate(animal);
-		if (animalRepository.existsById(id)) {
-			// Change the updated animal id and override it in the database.
-			animal.setId(id);
-			return Optional.ofNullable(animalRepository.save(animal));
 		} else {
-			return Optional.empty();
+			throw new AnimalNotFoundException();
 		}
 	}
 
 	@Override
-	public Optional<CareTaker> addNewCareTakerToExistingAnimal(long id, CareTaker careTaker) throws InvalidCareTakerException {
-		CareTakerValidationService.isValid(careTaker);
-		Optional<Animal> animal = animalRepository.findById(id);
+	public Optional<Animal> updateAnimalById(long id, Animal animal)
+			throws InvalidAnimalException, AnimalNotFoundException {
+		AnimalValidationService.validate(animal);
+		this.checkAnimalExistsById(id);
+		animal.setId(id);
+		return Optional.ofNullable(animalRepository.save(animal));
+	}
+
+	@Override
+	public Optional<CareTaker> addNewCareTakerToExistingAnimal(long id, CareTaker careTaker)
+			throws InvalidCareTakerException, AnimalNotFoundException {
+		CareTakerValidationService.validate(careTaker);
+		Optional<Animal> animal = this.getAnimalById(id);
 		careTaker.setId(IdGenerator.getId());
 		List<Animal> animals = Arrays.asList(animal.get());
 		careTaker.setAnimals(animals);
@@ -86,22 +94,21 @@ public class AnimalServiceImpl implements AnimalService {
 	}
 
 	@Override
-	public String addExistingCareTakerToExistingAnimal(long animalId, long careTakerId) {
-		Optional<Animal> animal = animalRepository.findById(animalId);
+	public void addExistingCareTakerToExistingAnimal(long animalId, long careTakerId)
+			throws AnimalNotFoundException, CareTakerNotFoundException, AnimalAndCareTakerAlreadyLinked {
+		Optional<Animal> animal = this.getAnimalById(animalId);
 		Optional<CareTaker> careTaker = careTakerRepository.findById(careTakerId);
-		if (!animal.isPresent()) {
-			return "Failed: Animal id " + animalId + " doesn't exist";
-		} else if (!careTaker.isPresent()) {
-			return "Failed: CareTaker id " + careTakerId + " doesn't exist";
+		// Animal service can't use CareTakerService because we will have recursive dependencies
+		if (!careTaker.isPresent()) {
+			throw new CareTakerNotFoundException();
 		} else {
-			if (animal.get().getCareTakers().stream().anyMatch(c -> c.getId() == careTakerId)) {
-				return "Warning: careTaker id:" + careTakerId + " already added to animal id:" + animalId;
-			} else {
+			if (!animal.get().getCareTakers().stream().anyMatch(c -> c.getId() == careTakerId)) {
 				List<Animal> animals = careTaker.get().getAnimals();
 				animals.add(animal.get());
 				careTaker.get().setAnimals(animals);
 				careTakerRepository.save(careTaker.get());
-				return "Success";
+			} else {
+				throw new AnimalAndCareTakerAlreadyLinked();
 			}
 		}
 	}

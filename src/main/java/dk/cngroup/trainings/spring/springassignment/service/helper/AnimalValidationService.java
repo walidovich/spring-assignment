@@ -6,31 +6,31 @@ import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAni
 public class AnimalValidationService {
 
 	public static void validate(Animal animal) throws InvalidAnimalException {
-		isAnimalNotNull(animal);
-		isAnimalNameLengthBiggerThanMinimumSize(animal);
-		isAnimalDescriptionLengthSmallerThanMaximumSize(animal);
-		isAnimalDescriptionNotContainingPenguin(animal);
+		checkAnimalNotNull(animal);
+		checkAnimalNameLengthBiggerThanMinimumSize(animal);
+		checkAnimalDescriptionLengthSmallerThanMaximumSize(animal);
+		checkAnimalDescriptionNotContainingPenguin(animal);
 	}
 
-	private static void isAnimalDescriptionNotContainingPenguin(Animal animal) throws InvalidAnimalException {
+	private static void checkAnimalDescriptionNotContainingPenguin(Animal animal) throws InvalidAnimalException {
 		if (animal.getDescription().toLowerCase().contains("penguin")) {
 			throw new InvalidAnimalException();
 		}
 	}
 
-	private static void isAnimalDescriptionLengthSmallerThanMaximumSize(Animal animal) throws InvalidAnimalException {
+	private static void checkAnimalDescriptionLengthSmallerThanMaximumSize(Animal animal) throws InvalidAnimalException {
 		if (animal.getDescription().length() >= Animal.DESCRIPTION_MAXIMUM_SIZE) {
 			throw new InvalidAnimalException();
 		}
 	}
 
-	private static void isAnimalNameLengthBiggerThanMinimumSize(Animal animal) throws InvalidAnimalException {
+	private static void checkAnimalNameLengthBiggerThanMinimumSize(Animal animal) throws InvalidAnimalException {
 		if (animal.getName().length() < Animal.NAME_MINIMUM_SIZE) {
 			throw new InvalidAnimalException();
 		}
 	}
 
-	private static void isAnimalNotNull(Animal animal) throws InvalidAnimalException {
+	private static void checkAnimalNotNull(Animal animal) throws InvalidAnimalException {
 		if (animal == null) {
 			throw new InvalidAnimalException();
 		}

@@ -4,18 +4,18 @@ import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidCareTakerException;
 
 public class CareTakerValidationService {
-	public static void isValid(CareTaker careTaker) throws InvalidCareTakerException {
-		isCareTakerNotNull(careTaker);
-		isCareTakerNameLengthBiggerThanMinimumSize(careTaker);
+	public static void validate(CareTaker careTaker) throws InvalidCareTakerException {
+		checkCareTakerNotNull(careTaker);
+		checkCareTakerNameLengthBiggerThanMinimumSize(careTaker);
 	}
 
-	private static void isCareTakerNameLengthBiggerThanMinimumSize(CareTaker careTaker) throws InvalidCareTakerException {
+	private static void checkCareTakerNameLengthBiggerThanMinimumSize(CareTaker careTaker) throws InvalidCareTakerException {
 		if (careTaker.getName().length() < 1) {
 			throw new InvalidCareTakerException();
 		}
 	}
 
-	private static void isCareTakerNotNull(CareTaker careTaker) throws InvalidCareTakerException {
+	private static void checkCareTakerNotNull(CareTaker careTaker) throws InvalidCareTakerException {
 		if (careTaker == null) {
 			throw new InvalidCareTakerException();
 		}

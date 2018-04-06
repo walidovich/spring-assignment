@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Animals List</title>
+</head>
+<body>
+<h2>Animals List:</h2>
+<table border="1">
+    <thead>
+    <td>Id</td>
+    <td>Name</td>
+    <td>Description</td>
+    <td>Care Takers</td>
+    </thead>
+    <th:block th:each="animal : ${animals}">
+        <tr>
+            <td th:text="${animal.id}">12</td>
+            <td th:text="${animal.name}">Tiger</td>
+            <td th:text="${animal.description}">Bengali predator</td>
+            <td>
+                <th:block th:if="${animal.careTakers.size()!=0}">
+                    <th:block th:each="careTaker : ${animal.careTakers}">
+                        <div th:object="${careTaker}">
+                            Id: <span th:text="*{id}">13</span>,
+                            Name: <span th:text="*{name}">Adam</span>.
+                        </div>
+                    </th:block>
+                </th:block>
+            </td>
+        </tr>
+    </th:block>
+</table>
+<p></p>
+<hr>
+<p></p>
+<a href="/addAnimal.html">Add Animal</a>
+<p></p>
+<a href="/">Back to the Zoo home page</a>
+</body>
+</html>
