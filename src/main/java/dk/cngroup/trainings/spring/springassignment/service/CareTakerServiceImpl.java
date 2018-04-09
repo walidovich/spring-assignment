@@ -34,7 +34,7 @@ public class CareTakerServiceImpl implements CareTakerService {
 		if (careTakerRepository.existsById(id)) {
 			return careTakerRepository.findById(id);
 		} else {
-			throw new CareTakerNotFoundException();
+			throw new CareTakerNotFoundException(id);
 		}
 	}
 
@@ -49,6 +49,7 @@ public class CareTakerServiceImpl implements CareTakerService {
 	@Override
 	public Optional<CareTaker> updateCareTakerById(long id, CareTaker careTaker)
 			throws InvalidCareTakerException, CareTakerNotFoundException {
+		CareTakerServiceFieldsTrimmer.trimFields(careTaker);
 		CareTakerValidationService.validate(careTaker);
 		this.checkCareTakerExistsById(id);
 		careTaker.setId(id);
@@ -64,7 +65,7 @@ public class CareTakerServiceImpl implements CareTakerService {
 	@Override
 	public void checkCareTakerExistsById(long id) throws CareTakerNotFoundException {
 		if (!careTakerRepository.existsById(id)) {
-			throw new CareTakerNotFoundException();
+			throw new CareTakerNotFoundException(id);
 		}
 	}
 
@@ -89,7 +90,7 @@ public class CareTakerServiceImpl implements CareTakerService {
 			careTakerRepository.save(careTaker.get());
 			return animal;
 		} else {
-			throw new AnimalAndCareTakerAlreadyLinked();
+			throw new AnimalAndCareTakerAlreadyLinked(animalId, careTakerId);
 		}
 	}
 }

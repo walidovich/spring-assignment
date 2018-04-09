@@ -11,13 +11,13 @@ public class CareTakerValidationService {
 
 	private static void checkCareTakerNameLengthBiggerThanMinimumSize(CareTaker careTaker) throws InvalidCareTakerException {
 		if (careTaker.getName().length() < 1) {
-			throw new InvalidCareTakerException();
+			throw new InvalidCareTakerException("Fail: Care Taker name should not be empty");
 		}
 	}
 
 	private static void checkCareTakerNotNull(CareTaker careTaker) throws InvalidCareTakerException {
 		if (careTaker == null) {
-			throw new InvalidCareTakerException();
+			throw new InvalidCareTakerException("Fail: Care Taker is null");
 		}
 	}
 }

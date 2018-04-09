@@ -36,7 +36,7 @@ public class AnimalServiceImpl implements AnimalService {
 		if (animalRepository.existsById(id)) {
 			return animalRepository.findById(id);
 		} else {
-			throw new AnimalNotFoundException();
+			throw new AnimalNotFoundException(id);
 		}
 	}
 
@@ -68,13 +68,14 @@ public class AnimalServiceImpl implements AnimalService {
 		if (animalRepository.existsById(id)) {
 			return true;
 		} else {
-			throw new AnimalNotFoundException();
+			throw new AnimalNotFoundException(id);
 		}
 	}
 
 	@Override
 	public Optional<Animal> updateAnimalById(long id, Animal animal)
 			throws InvalidAnimalException, AnimalNotFoundException {
+		AnimalServiceFieldsTrimmer.trimFields(animal);
 		AnimalValidationService.validate(animal);
 		this.checkAnimalExistsById(id);
 		animal.setId(id);
@@ -100,7 +101,7 @@ public class AnimalServiceImpl implements AnimalService {
 		Optional<CareTaker> careTaker = careTakerRepository.findById(careTakerId);
 		// Animal service can't use CareTakerService because we will have recursive dependencies
 		if (!careTaker.isPresent()) {
-			throw new CareTakerNotFoundException();
+			throw new CareTakerNotFoundException(careTakerId);
 		} else {
 			if (animal.get().getCareTakers().stream().noneMatch(c -> c.getId() == careTakerId)) {
 				List<Animal> animals = careTaker.get().getAnimals();
@@ -109,7 +110,7 @@ public class AnimalServiceImpl implements AnimalService {
 				careTakerRepository.save(careTaker.get());
 				return careTaker;
 			} else {
-				throw new AnimalAndCareTakerAlreadyLinked();
+				throw new AnimalAndCareTakerAlreadyLinked(animalId, careTakerId);
 			}
 		}
 	}

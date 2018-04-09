@@ -28,86 +28,50 @@ public class CareTakerController {
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.POST)
-	public ResponseEntity<CareTaker> addCareTaker(@RequestBody @Valid CareTaker careTaker) {
-		try {
-			return new ResponseEntity<>(careTakerService.addCareTaker(careTaker).get(), HttpStatus.OK);
-		} catch (InvalidCareTakerException e) {
-			return ResponseEntity.badRequest().build();
-		}
+	public ResponseEntity<CareTaker> addCareTaker(@RequestBody @Valid CareTaker careTaker)
+			throws InvalidCareTakerException {
+		return new ResponseEntity<>(careTakerService.addCareTaker(careTaker).get(), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<CareTaker> updateCareTakerById(@PathVariable("id") long id, @RequestBody @Valid CareTaker careTaker) {
-		try {
-			return new ResponseEntity<>(careTakerService.updateCareTakerById(id, careTaker).get(),
-					HttpStatus.OK);
-		} catch (CareTakerNotFoundException e) {
-			return ResponseEntity.notFound().build();
-		} catch (InvalidCareTakerException e) {
-			return ResponseEntity.badRequest().build();
-		}
+	public ResponseEntity<CareTaker> updateCareTakerById(
+			@PathVariable("id") long id, @RequestBody @Valid CareTaker careTaker)
+			throws CareTakerNotFoundException, InvalidCareTakerException {
+		return new ResponseEntity<>(careTakerService.updateCareTakerById(id, careTaker).get(), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<CareTaker> getCareTakerById(@PathVariable("id") long id) {
-		try {
-			return new ResponseEntity<>(careTakerService.getCareTakerById(id).get()
-					, HttpStatus.OK);
-		} catch (CareTakerNotFoundException e) {
-			return ResponseEntity.notFound().build();
-		}
+	public ResponseEntity<CareTaker> getCareTakerById(@PathVariable("id") long id) throws CareTakerNotFoundException {
+		return new ResponseEntity<>(careTakerService.getCareTakerById(id).get(), HttpStatus.OK);
 	}
 
 	@RequestMapping(path = "{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<String> deleteCareTakerById(@PathVariable("id") long id) {
-		try {
-			careTakerService.deleteCareTakerById(id);
-			return new ResponseEntity<>("Success", HttpStatus.OK);
-		} catch (CareTakerNotFoundException e) {
-			return new ResponseEntity<>("Fail: Care Taker with id " + id + " doesn't exist"
-					, HttpStatus.NOT_FOUND);
-		}
+	public ResponseEntity<String> deleteCareTakerById(@PathVariable("id") long id) throws CareTakerNotFoundException {
+		careTakerService.deleteCareTakerById(id);
+		return new ResponseEntity<>("Success", HttpStatus.OK);
 	}
 
 	@RequestMapping(path = "/{id}/animals", method = RequestMethod.POST)
-	public ResponseEntity<Animal> addNewAnimalToExistingCareTaker(@PathVariable("id") long id,
-																  @RequestBody @Valid Animal animal) {
-		Optional<Animal> addedAnimal;
-		try {
-			addedAnimal = careTakerService.addNewAnimalToExistingCareTaker(id, animal);
-			return new ResponseEntity<>(addedAnimal.get(), HttpStatus.OK);
-		} catch (InvalidAnimalException e) {
-			return ResponseEntity.badRequest().build();
-		} catch (CareTakerNotFoundException e) {
-			return ResponseEntity.notFound().build();
-		}
+	public ResponseEntity<Animal> addNewAnimalToExistingCareTaker(
+			@PathVariable("id") long id, @RequestBody @Valid Animal animal)
+			throws InvalidAnimalException, CareTakerNotFoundException {
+		Optional<Animal> addedAnimal = careTakerService.addNewAnimalToExistingCareTaker(id, animal);
+		return new ResponseEntity<>(addedAnimal.get(), HttpStatus.OK);
 	}
 
 
 	@RequestMapping(value = "/{id}/animals", method = RequestMethod.GET)
-	public ResponseEntity<List<Animal>> getAnimalsInCareByCareTakerId(@PathVariable("id") long id) {
-		Optional<CareTaker> careTakerById;
-		try {
-			careTakerById = careTakerService.getCareTakerById(id);
-			return new ResponseEntity<>(careTakerById.get().getAnimals()
-					, HttpStatus.OK);
-		} catch (CareTakerNotFoundException e) {
-			return ResponseEntity.notFound().build();
-		}
+	public ResponseEntity<List<Animal>> getAnimalsInCareByCareTakerId(@PathVariable("id") long id)
+			throws CareTakerNotFoundException {
+		Optional<CareTaker> careTakerById = careTakerService.getCareTakerById(id);
+		return new ResponseEntity<>(careTakerById.get().getAnimals(), HttpStatus.OK);
 	}
 
 	@RequestMapping(path = "/{careTakerId}/animals/{animalId}", method = RequestMethod.PUT)
-	public ResponseEntity<Animal> addExistingAnimalToExistingCareTaker(@PathVariable("careTakerId") long careTakerId,
-																	   @PathVariable("animalId") long animalId) {
-		try {
-			Optional<Animal> animal = careTakerService.addExistingAnimalToExistingCareTaker(careTakerId, animalId);
-			return new ResponseEntity<>(animal.get(), HttpStatus.OK);
-		} catch (AnimalNotFoundException e) {
-			return ResponseEntity.notFound().build();
-		} catch (CareTakerNotFoundException e) {
-			return ResponseEntity.notFound().build();
-		} catch (AnimalAndCareTakerAlreadyLinked e) {
-			return ResponseEntity.badRequest().build();
-		}
+	public ResponseEntity<Animal> addExistingAnimalToExistingCareTaker(
+			@PathVariable("careTakerId") long careTakerId, @PathVariable("animalId") long animalId)
+			throws AnimalAndCareTakerAlreadyLinked, AnimalNotFoundException, CareTakerNotFoundException {
+		Optional<Animal> animal = careTakerService.addExistingAnimalToExistingCareTaker(careTakerId, animalId);
+		return new ResponseEntity<>(animal.get(), HttpStatus.OK);
 	}
 }
