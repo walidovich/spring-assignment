@@ -24,6 +24,7 @@ public class AnimalWebController {
 	public ModelAndView addAnimalView() {
 		ModelAndView modelAndView = new ModelAndView("addAnimal");
 		modelAndView.addObject("animal", new Animal(1L, "Lion", "The Lion"));
+		System.out.println(">>>>>>>>>>>>>>>>>> GET called");
 		return modelAndView;
 	}
 
@@ -34,6 +35,9 @@ public class AnimalWebController {
 		} catch (InvalidAnimalException e) {
 			e.printStackTrace();
 		}
+		System.out.println(">>>>>>>>>>>>>>>>>> POST called");
+		ModelAndView modelAndView = new ModelAndView("animals");
+		modelAndView.addObject("animals", animalService.getAnimals());
 		return "animals";
 	}
 }

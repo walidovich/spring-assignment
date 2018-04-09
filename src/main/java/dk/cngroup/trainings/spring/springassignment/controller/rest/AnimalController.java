@@ -108,21 +108,17 @@ public class AnimalController {
 	}
 
 	@RequestMapping(path = "/{animalId}/careTakers/{careTakerId}", method = RequestMethod.PUT)
-	public ResponseEntity<String> addExistingCareTakerToExistingAnimal(@PathVariable("animalId") long animalId,
-																	   @PathVariable("careTakerId") long careTakerId) {
+	public ResponseEntity<CareTaker> addExistingCareTakerToExistingAnimal(@PathVariable("animalId") long animalId,
+																		  @PathVariable("careTakerId") long careTakerId) {
 		try {
-			animalService.addExistingCareTakerToExistingAnimal(animalId, careTakerId);
-			return new ResponseEntity<>("Success", HttpStatus.OK);
+			Optional<CareTaker> careTaker = animalService.addExistingCareTakerToExistingAnimal(animalId, careTakerId);
+			return new ResponseEntity<>(careTaker.get(), HttpStatus.OK);
 		} catch (AnimalNotFoundException e) {
-			return new ResponseEntity<>("Fail: Animal with id " + animalId + " doesn't exist"
-					, HttpStatus.NOT_FOUND);
+			return ResponseEntity.notFound().build();
 		} catch (CareTakerNotFoundException e) {
-			return new ResponseEntity<>("Fail: Care Taker with id " + careTakerId + " doesn't exist"
-					, HttpStatus.NOT_FOUND);
+			return ResponseEntity.notFound().build();
 		} catch (AnimalAndCareTakerAlreadyLinked e) {
-			return new ResponseEntity<>("Warning: Care Taker with id " + careTakerId + " and Animal" +
-					" with id " + animalId + " already linked"
-					, HttpStatus.BAD_REQUEST);
+			return ResponseEntity.badRequest().build();
 		}
 	}
 }

@@ -94,7 +94,7 @@ public class AnimalServiceImpl implements AnimalService {
 	}
 
 	@Override
-	public void addExistingCareTakerToExistingAnimal(long animalId, long careTakerId)
+	public Optional<CareTaker> addExistingCareTakerToExistingAnimal(long animalId, long careTakerId)
 			throws AnimalNotFoundException, CareTakerNotFoundException, AnimalAndCareTakerAlreadyLinked {
 		Optional<Animal> animal = this.getAnimalById(animalId);
 		Optional<CareTaker> careTaker = careTakerRepository.findById(careTakerId);
@@ -102,11 +102,12 @@ public class AnimalServiceImpl implements AnimalService {
 		if (!careTaker.isPresent()) {
 			throw new CareTakerNotFoundException();
 		} else {
-			if (!animal.get().getCareTakers().stream().anyMatch(c -> c.getId() == careTakerId)) {
+			if (animal.get().getCareTakers().stream().noneMatch(c -> c.getId() == careTakerId)) {
 				List<Animal> animals = careTaker.get().getAnimals();
 				animals.add(animal.get());
 				careTaker.get().setAnimals(animals);
 				careTakerRepository.save(careTaker.get());
+				return careTaker;
 			} else {
 				throw new AnimalAndCareTakerAlreadyLinked();
 			}

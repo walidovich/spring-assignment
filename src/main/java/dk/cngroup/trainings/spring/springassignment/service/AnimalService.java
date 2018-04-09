@@ -26,6 +26,6 @@ public interface AnimalService {
 	Optional<CareTaker> addNewCareTakerToExistingAnimal(long id, CareTaker careTaker)
 			throws InvalidCareTakerException, AnimalNotFoundException;
 
-	void addExistingCareTakerToExistingAnimal(long animalId, long careTakerId)
+	Optional<CareTaker> addExistingCareTakerToExistingAnimal(long animalId, long careTakerId)
 			throws AnimalNotFoundException, CareTakerNotFoundException, AnimalAndCareTakerAlreadyLinked;
 }
