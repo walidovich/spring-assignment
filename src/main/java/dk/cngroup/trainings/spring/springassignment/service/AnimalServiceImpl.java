@@ -56,18 +56,19 @@ public class AnimalServiceImpl implements AnimalService {
 	@Override
 	public void deleteAnimalById(long id) throws AnimalNotFoundException {
 		this.checkAnimalExistsById(id);
-		for (CareTaker careTaker : this.getAnimalById(id).get().getCareTakers()) {
-			careTaker.getAnimals().remove(this.getAnimalById(id).get());
-			careTakerRepository.save(careTaker);
+		Optional<Animal> theAnimal = this.getAnimalById(id);
+		if (theAnimal.get().getCareTakers() != null) {
+			for (CareTaker careTaker : this.getAnimalById(id).get().getCareTakers()) {
+				careTaker.getAnimals().remove(this.getAnimalById(id).get());
+				careTakerRepository.save(careTaker);
+			}
 		}
 		animalRepository.deleteById(id);
 	}
 
 	@Override
-	public boolean checkAnimalExistsById(long id) throws AnimalNotFoundException {
-		if (animalRepository.existsById(id)) {
-			return true;
-		} else {
+	public void checkAnimalExistsById(long id) throws AnimalNotFoundException {
+		if (!animalRepository.existsById(id)) {
 			throw new AnimalNotFoundException(id);
 		}
 	}

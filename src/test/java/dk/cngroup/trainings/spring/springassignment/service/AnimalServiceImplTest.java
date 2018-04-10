@@ -3,6 +3,7 @@ package dk.cngroup.trainings.spring.springassignment.service;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
+import dk.cngroup.trainings.spring.springassignment.service.exception.AnimalNotFoundException;
 import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
 import liquibase.util.StringUtils;
 import org.hamcrest.Matchers;
@@ -51,7 +52,7 @@ public class AnimalServiceImplTest {
 	}
 
 	@Test
-	public void testGetAnimalByExistingId() {
+	public void testGetAnimalByExistingId() throws AnimalNotFoundException {
 		// Happy path:
 		Mockito.when(animalRepositoryMock.existsById(3L)).thenReturn(true);
 		Mockito.when(animalRepositoryMock.findById(3L))
@@ -65,8 +66,8 @@ public class AnimalServiceImplTest {
 				Matchers.equalTo(3L));
 	}
 
-	@Test
-	public void testGetAnimalByNonExistingId() {
+	@Test(expected = AnimalNotFoundException.class)
+	public void testGetAnimalByNonExistingId() throws AnimalNotFoundException {
 		// Sad path:
 		Mockito.when(animalRepositoryMock.existsById(7L)).thenReturn(false);
 		Mockito.when(animalRepositoryMock.findById(7L))
@@ -139,25 +140,27 @@ public class AnimalServiceImplTest {
 	}
 
 	@Test
-	public void deleteAnimalByExistingId() {
+	public void deleteAnimalByExistingId() throws AnimalNotFoundException {
 		//Happy path:
 		long id = 2L;
 		Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(true);
+		Mockito.when(animalRepositoryMock.findById(id))
+				.thenReturn(Optional.ofNullable(animals.get(1)));
 
-		Assert.assertTrue(animalService.deleteAnimalById(id));
+		animalService.deleteAnimalById(id);
 	}
 
-	@Test
-	public void deleteAnimalByNonExistingId() {
+	@Test(expected = AnimalNotFoundException.class)
+	public void deleteAnimalByNonExistingId() throws AnimalNotFoundException {
 		//Sad path:
 		long id = 10L; // Non existing id
 		Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(false);
 
-		Assert.assertFalse(animalService.deleteAnimalById(id));
+		animalService.deleteAnimalById(id);
 	}
 
 	@Test
-	public void testUpdateAnimalByExistingId() throws InvalidAnimalException {
+	public void testUpdateAnimalByExistingId() throws InvalidAnimalException, AnimalNotFoundException {
 		// Happy path:
 		long id = 3L;
 		Animal oldAnimal = animals.get(2);
@@ -172,15 +175,14 @@ public class AnimalServiceImplTest {
 				.thenReturn(updatedAnimal);
 
 		updatedAnimal.setId(100L);
-		Optional<Animal> animal =
-				animalService.updateAnimalById(id, updatedAnimal);
+		Optional<Animal> animal = animalService.updateAnimalById(id, updatedAnimal);
 
 		Assert.assertNotNull(animal);
 		Assert.assertEquals("Falcon", animal.get().getName());
 	}
 
-	@Test
-	public void testUpdateAnimalByNonExistingId() throws InvalidAnimalException {
+	@Test(expected = AnimalNotFoundException.class)
+	public void testUpdateAnimalByNonExistingId() throws InvalidAnimalException, AnimalNotFoundException {
 		// Sad path: Updating an animal with non existing id
 		long id = 10L; // non existing
 		Animal updatedAnimal = new Animal(100L, "Falcon",

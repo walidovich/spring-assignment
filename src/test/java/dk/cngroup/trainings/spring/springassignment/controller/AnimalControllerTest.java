@@ -3,6 +3,7 @@ package dk.cngroup.trainings.spring.springassignment.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
+import dk.cngroup.trainings.spring.springassignment.service.exception.AnimalNotFoundException;
 import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
 import liquibase.util.StringUtils;
 import org.hamcrest.Matchers;
@@ -28,6 +29,7 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -128,9 +130,7 @@ public class AnimalControllerTest {
 	@Test
 	public void testDeleteAnimalByExistingId() throws Exception {
 		// Happy path
-		// Deleting an existing animal id should return true
-		Mockito.when(animalService.deleteAnimalById(3L))
-				.thenReturn(true);
+		Mockito.doNothing().when(animalService).deleteAnimalById(anyLong());
 
 		MvcResult mvcResult =
 				mockMvc.perform(delete("/animals/3")
@@ -148,19 +148,15 @@ public class AnimalControllerTest {
 	public void testDeleteAnimalByNonExistingId() throws Exception {
 		// Sad path
 		// Deleting a non existing animal id should return false
-		Mockito.when(animalService.deleteAnimalById(19L))
-				.thenReturn(false);
 
-		MvcResult mvcResult =
-				mockMvc.perform(delete("/animals/19")
-						.content("")
-						.contentType(MediaType.APPLICATION_JSON))
-						.andExpect(status().isNotFound())
-						.andReturn();
+		Mockito.doThrow(AnimalNotFoundException.class)
+				.when(animalService).deleteAnimalById(anyLong());
 
-		Assert.assertTrue(mvcResult.getResponse()
-				.getContentAsString().toLowerCase()
-				.contains("fail"));
+		mockMvc.perform(delete("/animals/19")
+				.content("")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound())
+				.andReturn();
 	}
 
 	@Test
@@ -194,14 +190,11 @@ public class AnimalControllerTest {
 		Animal updatedLion = new Animal(8L, "Atlas Lion",
 				"Morocco's king of the mountains");
 		updatedLion.setId(animals.get(4).getId());
-
-		Mockito.when(animalService.getAnimalById(any(Long.class)))
-				.thenReturn(Optional.empty());
-		Mockito.when(animalService.updateAnimalById(any(Long.class),
-				any(Animal.class))).thenReturn(Optional.empty());
-
 		ObjectMapper objectMapper = new ObjectMapper();
 		String updatedLionString = objectMapper.writeValueAsString(updatedLion);
+
+		Mockito.doThrow(AnimalNotFoundException.class)
+				.when(animalService).updateAnimalById(anyLong(), any(Animal.class));
 
 		mockMvc.perform(put("/animals/8")
 				.content(updatedLionString)
@@ -239,8 +232,8 @@ public class AnimalControllerTest {
 		// Sad path:
 		// Getting an animal by a non existing id should return Optional.empty()
 
-		Mockito.when(animalService.getAnimalById(any(Long.class)))
-				.thenReturn(Optional.empty());
+		Mockito.doThrow(AnimalNotFoundException.class)
+				.when(animalService).getAnimalById(anyLong());
 
 		mockMvc.perform(get("/animals/22")
 				.contentType(MediaType.APPLICATION_JSON))

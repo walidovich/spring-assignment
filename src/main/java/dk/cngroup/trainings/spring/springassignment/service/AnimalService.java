@@ -18,7 +18,7 @@ public interface AnimalService {
 
 	void deleteAnimalById(long id) throws AnimalNotFoundException;
 
-	boolean checkAnimalExistsById(long id) throws AnimalNotFoundException;
+	void checkAnimalExistsById(long id) throws AnimalNotFoundException;
 
 	Optional<Animal> updateAnimalById(long id, Animal animal)
 			throws InvalidAnimalException, AnimalNotFoundException;

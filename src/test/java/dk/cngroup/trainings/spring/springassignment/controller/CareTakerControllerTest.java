@@ -5,6 +5,7 @@ import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
 import dk.cngroup.trainings.spring.springassignment.service.CareTakerService;
+import dk.cngroup.trainings.spring.springassignment.service.exception.CareTakerNotFoundException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -117,8 +119,8 @@ public class CareTakerControllerTest {
 	@Test
 	public void testGetCareTakerByNonExistingId() throws Exception {
 		// Sad path
-		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
-				.thenReturn(Optional.empty());
+		Mockito.doThrow(CareTakerNotFoundException.class)
+				.when(careTakerService).getCareTakerById(anyLong());
 
 		mockMvc.perform(get("/careTakers/10"))
 				.andExpect(status().isNotFound());
@@ -156,11 +158,8 @@ public class CareTakerControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String updatedJohnString = objectMapper.writeValueAsString(updatedJohn);
 
-		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
-				.thenReturn(Optional.empty());
-		Mockito.when(careTakerService.updateCareTakerById(any(Long.class),
-				any(CareTaker.class)))
-				.thenReturn(Optional.empty());
+		Mockito.doThrow(CareTakerNotFoundException.class)
+				.when(careTakerService).updateCareTakerById(any(Long.class), any(CareTaker.class));
 
 		mockMvc.perform(put("/careTakers/9")
 				.content(updatedJohnString)
@@ -175,8 +174,7 @@ public class CareTakerControllerTest {
 	@Test
 	public void testDeleteCareTakerByExistingId() throws Exception {
 		// Happy path
-		Mockito.when(careTakerService.deleteCareTakerById(3L))
-				.thenReturn(true);
+		Mockito.doNothing().when(careTakerService).deleteCareTakerById(anyLong());
 
 		MvcResult mvcResult = mockMvc.perform(delete("/careTakers/3"))
 				.andExpect(status().isOk())
@@ -190,16 +188,12 @@ public class CareTakerControllerTest {
 	@Test
 	public void testDeleteCareTakerByNonExistingId() throws Exception {
 		// Happy path
-		Mockito.when(careTakerService.deleteCareTakerById(3L))
-				.thenReturn(false);
+		Mockito.doThrow(CareTakerNotFoundException.class)
+				.when(careTakerService).deleteCareTakerById(anyLong());
 
-		MvcResult mvcResult = mockMvc.perform(delete("/careTakers/3"))
+		mockMvc.perform(delete("/careTakers/3"))
 				.andExpect(status().isNotFound())
 				.andReturn();
-
-		Assert.assertTrue(mvcResult.getResponse()
-				.getContentAsString().toLowerCase()
-				.contains("fail"));
 	}
 
 	@Test
