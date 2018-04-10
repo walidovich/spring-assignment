@@ -1,7 +1,7 @@
 package dk.cngroup.trainings.spring.springassignment.service.helper;
 
+import dk.cngroup.trainings.spring.springassignment.exception.InvalidAnimalException;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
-import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
 
 public class AnimalValidationService {
 

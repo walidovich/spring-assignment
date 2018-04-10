@@ -1,4 +1,4 @@
-package dk.cngroup.trainings.spring.springassignment.service.exception;
+package dk.cngroup.trainings.spring.springassignment.exception;
 
 public class AnimalAndCareTakerAlreadyLinked extends Exception {
 	public AnimalAndCareTakerAlreadyLinked(long animalId, long careTakerId) {

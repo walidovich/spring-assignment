@@ -10,7 +10,7 @@ import java.util.List;
 public class CareTaker {
 	public final static int NAME_MINIMUM_SIZE = 1;
 	@Id
-	private long id;
+	private Long id;
 	@NotNull
 	@Size(min = NAME_MINIMUM_SIZE)
 	private String name;
@@ -24,7 +24,7 @@ public class CareTaker {
 	public CareTaker() {
 	}
 
-	public CareTaker(long id, String name) {
+	public CareTaker(Long id, String name) {
 		this.id = id;
 		this.name = name.trim();
 	}
@@ -41,11 +41,11 @@ public class CareTaker {
 		this.animals = animals;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

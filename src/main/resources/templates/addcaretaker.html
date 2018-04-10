@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Care Taker Form</title>
+</head>
+<body>
+<h2>Animal Form:</h2>
+<form action="#" th:action="@{/web/careTakers}" th:object="${careTaker}" method="post">
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+        <tr>
+            <td>Action:</td>
+            <td><input type="submit" value="Submit"/><input type="reset" value="Reset"/></td>
+        </tr>
+    </table>
+</form>
+</form>
+</body>
+</html>

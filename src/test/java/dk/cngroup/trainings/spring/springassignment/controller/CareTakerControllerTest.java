@@ -1,11 +1,11 @@
 package dk.cngroup.trainings.spring.springassignment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.cngroup.trainings.spring.springassignment.exception.CareTakerNotFoundException;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
 import dk.cngroup.trainings.spring.springassignment.service.CareTakerService;
-import dk.cngroup.trainings.spring.springassignment.service.exception.CareTakerNotFoundException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -81,7 +80,7 @@ public class CareTakerControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String martinString = objectMapper.writeValueAsString(martin);
 
-		Mockito.when(careTakerService.addCareTaker(any(CareTaker.class))).thenReturn(java.util.Optional.ofNullable(martin));
+		Mockito.when(careTakerService.addCareTaker(any(CareTaker.class))).thenReturn(martin);
 
 		mockMvc.perform(post("/careTakers")
 				.content(martinString)
@@ -109,7 +108,7 @@ public class CareTakerControllerTest {
 		CareTaker martin = new CareTaker(1L, "Martin Dobias");
 
 		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
-				.thenReturn(Optional.ofNullable(martin));
+				.thenReturn(martin);
 
 		mockMvc.perform(get("/careTakers/10"))
 				.andExpect(status().isOk())
@@ -136,11 +135,11 @@ public class CareTakerControllerTest {
 		String updatedJohnString = objectMapper.writeValueAsString(updatedJohn);
 
 		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
-				.thenReturn(Optional.ofNullable(careTakers.get(3)));
+				.thenReturn(careTakers.get(3));
 		Mockito.when(careTakerService.addCareTaker(any(CareTaker.class)))
-				.thenReturn(Optional.ofNullable(updatedJohn));
+				.thenReturn(updatedJohn);
 		Mockito.when(careTakerService.updateCareTakerById(any(Long.class), any(CareTaker.class)))
-				.thenReturn(Optional.ofNullable(updatedJohn));
+				.thenReturn(updatedJohn);
 
 		mockMvc.perform(put("/careTakers/4")
 				.content(updatedJohnString)
@@ -205,11 +204,11 @@ public class CareTakerControllerTest {
 		String monkeyString = objectMapper.writeValueAsString(monkey);
 
 		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
-				.thenReturn(Optional.ofNullable(careTakers.get(1)));
+				.thenReturn(careTakers.get(1));
 		Mockito.when(animalService.addAnimal(any(Animal.class)))
-				.thenReturn(Optional.ofNullable(monkey));
+				.thenReturn(monkey);
 		Mockito.when(careTakerService.addNewAnimalToExistingCareTaker(any(Long.class),
-				any(Animal.class))).thenReturn(Optional.ofNullable(monkey));
+				any(Animal.class))).thenReturn(monkey);
 
 		mockMvc.perform(post("/careTakers/2/animals")
 				.contentType(MediaType.APPLICATION_JSON)

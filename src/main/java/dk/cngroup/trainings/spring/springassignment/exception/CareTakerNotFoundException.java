@@ -1,4 +1,4 @@
-package dk.cngroup.trainings.spring.springassignment.service.exception;
+package dk.cngroup.trainings.spring.springassignment.exception;
 
 public class CareTakerNotFoundException extends Exception {
 

@@ -1,10 +1,10 @@
 package dk.cngroup.trainings.spring.springassignment.service;
 
+import dk.cngroup.trainings.spring.springassignment.exception.AnimalNotFoundException;
+import dk.cngroup.trainings.spring.springassignment.exception.InvalidAnimalException;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
-import dk.cngroup.trainings.spring.springassignment.service.exception.AnimalNotFoundException;
-import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
 import liquibase.util.StringUtils;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -58,11 +58,11 @@ public class AnimalServiceImplTest {
 		Mockito.when(animalRepositoryMock.findById(3L))
 				.thenReturn(Optional.ofNullable(animals.get(2)));
 
-		Optional<Animal> animal = animalService.getAnimalById(3L);
+		Animal animal = animalService.getAnimalById(3L);
 
-		Assert.assertTrue(animal.isPresent());
-		Assert.assertEquals("Eagle", animal.get().getName());
-		Assert.assertThat(animal.get().getId(),
+		Assert.assertNotNull(animal);
+		Assert.assertEquals("Eagle", animal.getName());
+		Assert.assertThat(animal.getId(),
 				Matchers.equalTo(3L));
 	}
 
@@ -73,7 +73,7 @@ public class AnimalServiceImplTest {
 		Mockito.when(animalRepositoryMock.findById(7L))
 				.thenReturn(null);
 
-		Optional<Animal> animal2 = animalService.getAnimalById(7L);
+		Animal animal2 = animalService.getAnimalById(7L);
 
 		Assert.assertNull(animal2);
 	}
@@ -108,9 +108,9 @@ public class AnimalServiceImplTest {
 
 		Mockito.when(animalRepositoryMock.save(dauphin)).thenReturn(dauphin);
 
-		Assert.assertTrue(animalService.addAnimal(dauphin).isPresent());
+		Assert.assertNotNull(animalService.addAnimal(dauphin));
 		Assert.assertEquals("Dauphin",
-				animalService.addAnimal(dauphin).get().getName());
+				animalService.addAnimal(dauphin).getName());
 	}
 
 	@Test(expected = InvalidAnimalException.class)
@@ -175,10 +175,10 @@ public class AnimalServiceImplTest {
 				.thenReturn(updatedAnimal);
 
 		updatedAnimal.setId(100L);
-		Optional<Animal> animal = animalService.updateAnimalById(id, updatedAnimal);
+		Animal animal = animalService.updateAnimalById(id, updatedAnimal);
 
 		Assert.assertNotNull(animal);
-		Assert.assertEquals("Falcon", animal.get().getName());
+		Assert.assertEquals("Falcon", animal.getName());
 	}
 
 	@Test(expected = AnimalNotFoundException.class)
@@ -191,10 +191,9 @@ public class AnimalServiceImplTest {
 		Mockito.when(animalRepositoryMock.findById(id))
 				.thenReturn(Optional.empty());
 
-		Optional<Animal> animal2 =
-				animalService.updateAnimalById(id, updatedAnimal);
+		Animal animal2 = animalService.updateAnimalById(id, updatedAnimal);
 
-		Assert.assertFalse(animal2.isPresent());
+		Assert.assertNull(animal2);
 	}
 
     /*

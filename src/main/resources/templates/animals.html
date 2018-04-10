@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <html>
 <html lang="en">
 <head>
@@ -21,7 +21,7 @@
             <td th:text="${animal.name}">Tiger</td>
             <td th:text="${animal.description}">Bengali predator</td>
             <td>
-                <th:block th:if="${animal.careTakers.size()!=0}">
+                <th:block th:if="${animal.careTakers!=null}">
                     <th:block th:each="careTaker : ${animal.careTakers}">
                         <div th:object="${careTaker}">
                             Id: <span th:text="*{id}">13</span>,
@@ -33,11 +33,10 @@
         </tr>
     </th:block>
 </table>
-<p></p>
 <hr>
 <p></p>
-<a href="/web/animals">Add Animal</a>
+<a href="#" th:href="@{/web/animals}">Add Animal</a>
 <p></p>
-<a href="/">Back to the Zoo home page</a>
+<a href="#" th:href="@{/index.html}">Back to home page</a>
 </body>
 </html>

@@ -1,10 +1,10 @@
 package dk.cngroup.trainings.spring.springassignment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.cngroup.trainings.spring.springassignment.exception.AnimalNotFoundException;
+import dk.cngroup.trainings.spring.springassignment.exception.InvalidAnimalException;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
-import dk.cngroup.trainings.spring.springassignment.service.exception.AnimalNotFoundException;
-import dk.cngroup.trainings.spring.springassignment.service.exception.InvalidAnimalException;
 import liquibase.util.StringUtils;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -24,7 +24,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -67,7 +66,7 @@ public class AnimalControllerTest {
 
 		// Adding a valid animal should return the animal itself
 		Mockito.when(animalService.addAnimal(any(Animal.class)))
-				.thenReturn(java.util.Optional.ofNullable(shark));
+				.thenReturn(shark);
 
 		mockMvc.perform(post("/animals")
 				.content(sharkString)
@@ -167,11 +166,11 @@ public class AnimalControllerTest {
 		updatedLion.setId(animals.get(4).getId());
 
 		Mockito.when(animalService.getAnimalById(any(Long.class)))
-				.thenReturn(Optional.ofNullable(animals.get(4)));
+				.thenReturn(animals.get(4));
 		Mockito.when(animalService.addAnimal(any(Animal.class)))
-				.thenReturn(java.util.Optional.ofNullable(updatedLion));
+				.thenReturn(updatedLion);
 		Mockito.when(animalService.updateAnimalById(any(Long.class),
-				any(Animal.class))).thenReturn(java.util.Optional.ofNullable(updatedLion));
+				any(Animal.class))).thenReturn(updatedLion);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String updatedLionString = objectMapper.writeValueAsString(updatedLion);
@@ -212,7 +211,7 @@ public class AnimalControllerTest {
 		// Happy path:
 		// Getting an existing animal by id should return that animal
 		Mockito.when(animalService.getAnimalById(any(Long.class)))
-				.thenReturn(java.util.Optional.ofNullable(animals.get(3)));
+				.thenReturn(animals.get(3));
 
 		Animal searchedAnimal = animals.get(3);
 		ObjectMapper objectMapper = new ObjectMapper();

@@ -1,6 +1,6 @@
-package dk.cngroup.trainings.spring.springassignment.service.advice;
+package dk.cngroup.trainings.spring.springassignment.controller.advice;
 
-import dk.cngroup.trainings.spring.springassignment.service.exception.*;
+import dk.cngroup.trainings.spring.springassignment.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
