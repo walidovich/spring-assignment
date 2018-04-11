@@ -37,6 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 public class AnimalControllerTest {
 
+	private final String path = "/api/animals";
+
 	MockMvc mockMvc;
 	List<Animal> animals;
 	@Autowired
@@ -68,7 +70,7 @@ public class AnimalControllerTest {
 		Mockito.when(animalService.addAnimal(any(Animal.class)))
 				.thenReturn(shark);
 
-		mockMvc.perform(post("/animals")
+		mockMvc.perform(post(path)
 				.content(sharkString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -81,7 +83,7 @@ public class AnimalControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String sharkString = objectMapper.writeValueAsString(shark);
 
-		mockMvc.perform(post("/animals")
+		mockMvc.perform(post(path)
 				.content(sharkString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
@@ -94,7 +96,7 @@ public class AnimalControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String sharkString = objectMapper.writeValueAsString(shark);
 
-		mockMvc.perform(post("/animals")
+		mockMvc.perform(post(path)
 				.content(sharkString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
@@ -109,7 +111,7 @@ public class AnimalControllerTest {
 
 		Mockito.when(animalService.addAnimal(any(Animal.class))).thenThrow(InvalidAnimalException.class);
 
-		mockMvc.perform(post("/animals")
+		mockMvc.perform(post(path)
 				.content(penguinString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
@@ -120,7 +122,7 @@ public class AnimalControllerTest {
 		// Getting all animals should return list of animals empty or not
 		Mockito.when(animalService.getAnimals())
 				.thenReturn(animals);
-		mockMvc.perform(get("/animals"))
+		mockMvc.perform(get(path))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(5)))
 				.andExpect(jsonPath("$[2].name", is("Elephant")));
@@ -132,7 +134,7 @@ public class AnimalControllerTest {
 		Mockito.doNothing().when(animalService).deleteAnimalById(anyLong());
 
 		MvcResult mvcResult =
-				mockMvc.perform(delete("/animals/3")
+				mockMvc.perform(delete(path + "/3")
 						.content("")
 						.contentType(MediaType.APPLICATION_JSON))
 						.andExpect(status().isOk())
@@ -151,7 +153,7 @@ public class AnimalControllerTest {
 		Mockito.doThrow(AnimalNotFoundException.class)
 				.when(animalService).deleteAnimalById(anyLong());
 
-		mockMvc.perform(delete("/animals/19")
+		mockMvc.perform(delete(path + "/19")
 				.content("")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
@@ -175,7 +177,7 @@ public class AnimalControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String updatedLionString = objectMapper.writeValueAsString(updatedLion);
 
-		mockMvc.perform(put("/animals/5")
+		mockMvc.perform(put(path + "/5")
 				.content(updatedLionString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -195,7 +197,7 @@ public class AnimalControllerTest {
 		Mockito.doThrow(AnimalNotFoundException.class)
 				.when(animalService).updateAnimalById(anyLong(), any(Animal.class));
 
-		mockMvc.perform(put("/animals/8")
+		mockMvc.perform(put(path + "/8")
 				.content(updatedLionString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
@@ -217,7 +219,7 @@ public class AnimalControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String searchedAnimalString = objectMapper.writeValueAsString(searchedAnimal);
 
-		mockMvc.perform(get("/animals/3")
+		mockMvc.perform(get(path + "/3")
 				.content(searchedAnimalString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -234,7 +236,7 @@ public class AnimalControllerTest {
 		Mockito.doThrow(AnimalNotFoundException.class)
 				.when(animalService).getAnimalById(anyLong());
 
-		mockMvc.perform(get("/animals/22")
+		mockMvc.perform(get(path + "/22")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 	}
@@ -247,7 +249,7 @@ public class AnimalControllerTest {
 		Mockito.when(animalService.getAnimalsByName("Lion"))
 				.thenReturn(searchedAnimals);
 
-		mockMvc.perform(get("/animals/name?name=Lion"))
+		mockMvc.perform(get(path + "/name?name=Lion"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(2)))
 				.andExpect(jsonPath("$[1].description",
@@ -261,7 +263,7 @@ public class AnimalControllerTest {
 		Mockito.when(animalService.getAnimalsByName("Dog"))
 				.thenReturn(Arrays.asList());
 
-		mockMvc.perform(get("/animals/search/Dog"))
+		mockMvc.perform(get(path + "/name?name=Dog"))
 				.andExpect(status().isNotFound());
 	}
 }

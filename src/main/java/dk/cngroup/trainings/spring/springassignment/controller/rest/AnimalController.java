@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/animals")
+@RequestMapping("/api/animals")
 public class AnimalController {
 
 	private AnimalService animalService;

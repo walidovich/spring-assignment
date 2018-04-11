@@ -16,9 +16,7 @@
     </thead>
     <th:block th:each="careTaker : ${careTakers}">
         <tr>
-            <td>
-                <a href="#" th:href="@{/web/careTakers/${careTaker.id}}" th:text="${careTaker.id}">12</a>
-            </td>
+            <td th:text="${careTaker.id}">12</td>
             <td th:text="${careTaker.name}">Adam</td>
             <td>
                 <th:block th:if="${careTaker.animals!=null}">

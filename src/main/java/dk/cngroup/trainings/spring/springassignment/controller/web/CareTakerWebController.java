@@ -27,6 +27,7 @@ public class CareTakerWebController {
 		ModelAndView modelAndView = new ModelAndView("addcaretaker");
 		modelAndView.addObject("careTakers", careTakerService.getCareTakers());
 		modelAndView.addObject("careTaker", new CareTaker());
+		System.out.print(">>>>>> My diagnostic: GET called.");
 		return modelAndView;
 	}
 

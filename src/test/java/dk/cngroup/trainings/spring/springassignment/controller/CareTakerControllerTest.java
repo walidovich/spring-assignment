@@ -35,6 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 public class CareTakerControllerTest {
 
+	private final String path = "/api/careTakers";
+
 	MockMvc mockMvc;
 	List<CareTaker> careTakers;
 	List<Animal> animals;
@@ -67,7 +69,7 @@ public class CareTakerControllerTest {
 		// Always happy
 		Mockito.when(careTakerService.getCareTakers()).thenReturn(careTakers);
 
-		mockMvc.perform(get("/careTakers"))
+		mockMvc.perform(get(path))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(4)))
 				.andExpect(jsonPath("$[1].name", startsWith("Walid")));
@@ -82,7 +84,7 @@ public class CareTakerControllerTest {
 
 		Mockito.when(careTakerService.addCareTaker(any(CareTaker.class))).thenReturn(martin);
 
-		mockMvc.perform(post("/careTakers")
+		mockMvc.perform(post(path)
 				.content(martinString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -96,7 +98,7 @@ public class CareTakerControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String martinString = objectMapper.writeValueAsString(martin);
 
-		mockMvc.perform(post("/careTakers")
+		mockMvc.perform(post(path)
 				.content(martinString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
@@ -110,7 +112,7 @@ public class CareTakerControllerTest {
 		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
 				.thenReturn(martin);
 
-		mockMvc.perform(get("/careTakers/10"))
+		mockMvc.perform(get(path + "/10"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.name", startsWith("Martin")));
 	}
@@ -121,7 +123,7 @@ public class CareTakerControllerTest {
 		Mockito.doThrow(CareTakerNotFoundException.class)
 				.when(careTakerService).getCareTakerById(anyLong());
 
-		mockMvc.perform(get("/careTakers/10"))
+		mockMvc.perform(get(path + "/10"))
 				.andExpect(status().isNotFound());
 	}
 
@@ -141,7 +143,7 @@ public class CareTakerControllerTest {
 		Mockito.when(careTakerService.updateCareTakerById(any(Long.class), any(CareTaker.class)))
 				.thenReturn(updatedJohn);
 
-		mockMvc.perform(put("/careTakers/4")
+		mockMvc.perform(put(path + "/4")
 				.content(updatedJohnString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -160,7 +162,7 @@ public class CareTakerControllerTest {
 		Mockito.doThrow(CareTakerNotFoundException.class)
 				.when(careTakerService).updateCareTakerById(any(Long.class), any(CareTaker.class));
 
-		mockMvc.perform(put("/careTakers/9")
+		mockMvc.perform(put(path + "/9")
 				.content(updatedJohnString)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
@@ -175,7 +177,7 @@ public class CareTakerControllerTest {
 		// Happy path
 		Mockito.doNothing().when(careTakerService).deleteCareTakerById(anyLong());
 
-		MvcResult mvcResult = mockMvc.perform(delete("/careTakers/3"))
+		MvcResult mvcResult = mockMvc.perform(delete(path + "/3"))
 				.andExpect(status().isOk())
 				.andReturn();
 
@@ -190,7 +192,7 @@ public class CareTakerControllerTest {
 		Mockito.doThrow(CareTakerNotFoundException.class)
 				.when(careTakerService).deleteCareTakerById(anyLong());
 
-		mockMvc.perform(delete("/careTakers/3"))
+		mockMvc.perform(delete(path + "/3"))
 				.andExpect(status().isNotFound())
 				.andReturn();
 	}
@@ -210,7 +212,7 @@ public class CareTakerControllerTest {
 		Mockito.when(careTakerService.addNewAnimalToExistingCareTaker(any(Long.class),
 				any(Animal.class))).thenReturn(monkey);
 
-		mockMvc.perform(post("/careTakers/2/animals")
+		mockMvc.perform(post(path + "/2/animals")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(monkeyString))
 				.andExpect(status().isOk())

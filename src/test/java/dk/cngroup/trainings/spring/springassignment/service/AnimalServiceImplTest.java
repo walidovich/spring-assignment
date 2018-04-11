@@ -69,9 +69,8 @@ public class AnimalServiceImplTest {
 	@Test(expected = AnimalNotFoundException.class)
 	public void testGetAnimalByNonExistingId() throws AnimalNotFoundException {
 		// Sad path:
-		Mockito.when(animalRepositoryMock.existsById(7L)).thenReturn(false);
 		Mockito.when(animalRepositoryMock.findById(7L))
-				.thenReturn(null);
+				.thenReturn(Optional.empty());
 
 		Animal animal2 = animalService.getAnimalById(7L);
 

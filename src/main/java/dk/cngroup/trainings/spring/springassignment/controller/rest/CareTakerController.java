@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/careTakers")
+@RequestMapping("/api/careTakers")
 public class CareTakerController {
 
 	private CareTakerService careTakerService;
