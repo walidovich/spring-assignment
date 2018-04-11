@@ -11,6 +11,7 @@ import dk.cngroup.trainings.spring.springassignment.service.helper.IdGenerator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CareTakerServiceImpl implements CareTakerService {
@@ -30,8 +31,9 @@ public class CareTakerServiceImpl implements CareTakerService {
 
 	@Override
 	public CareTaker getCareTakerById(long id) throws CareTakerNotFoundException {
-		if (careTakerRepository.existsById(id)) {
-			return careTakerRepository.findById(id).get();
+		Optional<CareTaker> careTaker = careTakerRepository.findById(id);
+		if (careTaker.isPresent()) {
+			return careTaker.get();
 		} else {
 			throw new CareTakerNotFoundException(id);
 		}

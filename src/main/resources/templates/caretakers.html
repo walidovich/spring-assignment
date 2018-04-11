@@ -16,14 +16,16 @@
     </thead>
     <th:block th:each="careTaker : ${careTakers}">
         <tr>
-            <td th:text="${careTaker.id}">12</td>
+            <td>
+                <a href="#" th:href="@{/web/careTakers/${careTaker.id}}" th:text="${careTaker.id}">12</a>
+            </td>
             <td th:text="${careTaker.name}">Adam</td>
             <td>
                 <th:block th:if="${careTaker.animals!=null}">
                     <th:block th:each="animal : ${careTaker.animals}">
                         <div th:object="${animal}">
                             Id: <span th:text="*{id}">13</span>,
-                            Name: <span th:text="*{name}">Tiger</span>.
+                            Name: <span th:text="*{name}">Tiger</span>
                         </div>
                     </th:block>
                 </th:block>

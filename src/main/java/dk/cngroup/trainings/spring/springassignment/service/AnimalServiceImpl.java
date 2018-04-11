@@ -33,8 +33,9 @@ public class AnimalServiceImpl implements AnimalService {
 
 	@Override
 	public Animal getAnimalById(long id) throws AnimalNotFoundException {
-		if (animalRepository.existsById(id)) {
-			return animalRepository.findById(id).get();
+		Optional<Animal> animal = animalRepository.findById(id);
+		if (animal.isPresent()) {
+			return animal.get();
 		} else {
 			throw new AnimalNotFoundException(id);
 		}
