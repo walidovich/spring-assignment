@@ -7,13 +7,16 @@
     <title>Animals List</title>
 </head>
 <body>
+
+
 <h2>Animals List:</h2>
 <table border="1">
-    <thead>
+    <thead align="center">
     <td>Id</td>
     <td>Name</td>
     <td>Description</td>
     <td>Care Takers</td>
+    <td colspan="2">Actions</td>
     </thead>
     <th:block th:each="animal : ${animals}">
         <tr>
@@ -30,13 +33,19 @@
                     </th:block>
                 </th:block>
             </td>
+            <td>
+                <a href="#" th:href="@{'/web/animal/update/'+${animal.id}}">Update</a>
+            </td>
+            <td>
+                <a href="#" th:href="@{'/web/animal/delete/'+${animal.id}}">Delete</a>
+            </td>
         </tr>
     </th:block>
 </table>
 <hr>
 <p></p>
-<a href="#" th:href="@{/web/animals}">Add Animal</a>
+<a href="#" th:href="@{/web/animal/add}">Add Animal</a>
 <p></p>
-<a href="#" th:href="@{/index.html}">Back to home page</a>
+<a href="#" th:href="@{/}">Back to home page</a>
 </body>
 </html>
