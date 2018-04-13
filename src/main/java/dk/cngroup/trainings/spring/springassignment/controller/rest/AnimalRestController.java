@@ -13,11 +13,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/animals")
-public class AnimalController {
+public class AnimalRestController {
 
-	private AnimalService animalService;
+	private final AnimalService animalService;
 
-	public AnimalController(AnimalService animalService) {
+	public AnimalRestController(AnimalService animalService) {
 		this.animalService = animalService;
 	}
 

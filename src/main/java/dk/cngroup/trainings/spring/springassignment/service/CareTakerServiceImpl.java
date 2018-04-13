@@ -16,8 +16,8 @@ import java.util.Optional;
 @Service
 public class CareTakerServiceImpl implements CareTakerService {
 
-	private CareTakerRepository careTakerRepository;
-	private AnimalService animalService;
+	private final CareTakerRepository careTakerRepository;
+	private final AnimalService animalService;
 
 	public CareTakerServiceImpl(CareTakerRepository careTakerRepository, AnimalService animalService) {
 		this.careTakerRepository = careTakerRepository;

@@ -3,11 +3,11 @@ package dk.cngroup.trainings.spring.springassignment.controller.advice;
 import dk.cngroup.trainings.spring.springassignment.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 
-@ControllerAdvice(annotations = RestController.class)
+@ControllerAdvice(annotations = Controller.class)
 public class RESTControllerException {
 
 	@ExceptionHandler(value = AnimalNotFoundException.class)

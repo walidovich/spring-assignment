@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/web/careTaker")
 public class CareTakerWebController {
 
-	private CareTakerService careTakerService;
+	private final CareTakerService careTakerService;
 
 	public CareTakerWebController(CareTakerService careTakerService) {
 		this.careTakerService = careTakerService;
@@ -22,9 +22,17 @@ public class CareTakerWebController {
 
 	@GetMapping("/list")
 	public ModelAndView list() {
-		ModelAndView modelAndView = new ModelAndView("careTaker/careTaker_page");
+		ModelAndView modelAndView = new ModelAndView("careTaker/careTaker_list");
 		List<CareTaker> careTakers = careTakerService.getCareTakers();
 		modelAndView.addObject("careTakers", careTakers);
+		return modelAndView;
+	}
+
+	@GetMapping("/list/{id}")
+	public ModelAndView careTakerDetails(@PathVariable("id") Long id) throws CareTakerNotFoundException {
+		ModelAndView modelAndView = new ModelAndView("careTaker/careTaker_details");
+		CareTaker careTaker = careTakerService.getCareTakerById(id);
+		modelAndView.addObject("careTaker", careTaker);
 		return modelAndView;
 	}
 
@@ -47,7 +55,7 @@ public class CareTakerWebController {
 	@PostMapping("/save")
 	public ModelAndView save(@ModelAttribute("careTaker") CareTaker careTaker)
 			throws CareTakerNotFoundException, InvalidCareTakerException {
-		if (careTaker != null && careTaker.getId() != null) {
+		if (careTaker.getId() != null) {
 			// update
 			careTakerService.updateCareTakerById(careTaker.getId(), careTaker);
 		} else {

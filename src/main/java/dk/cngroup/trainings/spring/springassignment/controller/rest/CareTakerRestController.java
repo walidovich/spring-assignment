@@ -13,11 +13,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/careTakers")
-public class CareTakerController {
+public class CareTakerRestController {
 
-	private CareTakerService careTakerService;
+	private final CareTakerService careTakerService;
 
-	public CareTakerController(CareTakerService careTakerService) {
+	public CareTakerRestController(CareTakerService careTakerService) {
 		this.careTakerService = careTakerService;
 	}
 

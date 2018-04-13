@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Care Takers Details</title>
+</head>
+<body>
+<h2>Care Takers Details:</h2>
+<table border="1">
+    <thead align="center">
+    <td>Id</td>
+    <td>Name</td>
+    <td>Animals</td>
+    </thead>
+    <tr>
+        <td th:text="${careTaker.id}">12</td>
+        <td th:text="${careTaker.name}">Adam</td>
+        <td>
+            <th:block th:if="${careTaker.animals!=null}">
+                <th:block th:each="animal : ${careTaker.animals}">
+                    <div th:object="${animal}">
+                        Id: <span th:text="*{id}">13</span>,
+                        Name: <span th:text="*{name}">Tiger</span>
+                    </div>
+                </th:block>
+            </th:block>
+        </td>
+    </tr>
+</table>
+<hr>
+<p></p>
+<a href="#" th:href="@{/web/careTaker/list}">Care Takers List</a>
+<p></p>
+<a href="#" th:href="@{/}">Back to home page</a>
+</body>
+</html>

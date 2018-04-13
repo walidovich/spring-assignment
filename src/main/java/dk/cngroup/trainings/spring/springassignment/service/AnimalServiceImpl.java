@@ -18,8 +18,8 @@ import java.util.Optional;
 @Component
 public class AnimalServiceImpl implements AnimalService {
 
-	private AnimalRepository animalRepository;
-	private CareTakerRepository careTakerRepository;
+	private final AnimalRepository animalRepository;
+	private final CareTakerRepository careTakerRepository;
 
 	public AnimalServiceImpl(AnimalRepository animalRepository, CareTakerRepository careTakerRepository) {
 		this.animalRepository = animalRepository;

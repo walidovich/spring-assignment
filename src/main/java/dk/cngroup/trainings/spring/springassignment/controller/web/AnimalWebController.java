@@ -14,22 +14,30 @@ import java.util.List;
 @RequestMapping("/web/animal")
 public class AnimalWebController {
 
-	private AnimalService animalService;
+	private final AnimalService animalService;
 
 	public AnimalWebController(AnimalService animalService) {
 		this.animalService = animalService;
 	}
 
 	@GetMapping("/list")
-	public ModelAndView list() {
-		ModelAndView modelAndView = new ModelAndView("animal/animal_page");
+	public ModelAndView getAnimals() {
 		List<Animal> animals = animalService.getAnimals();
+		ModelAndView modelAndView = new ModelAndView("animal/animal_list");
 		modelAndView.addObject("animals", animals);
 		return modelAndView;
 	}
 
+	@GetMapping("/list/{id}")
+	public ModelAndView getAnimalById(@PathVariable("id") Long id) throws AnimalNotFoundException {
+		Animal animal = animalService.getAnimalById(id);
+		ModelAndView modelAndView = new ModelAndView("animal/animal_details");
+		modelAndView.addObject("animal", animal);
+		return modelAndView;
+	}
+
 	@GetMapping("/add")
-	public ModelAndView add() {
+	public ModelAndView addAnimal() {
 		ModelAndView modelAndView = new ModelAndView("animal/animal_form");
 		Animal animal = new Animal();
 		modelAndView.addObject("animal", animal);
@@ -37,7 +45,7 @@ public class AnimalWebController {
 	}
 
 	@GetMapping("/update/{id}")
-	public ModelAndView update(@PathVariable("id") Long id) throws AnimalNotFoundException {
+	public ModelAndView updateAnimal(@PathVariable("id") Long id) throws AnimalNotFoundException {
 		ModelAndView modelAndView = new ModelAndView("animal/animal_form");
 		Animal animal = animalService.getAnimalById(id);
 		modelAndView.addObject("animal", animal);
@@ -45,9 +53,9 @@ public class AnimalWebController {
 	}
 
 	@PostMapping("/save")
-	public ModelAndView save(@ModelAttribute("animal") Animal animal)
+	public ModelAndView saveAnimal(@ModelAttribute("animal") Animal animal)
 			throws AnimalNotFoundException, InvalidAnimalException {
-		if (animal != null && animal.getId() != null) {
+		if (animal.getId() != null) {
 			// update
 			animalService.updateAnimalById(animal.getId(), animal);
 		} else {
@@ -58,7 +66,7 @@ public class AnimalWebController {
 	}
 
 	@GetMapping("/delete/{id}")
-	public ModelAndView delete(@PathVariable("id") Long id) throws AnimalNotFoundException {
+	public ModelAndView deleteAnimal(@PathVariable("id") Long id) throws AnimalNotFoundException {
 		animalService.deleteAnimalById(id);
 		return new ModelAndView("redirect:/web/animal/list");
 	}

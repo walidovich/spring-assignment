@@ -7,8 +7,6 @@
     <title>Animals List</title>
 </head>
 <body>
-
-
 <h2>Animals List:</h2>
 <table border="1">
     <thead align="center">
@@ -21,7 +19,9 @@
     <th:block th:each="animal : ${animals}">
         <tr>
             <td th:text="${animal.id}">12</td>
-            <td th:text="${animal.name}">Tiger</td>
+            <td>
+                <a href="#" th:href="@{'/web/animal/list/'+${animal.id}}" th:text="${animal.name}">Tiger</a>
+            </td>
             <td th:text="${animal.description}">Bengali predator</td>
             <td>
                 <th:block th:if="${animal.careTakers!=null}">

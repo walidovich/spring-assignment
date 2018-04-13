@@ -1,4 +1,4 @@
-package dk.cngroup.trainings.spring.springassignment.controller;
+package dk.cngroup.trainings.spring.springassignment.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.cngroup.trainings.spring.springassignment.exception.CareTakerNotFoundException;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class CareTakerControllerTest {
+public class CareTakerRestControllerTest {
 
 	private final String path = "/api/careTakers";
 

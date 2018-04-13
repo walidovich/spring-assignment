@@ -1,4 +1,4 @@
-package dk.cngroup.trainings.spring.springassignment.controller;
+package dk.cngroup.trainings.spring.springassignment.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.cngroup.trainings.spring.springassignment.exception.AnimalNotFoundException;
@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class AnimalControllerTest {
+public class AnimalRestControllerTest {
 
 	private final String path = "/api/animals";
 

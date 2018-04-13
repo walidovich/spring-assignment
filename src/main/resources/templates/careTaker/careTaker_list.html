@@ -18,7 +18,10 @@
     <th:block th:each="careTaker : ${careTakers}">
         <tr>
             <td th:text="${careTaker.id}">12</td>
-            <td th:text="${careTaker.name}">Adam</td>
+            <td>
+                <a href="#" th:href="@{'/web/careTaker/list/'+${careTaker.id}}" th:text="${careTaker.name}">Adam
+                    Kucera</a>
+            </td>
             <td>
                 <th:block th:if="${careTaker.animals!=null}">
                     <th:block th:each="animal : ${careTaker.animals}">
