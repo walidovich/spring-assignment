@@ -73,4 +73,13 @@ public class CareTakerRestController {
 		Animal animal = careTakerService.addExistingAnimalToExistingCareTaker(careTakerId, animalId);
 		return new ResponseEntity<>(animal, HttpStatus.OK);
 	}
+
+	@RequestMapping(path = "/{careTakerId}/animals/{animalId}", method = RequestMethod.DELETE)
+	public ResponseEntity<String> removeAnimalFromAnimalsList(
+			@PathVariable("careTakerId") long careTakerId, @PathVariable("animalId") long animalId)
+			throws AnimalNotFoundException, CareTakerNotFoundException,
+			AnimalsListEmptyException, AnimalNotFoundInCareTakerAnimalsListException {
+		careTakerService.removeAnimalFromAnimalsList(careTakerId, animalId);
+		return new ResponseEntity<>("Success", HttpStatus.OK);
+	}
 }

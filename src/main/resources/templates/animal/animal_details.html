@@ -2,10 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Animal Details</title>
 </head>
 <body>
-<h2>Animals List:</h2>
+<h2>Animal Details:</h2>
 <table border="1">
     <thead align="center">
     <td>Id</td>
@@ -29,6 +29,30 @@
         </td>
     </tr>
 </table>
+<p></p>
+<hr>
+<p></p>
+<h3>Add a new Care Taker to the Animal
+    <th:block th:text="${animal.name}"></th:block>
+    (id=
+    <th:block th:text="${animal.id}"></th:block>
+    )
+    :
+</h3>
+<form action="#" th:action="@{/web/animal/list/{id}(id=${animal.id})}" th:object="${careTaker}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+        <tr>
+            <td>Action:</td>
+            <td><input type="submit" value="Submit"/><input type="reset" value="Reset"/></td>
+        </tr>
+    </table>
+</form>
+<p></p>
 <hr>
 <p></p>
 <a href="#" th:href="@{/web/animal/list}">Animal List</a>

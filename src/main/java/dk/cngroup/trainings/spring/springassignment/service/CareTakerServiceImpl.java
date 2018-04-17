@@ -94,4 +94,21 @@ public class CareTakerServiceImpl implements CareTakerService {
 			throw new AnimalAndCareTakerAlreadyLinked(animalId, careTakerId);
 		}
 	}
+
+	@Override
+	public void removeAnimalFromAnimalsList(long careTakerId, long animalId)
+			throws CareTakerNotFoundException, AnimalsListEmptyException,
+			AnimalNotFoundInCareTakerAnimalsListException, AnimalNotFoundException {
+		CareTaker careTaker = this.getCareTakerById(careTakerId);
+		animalService.checkAnimalExistsById(animalId);
+		List<Animal> animals = careTaker.getAnimals();
+		if (animals.size() == 0) {
+			throw new AnimalsListEmptyException(careTakerId);
+		} else if (animals.stream().noneMatch(animal -> animal.getId().equals(animalId))) {
+			throw new AnimalNotFoundInCareTakerAnimalsListException(careTakerId, animalId);
+		} else {
+			animals.removeIf(animal -> animal.getId().equals(animalId));
+			careTakerRepository.save(careTaker);
+		}
+	}
 }

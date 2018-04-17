@@ -13,7 +13,6 @@
     <td>Id</td>
     <td>Name</td>
     <td>Description</td>
-    <td>Care Takers</td>
     <td colspan="2">Actions</td>
     </thead>
     <th:block th:each="animal : ${animals}">
@@ -23,16 +22,6 @@
                 <a href="#" th:href="@{'/web/animal/list/'+${animal.id}}" th:text="${animal.name}">Tiger</a>
             </td>
             <td th:text="${animal.description}">Bengali predator</td>
-            <td>
-                <th:block th:if="${animal.careTakers!=null}">
-                    <th:block th:each="careTaker : ${animal.careTakers}">
-                        <div th:object="${careTaker}">
-                            Id: <span th:text="*{id}">13</span>,
-                            Name: <span th:text="*{name}">Adam</span>.
-                        </div>
-                    </th:block>
-                </th:block>
-            </td>
             <td>
                 <a href="#" th:href="@{'/web/animal/update/'+${animal.id}}">Update</a>
             </td>

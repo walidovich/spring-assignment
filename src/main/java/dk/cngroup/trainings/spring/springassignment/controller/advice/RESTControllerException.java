@@ -11,17 +11,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class RESTControllerException {
 
 	@ExceptionHandler(value = AnimalNotFoundException.class)
-	public ResponseEntity<String> animalNotFoundException(Exception e) {
+	public ResponseEntity<String> animalNotFound(Exception e) {
 		return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(value = InvalidAnimalException.class)
-	public ResponseEntity<String> invalidAnimalException(Exception e) {
+	public ResponseEntity<String> invalidAnimal(Exception e) {
 		return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = CareTakerNotFoundException.class)
-	public ResponseEntity<String> careTakerNotFoundException(Exception e) {
+	public ResponseEntity<String> careTakerNotFound(Exception e) {
 		return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 	}
 
@@ -32,6 +32,26 @@ public class RESTControllerException {
 
 	@ExceptionHandler(value = AnimalAndCareTakerAlreadyLinked.class)
 	public ResponseEntity<String> animalAndCareTakerAlreadyLinked(Exception e) {
+		return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = AnimalsListEmptyException.class)
+	public ResponseEntity<String> animalsListIsEmpty(Exception e) {
+		return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = CareTakersListEmptyException.class)
+	public ResponseEntity<String> careTakersListIsEmpty(Exception e) {
+		return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = AnimalNotFoundInCareTakerAnimalsListException.class)
+	public ResponseEntity<String> animalInCareNotFound(Exception e) {
+		return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(value = CareTakerNotInTheAnimalCareTakersListException.class)
+	public ResponseEntity<String> careTakerNotTaking(Exception e) {
 		return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 }

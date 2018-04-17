@@ -4,10 +4,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Care Takers Details</title>
+    <title>Care Taker Details</title>
 </head>
 <body>
-<h2>Care Takers Details:</h2>
+<h2>Care Taker Details:</h2>
 <table border="1">
     <thead align="center">
     <td>Id</td>
@@ -29,6 +29,34 @@
         </td>
     </tr>
 </table>
+<p></p>
+<hr>
+<p></p>
+<h3>Add a new Animal to the Care Taker
+    <th:block th:text="${careTaker.name}"></th:block>
+    (id=
+    <th:block th:text="${careTaker.id}"></th:block>
+    )
+    :
+</h3>
+<form action="#" th:action="@{/web/careTaker/list/{id}(id=${careTaker.id})}" th:object="${animal}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+        <tr>
+            <td>Description:</td>
+            <td><input type="text" th:field="*{description}"/></td>
+        </tr>
+        <tr>
+            <td>Action:</td>
+            <td><input type="submit" value="Submit"/><input type="reset" value="Reset"/></td>
+        </tr>
+    </table>
+</form>
+<p></p>
 <hr>
 <p></p>
 <a href="#" th:href="@{/web/careTaker/list}">Care Takers List</a>

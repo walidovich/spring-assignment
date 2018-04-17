@@ -116,4 +116,26 @@ public class AnimalServiceImpl implements AnimalService {
 			}
 		}
 	}
+
+	@Override
+	public void removeCareTakerFromCareTakersList(long animalId, long careTakerId)
+			throws AnimalNotFoundException, CareTakerNotFoundException, CareTakersListEmptyException, CareTakerNotInTheAnimalCareTakersListException {
+		Optional<Animal> animal = animalRepository.findById(animalId);
+		List<CareTaker> careTakers;
+		Optional<CareTaker> careTaker = careTakerRepository.findById(careTakerId);
+		if (!animal.isPresent()) {
+			throw new AnimalNotFoundException(animalId);
+		}
+		careTakers = animal.get().getCareTakers();
+		if (!careTaker.isPresent()) {
+			throw new CareTakerNotFoundException(careTakerId);
+		} else if (careTakers.size() == 0) {
+			throw new CareTakersListEmptyException(animalId);
+		} else if (careTakers.stream().noneMatch(careTakerTmp -> careTakerTmp.getId().equals(careTakerId))) {
+			throw new CareTakerNotInTheAnimalCareTakersListException(animalId, careTakerId);
+		} else {
+			careTaker.get().getAnimals().removeIf(animalTmp -> animalTmp.getId().equals(animalId));
+			careTakerRepository.save(careTaker.get());
+		}
+	}
 }

@@ -2,7 +2,9 @@ package dk.cngroup.trainings.spring.springassignment.controller.web;
 
 import dk.cngroup.trainings.spring.springassignment.exception.AnimalNotFoundException;
 import dk.cngroup.trainings.spring.springassignment.exception.InvalidAnimalException;
+import dk.cngroup.trainings.spring.springassignment.exception.InvalidCareTakerException;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
+import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +34,9 @@ public class AnimalWebController {
 	public ModelAndView getAnimalById(@PathVariable("id") Long id) throws AnimalNotFoundException {
 		Animal animal = animalService.getAnimalById(id);
 		ModelAndView modelAndView = new ModelAndView("animal/animal_details");
+		CareTaker careTaker = new CareTaker();
 		modelAndView.addObject("animal", animal);
+		modelAndView.addObject("careTaker", careTaker);
 		return modelAndView;
 	}
 
@@ -69,5 +73,13 @@ public class AnimalWebController {
 	public ModelAndView deleteAnimal(@PathVariable("id") Long id) throws AnimalNotFoundException {
 		animalService.deleteAnimalById(id);
 		return new ModelAndView("redirect:/web/animal/list");
+	}
+
+	@PostMapping("/list/{id}")
+	public ModelAndView addNewCareTakerToExistingAnimal(@PathVariable("id") Long id,
+														@ModelAttribute("careTaker") CareTaker careTaker)
+			throws AnimalNotFoundException, InvalidCareTakerException {
+		animalService.addNewCareTakerToExistingAnimal(id, careTaker);
+		return new ModelAndView("redirect:/web/animal/list/" + id);
 	}
 }
