@@ -11,21 +11,29 @@
     <td>Id</td>
     <td>Name</td>
     <td>Description</td>
-    <td>Care Takers</td>
+    <td colspan="2">Care Takers</td>
     </thead>
     <tr>
-        <td th:text="${animal.id}">12</td>
-        <td th:text="${animal.name}">Tiger</td>
-        <td th:text="${animal.description}">Bengali predator</td>
+        <td th:text="${animal.id}" th:rowspan="${animal.careTakers.size()}">12</td>
+        <td th:text="${animal.name}" th:rowspan="${animal.careTakers.size()}">Tiger</td>
+        <td th:text="${animal.description}" th:rowspan="${animal.careTakers.size()}">Bengali predator</td>
         <td>
-            <th:block th:if="${animal.careTakers!=null}">
-                <th:block th:each="careTaker : ${animal.careTakers}">
-                    <div th:object="${careTaker}">
-                        Id: <span th:text="*{id}">13</span>,
-                        Name: <span th:text="*{name}">Adam</span>.
-                    </div>
+            <table>
+                <th:block th:if="${animal.careTakers!=null}">
+                    <th:block th:each="careTaker : ${animal.careTakers}">
+                        <tr>
+                            <td th:object="${careTaker}">
+                                Id: <span th:text="*{id}">13</span>,
+                                Name: <span th:text="*{name}">Adam</span>.
+                            </td>
+                            <td>
+                                <a href="#" th:href="@{'/web/animal/remove/'+${careTaker.id}}">Remove</a>
+                            </td>
+                            </td>
+                        </tr>
+                    </th:block>
                 </th:block>
-            </th:block>
+            </table>
         </td>
     </tr>
 </table>

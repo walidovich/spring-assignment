@@ -12,20 +12,29 @@
     <thead align="center">
     <td>Id</td>
     <td>Name</td>
-    <td>Animals</td>
+    <td colspan="2">Animals</td>
     </thead>
     <tr>
         <td th:text="${careTaker.id}">12</td>
         <td th:text="${careTaker.name}">Adam</td>
         <td>
-            <th:block th:if="${careTaker.animals!=null}">
-                <th:block th:each="animal : ${careTaker.animals}">
-                    <div th:object="${animal}">
-                        Id: <span th:text="*{id}">13</span>,
-                        Name: <span th:text="*{name}">Tiger</span>
-                    </div>
+            <table>
+                <th:block th:if="${careTaker.animals!=null}">
+                    <th:block th:each="animal : ${careTaker.animals}">
+                        <tr>
+                            <td th:object="${animal}">
+                                Id: <span th:text="*{id}">15</span>,
+                                Name: <span th:text="*{name}">Lion</span>.
+                                Description: <span th:text="*{name}">Mountain lion</span>.
+                            </td>
+                            <td>
+                                <a href="#" th:href="@{'/web/careTaker/remove/'+${animal.id}}">Remove</a>
+                            </td>
+                            </td>
+                        </tr>
+                    </th:block>
                 </th:block>
-            </th:block>
+            </table>
         </td>
     </tr>
 </table>
