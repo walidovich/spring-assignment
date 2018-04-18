@@ -27,6 +27,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -67,7 +69,7 @@ public class CareTakerRestControllerTest {
 	@Test
 	public void testGetCareTakers() throws Exception {
 		// Always happy
-		Mockito.when(careTakerService.getCareTakers()).thenReturn(careTakers);
+		when(careTakerService.getCareTakers()).thenReturn(careTakers);
 
 		mockMvc.perform(get(path))
 				.andExpect(status().isOk())
@@ -82,7 +84,7 @@ public class CareTakerRestControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String martinString = objectMapper.writeValueAsString(martin);
 
-		Mockito.when(careTakerService.addCareTaker(any(CareTaker.class))).thenReturn(martin);
+		when(careTakerService.addCareTaker(any(CareTaker.class))).thenReturn(martin);
 
 		mockMvc.perform(post(path)
 				.content(martinString)
@@ -109,7 +111,7 @@ public class CareTakerRestControllerTest {
 		// Happy path
 		CareTaker martin = new CareTaker(1L, "Martin Dobias");
 
-		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
+		when(careTakerService.getCareTakerById(any(Long.class)))
 				.thenReturn(martin);
 
 		mockMvc.perform(get(path + "/10"))
@@ -136,11 +138,11 @@ public class CareTakerRestControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String updatedJohnString = objectMapper.writeValueAsString(updatedJohn);
 
-		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
+		when(careTakerService.getCareTakerById(any(Long.class)))
 				.thenReturn(careTakers.get(3));
-		Mockito.when(careTakerService.addCareTaker(any(CareTaker.class)))
+		when(careTakerService.addCareTaker(any(CareTaker.class)))
 				.thenReturn(updatedJohn);
-		Mockito.when(careTakerService.updateCareTakerById(any(Long.class), any(CareTaker.class)))
+		when(careTakerService.updateCareTakerById(any(Long.class), any(CareTaker.class)))
 				.thenReturn(updatedJohn);
 
 		mockMvc.perform(put(path + "/4")
@@ -181,9 +183,7 @@ public class CareTakerRestControllerTest {
 				.andExpect(status().isOk())
 				.andReturn();
 
-		Assert.assertTrue(mvcResult.getResponse()
-				.getContentAsString().toLowerCase()
-				.contains("success"));
+		Assert.assertTrue(mvcResult.getResponse().getContentAsString().toLowerCase().contains("success"));
 	}
 
 	@Test
@@ -205,11 +205,11 @@ public class CareTakerRestControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String monkeyString = objectMapper.writeValueAsString(monkey);
 
-		Mockito.when(careTakerService.getCareTakerById(any(Long.class)))
+		when(careTakerService.getCareTakerById(any(Long.class)))
 				.thenReturn(careTakers.get(1));
-		Mockito.when(animalService.addAnimal(any(Animal.class)))
+		when(animalService.addAnimal(any(Animal.class)))
 				.thenReturn(monkey);
-		Mockito.when(careTakerService.addNewAnimalToExistingCareTaker(any(Long.class),
+		when(careTakerService.addNewAnimalToExistingCareTaker(any(Long.class),
 				any(Animal.class))).thenReturn(monkey);
 
 		mockMvc.perform(post(path + "/2/animals")
@@ -217,5 +217,19 @@ public class CareTakerRestControllerTest {
 				.content(monkeyString))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.name", is("Monkey")));
+	}
+
+	@Test
+	public void testRemoveAnimalFromAnimalsListWithExistingAnimalIdAndCareTakerId()
+			throws Exception {
+		List<Animal> subAnimalsList = Arrays.asList(new Animal(), new Animal());
+
+		when(careTakerService.getCareTakerById(anyLong())).thenReturn(careTakers.get(1));
+		doNothing().when(animalService).checkAnimalExistsById(anyLong());
+		when(careTakerService.removeAnimalFromAnimalsList(anyLong(), anyLong())).thenReturn(subAnimalsList);
+
+		MvcResult mvcResult = mockMvc.perform(delete(path + "/2/animals/3"))
+				.andExpect(status().isOk())
+				.andReturn();
 	}
 }

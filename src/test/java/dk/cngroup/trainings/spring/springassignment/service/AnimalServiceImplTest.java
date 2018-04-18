@@ -1,8 +1,8 @@
 package dk.cngroup.trainings.spring.springassignment.service;
 
-import dk.cngroup.trainings.spring.springassignment.exception.AnimalNotFoundException;
-import dk.cngroup.trainings.spring.springassignment.exception.InvalidAnimalException;
+import dk.cngroup.trainings.spring.springassignment.exception.*;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
+import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
 import liquibase.util.StringUtils;
@@ -13,8 +13,12 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 public class AnimalServiceImplTest {
 
@@ -37,13 +41,13 @@ public class AnimalServiceImplTest {
 		eagle = new Animal(3L, "Eagle", "F22 of the skies");
 		mountainLion = new Animal(4L, "Lion", "The mountain lion");
 
-		animals = Arrays.asList(lion, shark, eagle, mountainLion);
+		animals = new LinkedList<>(Arrays.asList(lion, shark, eagle, mountainLion));
 		lions = Arrays.asList(lion, mountainLion);
 	}
 
 	@Test
 	public void testGetAnimals() {
-		Mockito.when(animalRepositoryMock.findAll()).thenReturn(animals);
+		when(animalRepositoryMock.findAll()).thenReturn(animals);
 
 		List<Animal> actualList = animalService.getAnimals();
 
@@ -54,8 +58,8 @@ public class AnimalServiceImplTest {
 	@Test
 	public void testGetAnimalByExistingId() throws AnimalNotFoundException {
 		// Happy path:
-		Mockito.when(animalRepositoryMock.existsById(3L)).thenReturn(true);
-		Mockito.when(animalRepositoryMock.findById(3L))
+		when(animalRepositoryMock.existsById(3L)).thenReturn(true);
+		when(animalRepositoryMock.findById(3L))
 				.thenReturn(Optional.ofNullable(animals.get(2)));
 
 		Animal animal = animalService.getAnimalById(3L);
@@ -69,7 +73,7 @@ public class AnimalServiceImplTest {
 	@Test(expected = AnimalNotFoundException.class)
 	public void testGetAnimalByNonExistingId() throws AnimalNotFoundException {
 		// Sad path:
-		Mockito.when(animalRepositoryMock.findById(7L))
+		when(animalRepositoryMock.findById(7L))
 				.thenReturn(Optional.empty());
 
 		Animal animal2 = animalService.getAnimalById(7L);
@@ -80,7 +84,7 @@ public class AnimalServiceImplTest {
 	@Test
 	public void testGetAnimalsByExistingName() {
 		// Happy path:
-		Mockito.when(animalRepositoryMock.findAllByName("Lion")).thenReturn(lions);
+		when(animalRepositoryMock.findAllByName("Lion")).thenReturn(lions);
 
 		List<Animal> animals =
 				animalService.getAnimalsByName("Lion");
@@ -91,7 +95,7 @@ public class AnimalServiceImplTest {
 	@Test
 	public void testGetAnimalsByNonExistingName() {
 		// Sad path: searching non existing animals name
-		Mockito.when(animalRepositoryMock.findAllByName("Dauphin"))
+		when(animalRepositoryMock.findAllByName("Dauphin"))
 				.thenReturn(Arrays.asList());
 
 		List<Animal> animals2 =
@@ -105,7 +109,7 @@ public class AnimalServiceImplTest {
 		// Happy path:
 		Animal dauphin = new Animal(5L, "Dauphin", "Smartest aqua mammal");
 
-		Mockito.when(animalRepositoryMock.save(dauphin)).thenReturn(dauphin);
+		when(animalRepositoryMock.save(dauphin)).thenReturn(dauphin);
 
 		Assert.assertNotNull(animalService.addAnimal(dauphin));
 		Assert.assertEquals("Dauphin",
@@ -142,8 +146,8 @@ public class AnimalServiceImplTest {
 	public void deleteAnimalByExistingId() throws AnimalNotFoundException {
 		//Happy path:
 		long id = 2L;
-		Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(true);
-		Mockito.when(animalRepositoryMock.findById(id))
+		when(animalRepositoryMock.existsById(id)).thenReturn(true);
+		when(animalRepositoryMock.findById(id))
 				.thenReturn(Optional.ofNullable(animals.get(1)));
 
 		animalService.deleteAnimalById(id);
@@ -153,7 +157,7 @@ public class AnimalServiceImplTest {
 	public void deleteAnimalByNonExistingId() throws AnimalNotFoundException {
 		//Sad path:
 		long id = 10L; // Non existing id
-		Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(false);
+		when(animalRepositoryMock.existsById(id)).thenReturn(false);
 
 		animalService.deleteAnimalById(id);
 	}
@@ -166,11 +170,11 @@ public class AnimalServiceImplTest {
 		Animal updatedAnimal = new Animal(100L, "Falcon",
 				"Fastest animal on earth");
 
-		Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(true);
-		Mockito.when(animalRepositoryMock.findById(id))
+		when(animalRepositoryMock.existsById(id)).thenReturn(true);
+		when(animalRepositoryMock.findById(id))
 				.thenReturn(Optional.ofNullable(oldAnimal));
 		updatedAnimal.setId(oldAnimal.getId());
-		Mockito.when(animalRepositoryMock.save(updatedAnimal))
+		when(animalRepositoryMock.save(updatedAnimal))
 				.thenReturn(updatedAnimal);
 
 		updatedAnimal.setId(100L);
@@ -186,8 +190,8 @@ public class AnimalServiceImplTest {
 		long id = 10L; // non existing
 		Animal updatedAnimal = new Animal(100L, "Falcon",
 				"Fastest animal on earth");
-		Mockito.when(animalRepositoryMock.existsById(id)).thenReturn(false);
-		Mockito.when(animalRepositoryMock.findById(id))
+		when(animalRepositoryMock.existsById(id)).thenReturn(false);
+		when(animalRepositoryMock.findById(id))
 				.thenReturn(Optional.empty());
 
 		Animal animal2 = animalService.updateAnimalById(id, updatedAnimal);
@@ -195,8 +199,52 @@ public class AnimalServiceImplTest {
 		Assert.assertNull(animal2);
 	}
 
-    /*
-    Testing updating an animal by existing id and an invalid animal is not needed because
-     it uses addAnimal method in which adding invalid animal is already tested
-     */
+	/*
+   Testing updating an animal by existing id and an invalid animal is not needed because
+	it uses addAnimal method in which adding invalid animal is already tested
+	*/
+
+	@Test
+	public void testRemoveCareTakerFromCareTakersListWithLinkedExistingCareTakerIdAndAnimalId()
+			throws CareTakerNotFoundException, CareTakerNotInTheAnimalCareTakersListException,
+			AnimalNotFoundException, CareTakersListEmptyException {
+		// Happy path:
+		CareTaker walid = new CareTaker(1L, "Walid");
+		CareTaker adam = new CareTaker(2L, "Adam");
+		CareTaker martin = new CareTaker(3L, "Martin");
+		animals.get(1).setCareTakers(new LinkedList<>(Arrays.asList(walid, adam, martin)));
+		walid.setAnimals(animals);
+		adam.setAnimals(animals);
+		martin.setAnimals(animals);
+
+		when(animalRepositoryMock.findById(anyLong())).thenReturn(Optional.ofNullable(animals.get(1)));
+		when(careTakerRepository.findById(anyLong())).thenReturn(Optional.ofNullable(martin));
+
+		List<CareTaker> subCareTakersList =
+				animalService.removeCareTakerFromCareTakersList(2L, 3L);
+
+		Assert.assertThat(subCareTakersList, Matchers.hasSize(2));
+	}
+
+	@Test(expected = CareTakerNotInTheAnimalCareTakersListException.class)
+	public void testRemoveCareTakerFromCareTakersListWithNonLinkedExistingCareTakerIdAndAnimalId()
+			throws CareTakerNotFoundException, CareTakerNotInTheAnimalCareTakersListException,
+			AnimalNotFoundException, CareTakersListEmptyException {
+		// Happy path:
+		CareTaker walid = new CareTaker(1L, "Walid");
+		CareTaker adam = new CareTaker(2L, "Adam");
+		CareTaker martin = new CareTaker(3L, "Martin");
+		animals.get(1).setCareTakers(new LinkedList<>(Arrays.asList(walid, martin)));
+		walid.setAnimals(new LinkedList<>(Arrays.asList(animals.get(1))));
+		martin.setAnimals(new LinkedList<>(Arrays.asList(animals.get(1))));
+
+		Animal dolphin = new Animal(8L, "Dolphin", "Smartest aqua mammal");
+		dolphin.setCareTakers(new LinkedList<>(Arrays.asList(adam)));
+		adam.setAnimals(new LinkedList<>(Arrays.asList(dolphin)));
+
+		when(animalRepositoryMock.findById(anyLong())).thenReturn(Optional.ofNullable(animals.get(1)));
+		when(careTakerRepository.findById(anyLong())).thenReturn(Optional.ofNullable(martin));
+
+		animalService.removeCareTakerFromCareTakersList(2L, 2L);
+	}
 }

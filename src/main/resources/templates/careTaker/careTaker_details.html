@@ -28,7 +28,8 @@
                                 Description: <span th:text="*{name}">Mountain lion</span>.
                             </td>
                             <td>
-                                <a href="#" th:href="@{'/web/careTaker/remove/'+${animal.id}}">Remove</a>
+                                <a href="#"
+                                   th:href="@{'/web/careTaker/'+${careTaker.id}+'/animal/'+${animal.id}+'/remove'}">Remove</a>
                             </td>
                             </td>
                         </tr>

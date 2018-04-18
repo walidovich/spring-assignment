@@ -266,4 +266,14 @@ public class AnimalRestControllerTest {
 		mockMvc.perform(get(path + "/name?name=Dog"))
 				.andExpect(status().isNotFound());
 	}
+
+	@Test
+	public void testRemoveCareTakerFromCareTakersListWithExistingAnimalIdAndCareTakerId()
+			throws Exception {
+
+
+		MvcResult mvcResult = mockMvc.perform(delete(path + "/2/careTakers/3"))
+				.andExpect(status().isOk())
+				.andReturn();
+	}
 }

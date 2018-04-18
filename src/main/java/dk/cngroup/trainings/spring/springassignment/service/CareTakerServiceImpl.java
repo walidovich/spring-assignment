@@ -96,7 +96,7 @@ public class CareTakerServiceImpl implements CareTakerService {
 	}
 
 	@Override
-	public void removeAnimalFromAnimalsList(long careTakerId, long animalId)
+	public List<Animal> removeAnimalFromAnimalsList(long careTakerId, long animalId)
 			throws CareTakerNotFoundException, AnimalsListEmptyException,
 			AnimalNotFoundInCareTakerAnimalsListException, AnimalNotFoundException {
 		CareTaker careTaker = this.getCareTakerById(careTakerId);
@@ -109,6 +109,7 @@ public class CareTakerServiceImpl implements CareTakerService {
 		} else {
 			animals.removeIf(animal -> animal.getId().equals(animalId));
 			careTakerRepository.save(careTaker);
+			return careTaker.getAnimals();
 		}
 	}
 }

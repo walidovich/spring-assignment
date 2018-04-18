@@ -75,11 +75,11 @@ public class CareTakerRestController {
 	}
 
 	@RequestMapping(path = "/{careTakerId}/animals/{animalId}", method = RequestMethod.DELETE)
-	public ResponseEntity<String> removeAnimalFromAnimalsList(
+	public ResponseEntity<List<Animal>> removeAnimalFromAnimalsList(
 			@PathVariable("careTakerId") long careTakerId, @PathVariable("animalId") long animalId)
 			throws AnimalNotFoundException, CareTakerNotFoundException,
 			AnimalsListEmptyException, AnimalNotFoundInCareTakerAnimalsListException {
-		careTakerService.removeAnimalFromAnimalsList(careTakerId, animalId);
-		return new ResponseEntity<>("Success", HttpStatus.OK);
+		List<Animal> animals = careTakerService.removeAnimalFromAnimalsList(careTakerId, animalId);
+		return new ResponseEntity<>(animals, HttpStatus.OK);
 	}
 }

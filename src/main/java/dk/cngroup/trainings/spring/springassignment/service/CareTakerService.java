@@ -24,6 +24,6 @@ public interface CareTakerService {
 	Animal addExistingAnimalToExistingCareTaker(long careTakerId, long animalId)
 			throws AnimalNotFoundException, CareTakerNotFoundException, AnimalAndCareTakerAlreadyLinked;
 
-	void removeAnimalFromAnimalsList(long careTakerId, long animalId)
+	List<Animal> removeAnimalFromAnimalsList(long careTakerId, long animalId)
 			throws AnimalNotFoundException, CareTakerNotFoundException, AnimalsListEmptyException, AnimalNotFoundInCareTakerAnimalsListException;
 }

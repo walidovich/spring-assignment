@@ -1,8 +1,6 @@
 package dk.cngroup.trainings.spring.springassignment.controller.web;
 
-import dk.cngroup.trainings.spring.springassignment.exception.CareTakerNotFoundException;
-import dk.cngroup.trainings.spring.springassignment.exception.InvalidAnimalException;
-import dk.cngroup.trainings.spring.springassignment.exception.InvalidCareTakerException;
+import dk.cngroup.trainings.spring.springassignment.exception.*;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.service.CareTakerService;
@@ -73,6 +71,15 @@ public class CareTakerWebController {
 	public ModelAndView delete(@PathVariable("id") Long id) throws CareTakerNotFoundException {
 		careTakerService.deleteCareTakerById(id);
 		return new ModelAndView("redirect:/web/careTaker/list");
+	}
+
+	@GetMapping("/{careTakerId}/animal/{animalId}/remove")
+	public ModelAndView delete(@PathVariable("careTakerId") Long careTakerId,
+							   @PathVariable("animalId") Long animalId)
+			throws CareTakerNotFoundException, AnimalNotFoundInCareTakerAnimalsListException,
+			AnimalNotFoundException, AnimalsListEmptyException {
+		careTakerService.removeAnimalFromAnimalsList(careTakerId, animalId);
+		return new ModelAndView("redirect:/web/careTaker/list/" + careTakerId);
 	}
 
 	@PostMapping("/list/{id}")

@@ -27,7 +27,7 @@
                                 Name: <span th:text="*{name}">Adam</span>.
                             </td>
                             <td>
-                                <a href="#" th:href="@{'/web/animal/remove/'+${careTaker.id}}">Remove</a>
+                                <a href="#" th:href="@{'/web/animal/'+${animal.id}+'/careTaker/'+${careTaker.id}+'/remove'}">Remove</a>
                             </td>
                             </td>
                         </tr>

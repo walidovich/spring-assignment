@@ -118,8 +118,9 @@ public class AnimalServiceImpl implements AnimalService {
 	}
 
 	@Override
-	public void removeCareTakerFromCareTakersList(long animalId, long careTakerId)
-			throws AnimalNotFoundException, CareTakerNotFoundException, CareTakersListEmptyException, CareTakerNotInTheAnimalCareTakersListException {
+	public List<CareTaker> removeCareTakerFromCareTakersList(long animalId, long careTakerId)
+			throws AnimalNotFoundException, CareTakerNotFoundException,
+			CareTakersListEmptyException, CareTakerNotInTheAnimalCareTakersListException {
 		Optional<Animal> animal = animalRepository.findById(animalId);
 		List<CareTaker> careTakers;
 		Optional<CareTaker> careTaker = careTakerRepository.findById(careTakerId);
@@ -135,7 +136,10 @@ public class AnimalServiceImpl implements AnimalService {
 			throw new CareTakerNotInTheAnimalCareTakersListException(animalId, careTakerId);
 		} else {
 			careTaker.get().getAnimals().removeIf(animalTmp -> animalTmp.getId().equals(animalId));
+			animal.get().getCareTakers().removeIf(careTakerTmp -> careTakerTmp.getId().equals(careTakerId));
 			careTakerRepository.save(careTaker.get());
+			animalRepository.save(animal.get());
 		}
+		return animal.get().getCareTakers();
 	}
 }
