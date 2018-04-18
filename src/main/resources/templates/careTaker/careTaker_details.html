@@ -69,6 +69,29 @@
 <p></p>
 <hr>
 <p></p>
+<h3>Add an existing Animal by id to the Care Taker
+    <th:block th:text="${careTaker.name}"></th:block>
+    (id=
+    <th:block th:text="${careTaker.id}"></th:block>
+    )
+    :
+</h3>
+<form action="#"
+      th:action="@{/web/careTaker/list/{id}/link(id=${careTaker.id})}"
+      th:object="${animal}" method="post">
+    <table>
+        <tr>
+            <td>Id:</td>
+            <td><input type="text" th:field="*{id}"/></td>
+        </tr>
+        <tr>
+            <td>Action:</td>
+            <td><input type="submit" value="Submit"/><input type="reset" value="Reset"/></td>
+        </tr>
+    </table>
+</form>
+<hr>
+<p></p>
 <a href="#" th:href="@{/web/careTaker/list}">Care Takers List</a>
 <p></p>
 <a href="#" th:href="@{/}">Back to home page</a>

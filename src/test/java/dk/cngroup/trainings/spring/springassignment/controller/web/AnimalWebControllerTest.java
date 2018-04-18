@@ -100,6 +100,7 @@ public class AnimalWebControllerTest {
 
 		verifyZeroInteractions(animalService);
 	}
+	
 	// There is no Sad path for requesting the "/add"
 
 	@Test

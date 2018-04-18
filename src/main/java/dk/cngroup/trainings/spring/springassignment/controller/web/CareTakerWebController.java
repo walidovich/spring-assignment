@@ -89,4 +89,12 @@ public class CareTakerWebController {
 		careTakerService.addNewAnimalToExistingCareTaker(id, animal);
 		return new ModelAndView("redirect:/web/careTaker/list/" + id);
 	}
+
+	@PostMapping("/list/{id}/link")
+	public ModelAndView addExistingAnimalToExistingCareTaker(@PathVariable("id") Long careTakerId,
+															 @ModelAttribute("animal") Animal animal)
+			throws AnimalNotFoundException, AnimalAndCareTakerAlreadyLinked, CareTakerNotFoundException {
+		careTakerService.addExistingAnimalToExistingCareTaker(careTakerId, animal.getId());
+		return new ModelAndView("redirect:/web/careTaker/list/" + careTakerId);
+	}
 }
