@@ -15,6 +15,7 @@ import java.util.List;
 public class AnimalWebController {
 
 	private final AnimalService animalService;
+	private final String VIEW_PATH = "views/animal";
 
 	public AnimalWebController(AnimalService animalService) {
 		this.animalService = animalService;
@@ -23,7 +24,7 @@ public class AnimalWebController {
 	@GetMapping("/list")
 	public ModelAndView getAnimals() {
 		List<Animal> animals = animalService.getAnimals();
-		ModelAndView modelAndView = new ModelAndView("animal/animal_list");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_list");
 		modelAndView.addObject("animals", animals);
 		return modelAndView;
 	}
@@ -31,7 +32,7 @@ public class AnimalWebController {
 	@GetMapping("/list/{id}")
 	public ModelAndView getAnimalById(@PathVariable("id") Long id) throws AnimalNotFoundException {
 		Animal animal = animalService.getAnimalById(id);
-		ModelAndView modelAndView = new ModelAndView("animal/animal_details");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_details");
 		CareTaker careTaker = new CareTaker();
 		modelAndView.addObject("animal", animal);
 		modelAndView.addObject("careTaker", careTaker);
@@ -40,7 +41,7 @@ public class AnimalWebController {
 
 	@GetMapping("/add")
 	public ModelAndView addAnimal() {
-		ModelAndView modelAndView = new ModelAndView("animal/animal_form");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
 		Animal animal = new Animal();
 		modelAndView.addObject("animal", animal);
 		return modelAndView;
@@ -48,7 +49,7 @@ public class AnimalWebController {
 
 	@GetMapping("/update/{id}")
 	public ModelAndView updateAnimal(@PathVariable("id") Long id) throws AnimalNotFoundException {
-		ModelAndView modelAndView = new ModelAndView("animal/animal_form");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
 		Animal animal = animalService.getAnimalById(id);
 		modelAndView.addObject("animal", animal);
 		return modelAndView;

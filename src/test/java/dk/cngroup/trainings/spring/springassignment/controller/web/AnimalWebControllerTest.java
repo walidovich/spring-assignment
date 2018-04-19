@@ -29,8 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class AnimalWebControllerTest {
 
-	private final String path = "/web/animal";
-	private final String viewPackage = "animal/";
+	private final String URL_PATH = "/web/animal";
+	private final String viewPackage = "views/animal/";
 	private List<Animal> animals;
 	private MockMvc mockMvc;
 	@MockBean
@@ -52,10 +52,10 @@ public class AnimalWebControllerTest {
 
 	@Test
 	public void getAnimalsTest() throws Exception {
-		// Happy path
+		// Happy URL_PATH
 		when(animalService.getAnimals()).thenReturn(animals);
 
-		mockMvc.perform(get(path + "/list"))
+		mockMvc.perform(get(URL_PATH + "/list"))
 				.andExpect(status().isOk())
 				.andExpect(view().name(viewPackage + "animal_list"))
 				.andExpect(model().attribute("animals", hasSize(5)));
@@ -66,10 +66,10 @@ public class AnimalWebControllerTest {
 
 	@Test
 	public void getAnimalByExistingId() throws Exception {
-		// Happy path
+		// Happy URL_PATH
 		when(animalService.getAnimalById(3L)).thenReturn(animals.get(2));
 
-		mockMvc.perform(get(path + "/list/3"))
+		mockMvc.perform(get(URL_PATH + "/list/3"))
 				.andExpect(status().isOk())
 				.andExpect(view().name(viewPackage + "animal_details"))
 				.andExpect(model().attribute("animal", is(animals.get(2))));
@@ -80,10 +80,10 @@ public class AnimalWebControllerTest {
 
 	@Test
 	public void getAnimalByNonExistingId() throws Exception {
-		// Sad path
+		// Sad URL_PATH
 		when(animalService.getAnimalById(6L)).thenThrow(AnimalNotFoundException.class);
 
-		mockMvc.perform(get(path + "/list/6"))
+		mockMvc.perform(get(URL_PATH + "/list/6"))
 				.andExpect(status().isNotFound());
 
 		verify(animalService, times(1)).getAnimalById(6L);
@@ -92,31 +92,31 @@ public class AnimalWebControllerTest {
 
 	@Test
 	public void addAnimalTest() throws Exception {
-		// Happy path
-		mockMvc.perform(get(path + "/add"))
+		// Happy URL_PATH
+		mockMvc.perform(get(URL_PATH + "/add"))
 				.andExpect(status().isOk())
 				.andExpect(model().attribute("animal", hasProperty("id", nullValue())))
 				.andExpect(view().name(viewPackage + "animal_form"));
 
 		verifyZeroInteractions(animalService);
 	}
-	
-	// There is no Sad path for requesting the "/add"
+
+	// There is no Sad URL_PATH for requesting the "/add"
 
 	@Test
 	public void saveNewAnimalTest() throws Exception {
-		// Happy path
+		// Happy URL_PATH
 		Animal animal = new Animal(7L, "Leopard", "Lone cat");
 
 		when(animalService.addAnimal(any(Animal.class))).thenReturn(animal);
 
-		mockMvc.perform(post(path + "/save")
+		mockMvc.perform(post(URL_PATH + "/save")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("name", animal.getName())
 				.param("description", animal.getDescription())
 				.sessionAttr("animal", new Animal()))
-				.andExpect(redirectedUrl(path + "/list"))
-				.andExpect(view().name("redirect:" + path + "/list"));
+				.andExpect(redirectedUrl(URL_PATH + "/list"))
+				.andExpect(view().name("redirect:" + URL_PATH + "/list"));
 
 		verify(animalService, times(1)).addAnimal(any(Animal.class)); // I HATE TESTING hhhh
 		verifyNoMoreInteractions(animalService);

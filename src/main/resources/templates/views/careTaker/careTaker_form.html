@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/footer_down_layout}" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Care Taker Form</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2>Care Taker Form:</h2>
+    <form action="#" th:action="@{/web/careTaker/save}" th:object="${careTaker}" method="post">
+        <th:block lang="en" th:replace="fragments/entities_form_fragment :: careTaker_form_fragment"></th:block>
+    </form>
+</div>
+</body>
+</html>

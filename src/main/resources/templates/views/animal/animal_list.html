@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/footer_down_layout}" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Animals List</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2>Animals List:</h2>
+    <table border="1">
+        <thead align="center">
+        <td>Id</td>
+        <td>Name</td>
+        <td>Description</td>
+        <td colspan="2">Actions</td>
+        </thead>
+        <th:block th:each="animal : ${animals}">
+            <tr>
+                <td th:text="${animal.id}">12</td>
+                <td>
+                    <a href="#" th:href="@{'/web/animal/list/'+${animal.id}}" th:text="${animal.name}">Tiger</a>
+                </td>
+                <td th:text="${animal.description}">Bengali predator</td>
+                <td>
+                    <a href="#" th:href="@{'/web/animal/update/'+${animal.id}}">Update</a>
+                </td>
+                <td>
+                    <a href="#" th:href="@{'/web/animal/delete/'+${animal.id}}">Delete</a>
+                </td>
+            </tr>
+        </th:block>
+    </table>
+    <p></p>
+    <hr>
+    <p></p>
+    <a href="#" th:href="@{/web/animal/add}">Add Animal</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!--Animal Form Fragment-->
+<div xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="animal_form_fragment">
+    <input type="hidden" th:field="*{id}"/>
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+        <tr>
+            <td>Description:</td>
+            <td><input type="text" th:field="*{description}"/></td>
+        </tr>
+        <tr>
+            <td>Action:</td>
+            <td><input type="submit" value="Submit"/><input type="reset" value="Reset"/></td>
+        </tr>
+    </table>
+</div>
+<!--Care Taker Form Fragment-->
+<div xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="careTaker_form_fragment">
+    <input type="hidden" th:field="*{id}"/>
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+        <tr>
+            <td>Action:</td>
+            <td><input type="submit" value="Submit"/><input type="reset" value="Reset"/></td>
+        </tr>
+    </table>
+</div>

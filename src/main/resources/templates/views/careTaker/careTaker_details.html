@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/careTaker_details_layout}" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Care Taker Details</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2>Care Taker Details:</h2>
+    <table border="1">
+        <thead align="center">
+        <td>Id</td>
+        <td>Name</td>
+        <td colspan="2">Animals</td>
+        </thead>
+        <tr>
+            <td th:text="${careTaker.id}">12</td>
+            <td th:text="${careTaker.name}">Adam</td>
+            <td>
+                <table>
+                    <th:block th:if="${careTaker.animals!=null}">
+                        <th:block th:each="animal : ${careTaker.animals}">
+                            <tr>
+                                <td th:object="${animal}">
+                                    Id: <span th:text="*{id}">15</span>,
+                                    Name: <span th:text="*{name}">Lion</span>.
+                                    Description: <span th:text="*{name}">Mountain lion</span>.
+                                </td>
+                                <td>
+                                    <a href="#"
+                                       th:href="@{'/web/careTaker/'+${careTaker.id}+'/animal/'+${animal.id}+'/remove'}">Remove</a>
+                                </td>
+                                </td>
+                            </tr>
+                        </th:block>
+                    </th:block>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <p></p>
+    <hr>
+    <p></p>
+    <h3>Add an existing Animal by id to this Care Taker</h3>
+    <form action="#"
+          th:action="@{/web/careTaker/list/{id}/link(id=${careTaker.id})}"
+          th:object="${animal}" method="post">
+        <table>
+            <tr>
+                <td>Id:</td>
+                <td><input type="text" th:field="*{id}"/></td>
+            </tr>
+            <tr>
+                <td>Action:</td>
+                <td><input type="submit" value="Submit"/><input type="reset" value="Reset"/></td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

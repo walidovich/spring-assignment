@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<body>
+<th:block lang="en" th:replace="fragments/header :: header"></th:block>
+<p></p>
+<hr>
+<p></p>
+<div layout:fragment="content"></div>
+<p></p>
+<hr>
+<p></p>
+<h3>Add a new Animal to this Care Taker</h3>
+<form action="#" th:action="@{/web/careTaker/list/{id}(id=${careTaker.id})}" th:object="${animal}" method="post">
+    <th:block lang="en" th:replace="fragments/entities_form_fragment :: animal_form_fragment"></th:block>
+</form>
+<p></p>
+<hr>
+<p></p>
+<a href="#" th:href="@{/web/careTaker/list}">Care Takers List</a>
+<p></p>
+<th:block lang="en" th:replace="fragments/footer :: footer"></th:block>
+</body>
+</html>

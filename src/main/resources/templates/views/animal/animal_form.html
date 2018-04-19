@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/footer_down_layout}" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Animal Form</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2>Animal Form:</h2>
+    <form action="#" th:action="@{/web/animal/save}" th:object="${animal}" method="post">
+        <th:block lang="en" th:replace="fragments/entities_form_fragment :: animal_form_fragment"></th:block>
+    </form>
+</div>
+</body>
+</html>

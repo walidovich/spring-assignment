@@ -15,6 +15,7 @@ import java.util.List;
 public class CareTakerWebController {
 
 	private final CareTakerService careTakerService;
+	private final String VIEW_PATH = "views/careTaker";
 
 	public CareTakerWebController(CareTakerService careTakerService) {
 		this.careTakerService = careTakerService;
@@ -22,7 +23,7 @@ public class CareTakerWebController {
 
 	@GetMapping("/list")
 	public ModelAndView list() {
-		ModelAndView modelAndView = new ModelAndView("careTaker/careTaker_list");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_list");
 		List<CareTaker> careTakers = careTakerService.getCareTakers();
 		modelAndView.addObject("careTakers", careTakers);
 		return modelAndView;
@@ -30,7 +31,7 @@ public class CareTakerWebController {
 
 	@GetMapping("/list/{id}")
 	public ModelAndView careTakerDetails(@PathVariable("id") Long id) throws CareTakerNotFoundException {
-		ModelAndView modelAndView = new ModelAndView("careTaker/careTaker_details");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_details");
 		CareTaker careTaker = careTakerService.getCareTakerById(id);
 		Animal animal = new Animal();
 		modelAndView.addObject("careTaker", careTaker);
@@ -40,7 +41,7 @@ public class CareTakerWebController {
 
 	@GetMapping("/add")
 	public ModelAndView add() {
-		ModelAndView modelAndView = new ModelAndView("careTaker/careTaker_form");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_form");
 		CareTaker careTaker = new CareTaker();
 		modelAndView.addObject("careTaker", careTaker);
 		return modelAndView;
@@ -48,7 +49,7 @@ public class CareTakerWebController {
 
 	@GetMapping("/update/{id}")
 	public ModelAndView update(@PathVariable("id") Long id) throws CareTakerNotFoundException {
-		ModelAndView modelAndView = new ModelAndView("careTaker/careTaker_form");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_form");
 		CareTaker careTaker = careTakerService.getCareTakerById(id);
 		modelAndView.addObject("careTaker", careTaker);
 		return modelAndView;
