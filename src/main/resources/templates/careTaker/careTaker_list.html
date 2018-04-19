@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <html>
 <html lang="en">
 <head>
@@ -34,6 +34,7 @@
 <p></p>
 <a href="#" th:href="@{/web/careTaker/add}">Add Care Taker</a>
 <p></p>
-<a href="#" th:href="@{/}">Back to home page</a>
+<hr>
+<th:block lang="en" th:replace="fragments/footer :: footer"></th:block>
 </body>
 </html>
