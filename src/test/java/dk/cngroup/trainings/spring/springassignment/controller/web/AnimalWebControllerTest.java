@@ -65,7 +65,7 @@ public class AnimalWebControllerTest {
 	}
 
 	@Test
-	public void getAnimalByExistingId() throws Exception {
+	public void getAnimalByExistingIdTest() throws Exception {
 		// Happy URL_PATH
 		when(animalService.getAnimalById(3L)).thenReturn(animals.get(2));
 
@@ -79,7 +79,7 @@ public class AnimalWebControllerTest {
 	}
 
 	@Test
-	public void getAnimalByNonExistingId() throws Exception {
+	public void getAnimalByNonExistingIdTest() throws Exception {
 		// Sad URL_PATH
 		when(animalService.getAnimalById(6L)).thenThrow(AnimalNotFoundException.class);
 

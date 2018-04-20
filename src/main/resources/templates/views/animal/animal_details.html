@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layouts/animal_details_layout}" lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,9 +16,10 @@
         <td colspan="2">Care Takers</td>
         </thead>
         <tr>
-            <td th:text="${animal.id}" th:rowspan="${animal.careTakers.size()}">12</td>
-            <td th:text="${animal.name}" th:rowspan="${animal.careTakers.size()}">Tiger</td>
-            <td th:text="${animal.description}" th:rowspan="${animal.careTakers.size()}">Bengali predator</td>
+            <td th:text="${animal.id}">11</td>
+            <td th:text="${animal.name}">Tiger
+            </td>
+            <td th:text="${animal.description}">Bengali predator</td>
             <td>
                 <table>
                     <th:block th:if="${animal.careTakers!=null}">

@@ -5,9 +5,11 @@ import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.service.CareTakerService;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -29,21 +31,10 @@ public class CareTakerWebController {
 		return modelAndView;
 	}
 
-	@GetMapping("/list/{id}")
-	public ModelAndView careTakerDetails(@PathVariable("id") Long id) throws CareTakerNotFoundException {
-		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_details");
-		CareTaker careTaker = careTakerService.getCareTakerById(id);
-		Animal animal = new Animal();
-		modelAndView.addObject("careTaker", careTaker);
-		modelAndView.addObject("animal", animal);
-		return modelAndView;
-	}
-
 	@GetMapping("/add")
 	public ModelAndView add() {
 		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_form");
-		CareTaker careTaker = new CareTaker();
-		modelAndView.addObject("careTaker", careTaker);
+		modelAndView.addObject("careTaker", new CareTaker());
 		return modelAndView;
 	}
 
@@ -56,16 +47,22 @@ public class CareTakerWebController {
 	}
 
 	@PostMapping("/save")
-	public ModelAndView save(@ModelAttribute("careTaker") CareTaker careTaker)
+	public ModelAndView save(@ModelAttribute("careTaker") @Valid CareTaker careTaker,
+							 BindingResult bindingResult)
 			throws CareTakerNotFoundException, InvalidCareTakerException {
-		if (careTaker.getId() != null) {
-			// update
-			careTakerService.updateCareTakerById(careTaker.getId(), careTaker);
+		if (bindingResult.hasErrors()) {
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_form");
+			return modelAndView;
 		} else {
-			// add new
-			careTakerService.addCareTaker(careTaker);
+			if (careTaker.getId() != null) {
+				// update
+				careTakerService.updateCareTakerById(careTaker.getId(), careTaker);
+			} else {
+				// add new
+				careTakerService.addCareTaker(careTaker);
+			}
+			return new ModelAndView("redirect:/web/careTaker/list");
 		}
-		return new ModelAndView("redirect:/web/careTaker/list");
 	}
 
 	@GetMapping("/delete/{id}")
@@ -83,12 +80,29 @@ public class CareTakerWebController {
 		return new ModelAndView("redirect:/web/careTaker/list/" + careTakerId);
 	}
 
+	@GetMapping("/list/{id}")
+	public ModelAndView careTakerDetails(@PathVariable("id") Long id) throws CareTakerNotFoundException {
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_details");
+		CareTaker careTaker = careTakerService.getCareTakerById(id);
+		modelAndView.addObject("careTaker", careTaker);
+		modelAndView.addObject("animal", new Animal());
+		return modelAndView;
+	}
+
 	@PostMapping("/list/{id}")
 	public ModelAndView addNewAnimalToExistingCareTaker(@PathVariable("id") Long id,
-														@ModelAttribute("animal") Animal animal)
+														@ModelAttribute("animal") @Valid Animal animal,
+														BindingResult bindingResult)
 			throws InvalidAnimalException, CareTakerNotFoundException {
-		careTakerService.addNewAnimalToExistingCareTaker(id, animal);
-		return new ModelAndView("redirect:/web/careTaker/list/" + id);
+		if (bindingResult.hasErrors()) {
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_details");
+			CareTaker careTaker = careTakerService.getCareTakerById(id);
+			modelAndView.addObject("careTaker", careTaker);
+			return modelAndView;
+		} else {
+			careTakerService.addNewAnimalToExistingCareTaker(id, animal);
+			return new ModelAndView("redirect:/web/careTaker/list/" + id);
+		}
 	}
 
 	@PostMapping("/list/{id}/link")

@@ -3,6 +3,7 @@ package dk.cngroup.trainings.spring.springassignment.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,7 +13,7 @@ public class CareTaker {
 	@Id
 	private Long id;
 	@NotNull
-	@Size(min = NAME_MINIMUM_SIZE)
+	@Size(min = NAME_MINIMUM_SIZE, message = "name field cannot be empty")
 	private String name;
 	@ManyToMany
 	@JoinTable(
@@ -27,6 +28,7 @@ public class CareTaker {
 	public CareTaker(Long id, String name) {
 		this.id = id;
 		this.name = name.trim();
+		this.animals = new ArrayList<>();
 	}
 
 	public void addAnimalToCareTaker(Animal animal) {

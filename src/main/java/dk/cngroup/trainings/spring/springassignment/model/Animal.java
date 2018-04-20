@@ -8,6 +8,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,9 +19,9 @@ public class Animal {
 	@Id
 	private Long id;
 	@NotNull
-	@Size(min = NAME_MINIMUM_SIZE)
+	@Size(min = NAME_MINIMUM_SIZE, message = "name field must be at least 2 characters")
 	private String name;
-	@Size(max = DESCRIPTION_MAXIMUM_SIZE)
+	@Size(max = DESCRIPTION_MAXIMUM_SIZE, message = "description field must not exceed 10000 characters")
 	private String description;
 	@JsonIgnore
 	@ManyToMany(mappedBy = "animals")
@@ -33,6 +34,7 @@ public class Animal {
 		this.id = id;
 		this.name = name.trim();
 		this.description = description.trim();
+		this.careTakers = new ArrayList<>();
 	}
 
 	public void addCareTaker(CareTaker careTaker) {

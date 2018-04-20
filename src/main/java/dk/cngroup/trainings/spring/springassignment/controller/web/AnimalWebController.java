@@ -5,14 +5,17 @@ import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
 @RequestMapping("/web/animal")
-public class AnimalWebController {
+public class AnimalWebController implements WebMvcConfigurer {
 
 	private final AnimalService animalService;
 	private final String VIEW_PATH = "views/animal";
@@ -29,24 +32,6 @@ public class AnimalWebController {
 		return modelAndView;
 	}
 
-	@GetMapping("/list/{id}")
-	public ModelAndView getAnimalById(@PathVariable("id") Long id) throws AnimalNotFoundException {
-		Animal animal = animalService.getAnimalById(id);
-		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_details");
-		CareTaker careTaker = new CareTaker();
-		modelAndView.addObject("animal", animal);
-		modelAndView.addObject("careTaker", careTaker);
-		return modelAndView;
-	}
-
-	@GetMapping("/add")
-	public ModelAndView addAnimal() {
-		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
-		Animal animal = new Animal();
-		modelAndView.addObject("animal", animal);
-		return modelAndView;
-	}
-
 	@GetMapping("/update/{id}")
 	public ModelAndView updateAnimal(@PathVariable("id") Long id) throws AnimalNotFoundException {
 		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
@@ -55,17 +40,30 @@ public class AnimalWebController {
 		return modelAndView;
 	}
 
+	@GetMapping("/add")
+	public ModelAndView addAnimal() {
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
+		modelAndView.addObject("animal", new Animal());
+		return modelAndView;
+	}
+
 	@PostMapping("/save")
-	public ModelAndView saveAnimal(@ModelAttribute("animal") Animal animal)
+	public ModelAndView saveAnimal(@ModelAttribute("animal") @Valid Animal animal,
+								   BindingResult bindingResult)
 			throws AnimalNotFoundException, InvalidAnimalException {
-		if (animal.getId() != null) {
-			// update
-			animalService.updateAnimalById(animal.getId(), animal);
+		if (bindingResult.hasErrors()) {
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
+			return modelAndView;
 		} else {
-			// add new
-			animalService.addAnimal(animal);
+			if (animal.getId() != null) {
+				// update
+				animalService.updateAnimalById(animal.getId(), animal);
+			} else {
+				// add new
+				animalService.addAnimal(animal);
+			}
+			return new ModelAndView("redirect:/web/animal/list");
 		}
-		return new ModelAndView("redirect:/web/animal/list");
 	}
 
 	@GetMapping("/delete/{id}")
@@ -83,12 +81,29 @@ public class AnimalWebController {
 		return new ModelAndView("redirect:/web/animal/list/" + animalId);
 	}
 
+	@GetMapping("/list/{id}")
+	public ModelAndView getAnimalById(@PathVariable("id") Long id) throws AnimalNotFoundException {
+		Animal animal = animalService.getAnimalById(id);
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_details");
+		modelAndView.addObject("animal", animal);
+		modelAndView.addObject("careTaker", new CareTaker());
+		return modelAndView;
+	}
+
 	@PostMapping("/list/{id}")
 	public ModelAndView addNewCareTakerToExistingAnimal(@PathVariable("id") Long id,
-														@ModelAttribute("careTaker") CareTaker careTaker)
+														@ModelAttribute("careTaker") @Valid CareTaker careTaker,
+														BindingResult bindingResult)
 			throws AnimalNotFoundException, InvalidCareTakerException {
-		animalService.addNewCareTakerToExistingAnimal(id, careTaker);
-		return new ModelAndView("redirect:/web/animal/list/" + id);
+		if (bindingResult.hasErrors()) {
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_details");
+			Animal animal = animalService.getAnimalById(id);
+			modelAndView.addObject("animal", animal);
+			return modelAndView;
+		} else {
+			animalService.addNewCareTakerToExistingAnimal(id, careTaker);
+			return new ModelAndView("redirect:/web/animal/list/" + id);
+		}
 	}
 
 	@PostMapping("/list/{id}/link")
