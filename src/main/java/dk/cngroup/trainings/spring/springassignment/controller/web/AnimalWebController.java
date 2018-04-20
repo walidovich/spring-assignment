@@ -8,14 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @Controller
 @RequestMapping("/web/animal")
-public class AnimalWebController implements WebMvcConfigurer {
+public class AnimalWebController {
 
 	private final AnimalService animalService;
 	private final String VIEW_PATH = "views/animal";
@@ -61,6 +60,7 @@ public class AnimalWebController implements WebMvcConfigurer {
 			} else {
 				// add new
 				animalService.addAnimal(animal);
+				System.out.println(">>>> Inside save");
 			}
 			return new ModelAndView("redirect:/web/animal/list");
 		}
@@ -106,11 +106,12 @@ public class AnimalWebController implements WebMvcConfigurer {
 		}
 	}
 
-	@PostMapping("/list/{id}/link")
-	public ModelAndView addExistingCareTakerToExistingAnimal(@PathVariable("id") Long animalId,
+	@PostMapping("/list/{animalId}/link")
+	public ModelAndView addExistingCareTakerToExistingAnimal(@PathVariable("animalId") Long animalId,
 															 @ModelAttribute("careTaker") CareTaker careTaker)
 			throws AnimalNotFoundException, AnimalAndCareTakerAlreadyLinked, CareTakerNotFoundException {
 		animalService.addExistingCareTakerToExistingAnimal(animalId, careTaker.getId());
 		return new ModelAndView("redirect:/web/animal/list/" + animalId);
+
 	}
 }

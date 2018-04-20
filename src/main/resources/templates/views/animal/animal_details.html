@@ -46,7 +46,7 @@
     <p></p>
     <h3>Add an existing Care Taker by id to this Animal</h3>
     <form action="#"
-          th:action="@{/web/animal/list/{id}/link(id=${animal.id})}"
+          th:action="@{/web/animal/list/{animalId}/link(animalId=${animal.id})}"
           th:object="${careTaker}" method="post">
         <table>
             <tr>

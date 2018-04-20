@@ -5,7 +5,6 @@ import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
-import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalServiceFieldsTrimmer;
 import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalValidationService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.CareTakerValidationService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.IdGenerator;
@@ -48,7 +47,6 @@ public class AnimalServiceImpl implements AnimalService {
 
 	@Override
 	public Animal addAnimal(Animal animal) throws InvalidAnimalException {
-		AnimalServiceFieldsTrimmer.trimFields(animal);
 		AnimalValidationService.validate(animal);
 		animal.setId(IdGenerator.getId());
 		return animalRepository.save(animal);
@@ -77,7 +75,6 @@ public class AnimalServiceImpl implements AnimalService {
 	@Override
 	public Animal updateAnimalById(long id, Animal animal)
 			throws InvalidAnimalException, AnimalNotFoundException {
-		AnimalServiceFieldsTrimmer.trimFields(animal);
 		AnimalValidationService.validate(animal);
 		this.checkAnimalExistsById(id);
 		animal.setId(id);

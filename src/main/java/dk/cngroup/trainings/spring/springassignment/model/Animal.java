@@ -62,7 +62,7 @@ public class Animal {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = name.trim();
 	}
 
 	public String getDescription() {
@@ -70,7 +70,7 @@ public class Animal {
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		this.description = description.trim();
 	}
 
 	@Override

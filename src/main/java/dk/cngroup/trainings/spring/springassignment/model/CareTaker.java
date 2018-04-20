@@ -13,7 +13,7 @@ public class CareTaker {
 	@Id
 	private Long id;
 	@NotNull
-	@Size(min = NAME_MINIMUM_SIZE, message = "name field cannot be empty")
+	@Size(min = NAME_MINIMUM_SIZE, message = "name field must be at least 1 character")
 	private String name;
 	@ManyToMany
 	@JoinTable(
@@ -56,7 +56,7 @@ public class CareTaker {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = name.trim();
 	}
 
 	@Override
