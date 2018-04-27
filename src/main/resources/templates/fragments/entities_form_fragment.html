@@ -10,7 +10,8 @@
         <tr>
             <td>Description:</td>
             <td><input type="text" th:field="*{description}"/></td>
-            <td th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description Error</td>
+            <td th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description Error
+            </td>
         </tr>
         <tr>
             <td>Action:</td>
@@ -20,7 +21,7 @@
 </div>
 <!--Care Taker Form Fragment-->
 <div xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="careTaker_form_fragment">
-    <input type="hidden" th:field="*{id}"/>
+    <input type="hidden" th:field="*{id}">
     <table>
         <tr>
             <td>Name:</td>

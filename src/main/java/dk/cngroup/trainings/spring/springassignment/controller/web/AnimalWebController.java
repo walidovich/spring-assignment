@@ -1,5 +1,7 @@
 package dk.cngroup.trainings.spring.springassignment.controller.web;
 
+import dk.cngroup.trainings.spring.springassignment.controller.dto.CareTakerEntityDtoConverter;
+import dk.cngroup.trainings.spring.springassignment.controller.dto.CareTakerLinkIdDTO;
 import dk.cngroup.trainings.spring.springassignment.exception.*;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
@@ -60,7 +62,6 @@ public class AnimalWebController {
 			} else {
 				// add new
 				animalService.addAnimal(animal);
-				System.out.println(">>>> Inside save");
 			}
 			return new ModelAndView("redirect:/web/animal/list");
 		}
@@ -87,6 +88,9 @@ public class AnimalWebController {
 		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_details");
 		modelAndView.addObject("animal", animal);
 		modelAndView.addObject("careTaker", new CareTaker());
+		modelAndView.addObject("careTakerLinkIdDto", new CareTakerLinkIdDTO());
+		System.out.println(">>>>>> The CareTaker added: " + modelAndView.getModel().get("careTaker"));
+		System.out.println(">>>>>> The CareTakerLinkIdDTO added: " + modelAndView.getModel().get("careTakerLinkIdDto"));
 		return modelAndView;
 	}
 
@@ -106,12 +110,21 @@ public class AnimalWebController {
 		}
 	}
 
-	@PostMapping("/list/{animalId}/link")
-	public ModelAndView addExistingCareTakerToExistingAnimal(@PathVariable("animalId") Long animalId,
-															 @ModelAttribute("careTaker") CareTaker careTaker)
+	@PostMapping("/list/{id}/link")
+	public ModelAndView addExistingCareTakerToExistingAnimal(@PathVariable("id") Long id,
+															 @ModelAttribute("careTakerLinkIdDto") @Valid CareTakerLinkIdDTO careTakerLinkIdDto,
+															 BindingResult bindingResult)
 			throws AnimalNotFoundException, AnimalAndCareTakerAlreadyLinked, CareTakerNotFoundException {
-		animalService.addExistingCareTakerToExistingAnimal(animalId, careTaker.getId());
-		return new ModelAndView("redirect:/web/animal/list/" + animalId);
-
+		if (bindingResult.hasErrors()) {
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_details");
+			Animal animal = animalService.getAnimalById(id);
+			modelAndView.addObject("animal", animal);
+			System.out.println(">>>>>> The CareTakerLinkIdDTO: " + careTakerLinkIdDto);
+			return modelAndView;
+		} else {
+			CareTaker careTaker = CareTakerEntityDtoConverter.toCareTakerEntity(careTakerLinkIdDto);
+			animalService.addExistingCareTakerToExistingAnimal(id, careTaker.getId());
+			return new ModelAndView("redirect:/web/animal/list/" + id);
+		}
 	}
 }

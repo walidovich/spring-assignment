@@ -45,13 +45,13 @@
     <hr>
     <p></p>
     <h3>Add an existing Care Taker by id to this Animal</h3>
-    <form action="#"
-          th:action="@{/web/animal/list/{animalId}/link(animalId=${animal.id})}"
-          th:object="${careTaker}" method="post">
+    <form action="#" th:action="@{/web/animal/list/{id}/link(id=${animal.id})}"
+          th:object="${careTakerLinkIdDto}" method="post">
         <table>
             <tr>
                 <td>Id:</td>
                 <td><input type="text" th:field="*{id}"/></td>
+                <td th:if="${#fields.hasErrors('id')}" th:errors="*{id}">Id Error</td>
             </tr>
             <tr>
                 <td>Action:</td>
