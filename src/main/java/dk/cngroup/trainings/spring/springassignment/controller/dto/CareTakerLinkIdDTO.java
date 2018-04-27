@@ -5,27 +5,27 @@ import javax.validation.constraints.NotNull;
 public class CareTakerLinkIdDTO {
 
 	@NotNull
-	private Long careTakerId;
+	private Long id;
 
 	public CareTakerLinkIdDTO() {
 	}
 
 	public CareTakerLinkIdDTO(Long id) {
-		this.careTakerId = id;
+		this.id = id;
 	}
 
 	public Long getId() {
-		return careTakerId;
+		return id;
 	}
 
 	public void setId(Long id) {
-		this.careTakerId = id;
+		this.id = id;
 	}
 
 	@Override
 	public String toString() {
 		return "CareTakerLinkIdDTO{" +
-				"id=" + careTakerId +
+				"id=" + id +
 				'}';
 	}
 }

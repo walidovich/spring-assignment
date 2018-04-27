@@ -89,8 +89,6 @@ public class AnimalWebController {
 		modelAndView.addObject("animal", animal);
 		modelAndView.addObject("careTaker", new CareTaker());
 		modelAndView.addObject("careTakerLinkIdDto", new CareTakerLinkIdDTO());
-		System.out.println(">>>>>> The CareTaker added: " + modelAndView.getModel().get("careTaker"));
-		System.out.println(">>>>>> The CareTakerLinkIdDTO added: " + modelAndView.getModel().get("careTakerLinkIdDto"));
 		return modelAndView;
 	}
 
@@ -119,7 +117,6 @@ public class AnimalWebController {
 			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_details");
 			Animal animal = animalService.getAnimalById(id);
 			modelAndView.addObject("animal", animal);
-			System.out.println(">>>>>> The CareTakerLinkIdDTO: " + careTakerLinkIdDto);
 			return modelAndView;
 		} else {
 			CareTaker careTaker = CareTakerEntityDtoConverter.toCareTakerEntity(careTakerLinkIdDto);
