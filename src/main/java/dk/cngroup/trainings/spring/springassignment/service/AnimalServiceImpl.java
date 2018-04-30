@@ -7,7 +7,6 @@ import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
 import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalValidationService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.CareTakerValidationService;
-import dk.cngroup.trainings.spring.springassignment.service.helper.IdGenerator;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -85,7 +84,6 @@ public class AnimalServiceImpl implements AnimalService {
 			throws InvalidCareTakerException, AnimalNotFoundException {
 		CareTakerValidationService.validate(careTaker);
 		Animal animal = this.getAnimalById(id);
-		careTaker.setId(IdGenerator.getId());
 		List<Animal> animals = Arrays.asList(animal);
 		careTaker.setAnimals(animals);
 		CareTaker addedCareTaker = careTakerRepository.save(careTaker);
