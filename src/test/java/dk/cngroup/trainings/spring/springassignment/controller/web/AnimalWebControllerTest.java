@@ -91,11 +91,11 @@ public class AnimalWebControllerTest {
 	}
 
 	@Test
-	public void addAnimalTest() throws Exception {
-		// Happy URL_PATH
+	public void addAnimalGetTest() throws Exception {
+		// Happy path
 		mockMvc.perform(get(URL_PATH + "/add"))
 				.andExpect(status().isOk())
-				.andExpect(model().attribute("animal", hasProperty("id", nullValue())))
+				.andExpect(model().attribute("animal", hasProperty("id", equalTo(0L))))
 				.andExpect(view().name(viewPackage + "animal_form"));
 
 		verifyZeroInteractions(animalService);
@@ -104,14 +104,15 @@ public class AnimalWebControllerTest {
 	// There is no Sad URL_PATH for requesting the "/add"
 
 	@Test
-	public void saveNewAnimalTest() throws Exception {
-		// Happy URL_PATH
+	public void addAnimalPostTest() throws Exception {
+		// Happy path
 		Animal animal = new Animal(7L, "Leopard", "Lone cat");
 
 		when(animalService.addAnimal(any(Animal.class))).thenReturn(animal);
 
-		mockMvc.perform(post(URL_PATH + "/save")
+		mockMvc.perform(post(URL_PATH + "/add")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("id", "0")
 				.param("name", animal.getName())
 				.param("description", animal.getDescription())
 				.sessionAttr("animal", new Animal()))
@@ -120,5 +121,21 @@ public class AnimalWebControllerTest {
 
 		verify(animalService, times(1)).addAnimal(any(Animal.class)); // I HATE TESTING hhhh
 		verifyNoMoreInteractions(animalService);
+	}
+
+	@Test
+	public void addAnimalPostWithShortNameTest() throws Exception {
+		// Sad path
+		Animal animal = new Animal(7L, "L", "Lone cat");
+
+		mockMvc.perform(post(URL_PATH + "/add")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("id", "0")
+				.param("name", animal.getName())
+				.param("description", animal.getDescription())
+				.sessionAttr("animal", new Animal()))
+				.andExpect(view().name("views/animal/animal_form"));
+
+		verify(animalService, times(0)).addAnimal(any(Animal.class)); // I HATE TESTING hhhh
 	}
 }

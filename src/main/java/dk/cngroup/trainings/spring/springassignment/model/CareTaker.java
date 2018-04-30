@@ -14,8 +14,8 @@ public class CareTaker {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Digits(integer = 6, fraction = 0, message = "id field must be a integer between 0 and 999999")
+	@NotNull(message = "id field can''t be empty")
 	private Long id;
-	@NotNull
 	@Size(min = NAME_MINIMUM_SIZE, message = "name field must be at least 1 character")
 	private String name;
 	@ManyToMany

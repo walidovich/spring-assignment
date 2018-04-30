@@ -8,7 +8,7 @@
 <body>
 <div layout:fragment="content">
     <h2>Animal Form:</h2>
-    <form action="#" th:action="@{/web/animal/save}" th:object="${animal}" method="post">
+    <form action="#" th:action="@{/web/animal/add}" th:object="${animal}" method="post">
         <th:block lang="en" th:replace="fragments/entities_form_fragment :: animal_form_fragment"></th:block>
     </form>
 </div>

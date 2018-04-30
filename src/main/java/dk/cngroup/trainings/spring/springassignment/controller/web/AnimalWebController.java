@@ -24,53 +24,61 @@ public class AnimalWebController {
 	}
 
 	@GetMapping("/list")
-	public ModelAndView getAnimals() {
+	public ModelAndView list() {
 		List<Animal> animals = animalService.getAnimals();
 		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_list");
 		modelAndView.addObject("animals", animals);
 		return modelAndView;
 	}
 
+	@GetMapping("/add")
+	public ModelAndView add() {
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
+		Animal animal = new Animal();
+		animal.setId(0L);
+		modelAndView.addObject("animal", animal);
+		return modelAndView;
+	}
+
+	@PostMapping("/add")
+	public ModelAndView add(@ModelAttribute("animal") @Valid Animal animal,
+							BindingResult bindingResult)
+			throws InvalidAnimalException {
+		if (bindingResult.hasErrors()) {
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
+			return modelAndView;
+		} else {
+			// add new
+			animalService.addAnimal(animal);
+			return new ModelAndView("redirect:/web/animal/list");
+		}
+	}
+
 	@GetMapping("/update/{id}")
-	public ModelAndView updateAnimal(@PathVariable("id") Long id) throws AnimalNotFoundException {
+	public ModelAndView update(@PathVariable("id") Long id) throws AnimalNotFoundException {
 		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
 		Animal animal = animalService.getAnimalById(id);
 		modelAndView.addObject("animal", animal);
 		return modelAndView;
 	}
 
-	@GetMapping("/add")
-	public ModelAndView addAnimal() {
-		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
-		Animal animal = new Animal();
-		modelAndView.addObject("animal", animal);
-		return modelAndView;
-	}
-
-	@PostMapping("/save")
-	public ModelAndView saveAnimal(@ModelAttribute("animal") @Valid Animal animal,
-								   BindingResult bindingResult)
-			throws AnimalNotFoundException, InvalidAnimalException {
-		System.out.println(">>>>>>>> Inside Save");
-		System.out.println(animal);
+	@PostMapping("/update/{id}")
+	public ModelAndView update(@PathVariable("id") Long id,
+							   @ModelAttribute("animal") @Valid Animal animal,
+							   BindingResult bindingResult)
+			throws InvalidAnimalException, AnimalNotFoundException {
 		if (bindingResult.hasErrors()) {
-			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_update_form");
 			return modelAndView;
 		} else {
-			if (animal.getId() != null) {
-				// update
-				animalService.updateAnimalById(animal.getId(), animal);
-			} else {
-				// add new
-				animalService.addAnimal(animal);
-				System.out.println(">>>> Inside save");
-			}
+			// add new
+			animalService.updateAnimalById(id, animal);
 			return new ModelAndView("redirect:/web/animal/list");
 		}
 	}
 
 	@GetMapping("/delete/{id}")
-	public ModelAndView deleteAnimal(@PathVariable("id") Long id) throws AnimalNotFoundException {
+	public ModelAndView delete(@PathVariable("id") Long id) throws AnimalNotFoundException {
 		animalService.deleteAnimalById(id);
 		return new ModelAndView("redirect:/web/animal/list");
 	}
@@ -89,7 +97,9 @@ public class AnimalWebController {
 		Animal animal = animalService.getAnimalById(id);
 		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_details");
 		modelAndView.addObject("animal", animal);
-		modelAndView.addObject("careTaker", new CareTaker());
+		CareTaker careTaker = new CareTaker();
+		careTaker.setId(0L);
+		modelAndView.addObject("careTaker", careTaker);
 		return modelAndView;
 	}
 
