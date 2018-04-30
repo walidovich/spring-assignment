@@ -42,7 +42,8 @@ public class AnimalWebController {
 	@GetMapping("/add")
 	public ModelAndView addAnimal() {
 		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
-		modelAndView.addObject("animal", new Animal());
+		Animal animal = new Animal();
+		modelAndView.addObject("animal", animal);
 		return modelAndView;
 	}
 
@@ -50,6 +51,8 @@ public class AnimalWebController {
 	public ModelAndView saveAnimal(@ModelAttribute("animal") @Valid Animal animal,
 								   BindingResult bindingResult)
 			throws AnimalNotFoundException, InvalidAnimalException {
+		System.out.println(">>>>>>>> Inside Save");
+		System.out.println(animal);
 		if (bindingResult.hasErrors()) {
 			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_form");
 			return modelAndView;
@@ -106,12 +109,32 @@ public class AnimalWebController {
 		}
 	}
 
-	@PostMapping("/list/{animalId}/link")
-	public ModelAndView addExistingCareTakerToExistingAnimal(@PathVariable("animalId") Long animalId,
-															 @ModelAttribute("careTaker") CareTaker careTaker)
+	@GetMapping("/list/{id}/link")
+	public ModelAndView linkExistingCareTakerToExistingAnimalForm(@PathVariable("id") Long id)
+			throws AnimalNotFoundException {
+		Animal animal = animalService.getAnimalById(id);
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_link");
+		modelAndView.addObject("animal", animal);
+		CareTaker careTaker = new CareTaker();
+		careTaker.setName("tmpName");
+		modelAndView.addObject("careTaker", careTaker);
+		return modelAndView;
+	}
+
+	@PostMapping("/list/{id}/link")
+	public ModelAndView addExistingCareTakerToExistingAnimal(@PathVariable("id") Long id,
+															 @ModelAttribute("careTaker") @Valid CareTaker careTaker,
+															 BindingResult bindingResult)
 			throws AnimalNotFoundException, AnimalAndCareTakerAlreadyLinked, CareTakerNotFoundException {
-		animalService.addExistingCareTakerToExistingAnimal(animalId, careTaker.getId());
-		return new ModelAndView("redirect:/web/animal/list/" + animalId);
+		if (bindingResult.hasErrors()) {
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/animal_link");
+			Animal animal = animalService.getAnimalById(id);
+			modelAndView.addObject("animal", animal);
+			return modelAndView;
+		} else {
+			animalService.addExistingCareTakerToExistingAnimal(id, careTaker.getId());
+			return new ModelAndView("redirect:/web/animal/list/" + id);
+		}
 
 	}
 }

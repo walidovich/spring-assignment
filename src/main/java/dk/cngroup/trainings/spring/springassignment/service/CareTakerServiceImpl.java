@@ -6,7 +6,6 @@ import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
 import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalValidationService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.CareTakerValidationService;
-import dk.cngroup.trainings.spring.springassignment.service.helper.IdGenerator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,7 +40,6 @@ public class CareTakerServiceImpl implements CareTakerService {
 	@Override
 	public CareTaker addCareTaker(CareTaker careTaker) throws InvalidCareTakerException {
 		CareTakerValidationService.validate(careTaker);
-		careTaker.setId(IdGenerator.getId());
 		return careTakerRepository.save(careTaker);
 	}
 

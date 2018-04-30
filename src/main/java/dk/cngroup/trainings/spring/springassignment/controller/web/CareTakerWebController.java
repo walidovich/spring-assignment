@@ -105,11 +105,31 @@ public class CareTakerWebController {
 		}
 	}
 
+	@GetMapping("/list/{id}/link")
+	public ModelAndView linkExistingAnimalToExistingCareTakerForm(@PathVariable("id") Long id)
+			throws CareTakerNotFoundException {
+		CareTaker careTaker = careTakerService.getCareTakerById(id);
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_link");
+		modelAndView.addObject("careTaker", careTaker);
+		Animal animal = new Animal();
+		animal.setName("tmpName");
+		modelAndView.addObject("animal", animal);
+		return modelAndView;
+	}
+
 	@PostMapping("/list/{id}/link")
-	public ModelAndView addExistingAnimalToExistingCareTaker(@PathVariable("id") Long careTakerId,
-															 @ModelAttribute("animal") Animal animal)
+	public ModelAndView addExistingAnimalToExistingCareTaker(@PathVariable("id") Long id,
+															 @ModelAttribute("animal") @Valid Animal animal,
+															 BindingResult bindingResult)
 			throws AnimalNotFoundException, AnimalAndCareTakerAlreadyLinked, CareTakerNotFoundException {
-		careTakerService.addExistingAnimalToExistingCareTaker(careTakerId, animal.getId());
-		return new ModelAndView("redirect:/web/careTaker/list/" + careTakerId);
+		if (bindingResult.hasErrors()) {
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_link");
+			CareTaker careTaker = careTakerService.getCareTakerById(id);
+			modelAndView.addObject("careTaker", careTaker);
+			return modelAndView;
+		} else {
+			careTakerService.addExistingAnimalToExistingCareTaker(id, animal.getId());
+			return new ModelAndView("redirect:/web/careTaker/list/" + id);
+		}
 	}
 }

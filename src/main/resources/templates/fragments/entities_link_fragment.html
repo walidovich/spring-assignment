@@ -1,0 +1,46 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="animal_link_fragment">
+    <h3>Add an existing Care Taker by id to this Animal</h3>
+    <form action="#"
+          th:action="@{/web/animal/list/{animalId}/link(animalId=${animal.id})}"
+          th:object="${careTaker}" method="post">
+        <input type="hidden" th:field="*{name}" th:value="tmpName"/>
+        <table>
+            <tr>
+                <td>Id:</td>
+                <td><input type="text" th:field="*{id}"/></td>
+                <td th:if="${#fields.hasErrors('id')}" th:errors="*{id}">Id Error</td>
+            </tr>
+            <tr>
+                <td>Action:</td>
+                <td><input type="submit" value="Submit"/><input type="reset" value="Reset"/></td>
+            </tr>
+        </table>
+    </form>
+    <hr>
+    <p></p>
+    <a href="#" th:href="@{/web/animal/list}">Animals List</a>
+    <p></p>
+</div>
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="careTaker_link_fragment">
+    <h3>Add an existing Animal by id to this Care Taker</h3>
+    <form action="#"
+          th:action="@{/web/careTaker/list/{careTakerId}/link(careTakerId=${careTaker.id})}"
+          th:object="${animal}" method="post">
+        <input type="hidden" th:field="*{name}" th:value="tmpName"/>
+        <table>
+            <tr>
+                <td>Id:</td>
+                <td><input type="text" th:field="*{id}"/></td>
+                <td th:if="${#fields.hasErrors('id')}" th:errors="*{id}">Id Error</td>
+            </tr>
+            <tr>
+                <td>Action:</td>
+                <td><input type="submit" value="Submit"/><input type="reset" value="Reset"/></td>
+            </tr>
+        </table>
+    </form>
+    <hr>
+    <p></p>
+    <a href="#" th:href="@{/web/careTaker/list}">Care Takers List</a>
+    <p></p>
+</div>

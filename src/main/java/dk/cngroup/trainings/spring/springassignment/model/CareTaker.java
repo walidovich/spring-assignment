@@ -1,6 +1,7 @@
 package dk.cngroup.trainings.spring.springassignment.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -11,6 +12,8 @@ import java.util.List;
 public class CareTaker {
 	public final static int NAME_MINIMUM_SIZE = 1;
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Digits(integer = 6, fraction = 0, message = "id field must be a integer between 0 and 999999")
 	private Long id;
 	@NotNull
 	@Size(min = NAME_MINIMUM_SIZE, message = "name field must be at least 1 character")

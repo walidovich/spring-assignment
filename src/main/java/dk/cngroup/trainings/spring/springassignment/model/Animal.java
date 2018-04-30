@@ -2,10 +2,8 @@ package dk.cngroup.trainings.spring.springassignment.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -17,6 +15,8 @@ public class Animal {
 	public final static int NAME_MINIMUM_SIZE = 2;
 	public final static int DESCRIPTION_MAXIMUM_SIZE = 10000;
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Digits(integer = 6, fraction = 0, message = "id field must be a integer between 0 and 999999")
 	private Long id;
 	@NotNull
 	@Size(min = NAME_MINIMUM_SIZE, message = "name field must be at least 2 characters")
