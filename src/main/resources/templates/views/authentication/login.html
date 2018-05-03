@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/header_up_footer_down_layout}">
+<head>
+    <title>Spring Security Example </title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2>Login to use the Zoo portal</h2>
+    <form th:action="@{/login}" method="post">
+        <table>
+            <tr>
+                <td></td>
+                <td>
+                    <div th:if="${param.error}">Invalid username and password.</div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div th:if="${param.logout}">You have been logged out.</div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>User Name:</label></td>
+                <td><label><input type="text" name="username"/></label></td>
+            </tr>
+            <tr>
+                <td><label>Password:</label></td>
+                <td><label><input type="password" name="password"/></label></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" value="Sign In"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

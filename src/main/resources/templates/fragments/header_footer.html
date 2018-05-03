@@ -5,4 +5,8 @@
 <!--Footer-->
 <div xmlns:th="http://www.thymeleaf.org" th:fragment="footer" align="center">
     <a href="#" th:href="@{/}">Back to Home Page</a>
+    <p></p>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Logout"/>
+    </form>
 </div>
