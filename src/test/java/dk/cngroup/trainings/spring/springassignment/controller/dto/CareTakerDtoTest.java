@@ -1,5 +1,8 @@
 package dk.cngroup.trainings.spring.springassignment.controller.dto;
 
+import dk.cngroup.trainings.spring.springassignment.controller.dto.caretaker.CareTakerCreateDTO;
+import dk.cngroup.trainings.spring.springassignment.controller.dto.caretaker.CareTakerEntityDtoConverter;
+import dk.cngroup.trainings.spring.springassignment.controller.dto.caretaker.CareTakerLinkIdDTO;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import org.junit.Assert;
 import org.junit.Test;

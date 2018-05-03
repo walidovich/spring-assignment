@@ -1,12 +1,10 @@
-package dk.cngroup.trainings.spring.springassignment.controller.dto;
+package dk.cngroup.trainings.spring.springassignment.controller.dto.caretaker;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class CareTakerCreateDTO {
 
-	@NotNull
-	@NotBlank(message = "name field cannot be empty")
+	@Size(min = 1, message = "name field must be at least 1 character")
 	private String name;
 
 	public CareTakerCreateDTO() {

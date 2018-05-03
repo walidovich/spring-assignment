@@ -28,6 +28,7 @@ public class Animal {
 	private List<CareTaker> careTakers;
 
 	public Animal() {
+		this.id = 0L;
 	}
 
 	public Animal(Long id, String name, String description) {

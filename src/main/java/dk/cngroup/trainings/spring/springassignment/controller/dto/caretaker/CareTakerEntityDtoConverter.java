@@ -1,4 +1,4 @@
-package dk.cngroup.trainings.spring.springassignment.controller.dto;
+package dk.cngroup.trainings.spring.springassignment.controller.dto.caretaker;
 
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import org.modelmapper.ModelMapper;

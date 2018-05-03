@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body>
+
 <th:block lang="en" th:replace="fragments/header_footer :: header"></th:block>
 <p></p>
 <hr>
@@ -10,7 +11,7 @@
 <hr>
 <p></p>
 <h3>Add a new Animal to this Care Taker</h3>
-<form action="#" th:action="@{/web/careTaker/list/{id}(id=${careTaker.id})}" th:object="${animal}" method="post">
+<form action="#" th:action="@{/web/careTaker/list/{id}(id=${careTaker.id})}" th:object="${animalCreateDTO}" method="post">
     <th:block lang="en" th:replace="fragments/entities_form_fragment :: animal_form_fragment"></th:block>
 </form>
 <p></p>
@@ -23,5 +24,6 @@
 <a href="#" th:href="@{/web/careTaker/list}">Care Takers List</a>
 <p></p>
 <th:block lang="en" th:replace="fragments/header_footer :: footer"></th:block>
+
 </body>
 </html>

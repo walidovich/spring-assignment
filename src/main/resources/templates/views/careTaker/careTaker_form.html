@@ -8,7 +8,7 @@
 <body>
 <div layout:fragment="content">
     <h2>Care Taker Form:</h2>
-    <form action="#" th:action="@{/web/careTaker/add}" th:object="${careTaker}" method="post">
+    <form action="#" th:action="@{/web/careTaker/add}" th:object="${careTakerCreateDTO}" method="post">
         <th:block lang="en" th:replace="fragments/entities_form_fragment :: careTaker_form_fragment"></th:block>
     </form>
 </div>

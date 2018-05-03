@@ -95,7 +95,7 @@ public class AnimalWebControllerTest {
 		// Happy path
 		mockMvc.perform(get(URL_PATH + "/add"))
 				.andExpect(status().isOk())
-				.andExpect(model().attribute("animal", hasProperty("id", equalTo(0L))))
+				.andExpect(model().attribute("animalCreateDTO", notNullValue()))
 				.andExpect(view().name(viewPackage + "animal_form"));
 
 		verifyZeroInteractions(animalService);
@@ -136,6 +136,6 @@ public class AnimalWebControllerTest {
 				.sessionAttr("animal", new Animal()))
 				.andExpect(view().name("views/animal/animal_form"));
 
-		verify(animalService, times(0)).addAnimal(any(Animal.class)); // I HATE TESTING hhhh
+		verify(animalService, times(0)).addAnimal(any(Animal.class));
 	}
 }
