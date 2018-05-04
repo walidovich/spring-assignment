@@ -1,8 +1,9 @@
-package dk.cngroup.trainings.spring.springassignment.controller.security;
+package dk.cngroup.trainings.spring.springassignment.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
@@ -17,14 +18,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 				.authorizeRequests()
-				.anyRequest().authenticated()
+				.antMatchers("/api/**")
+				.permitAll()
+				.and()
+				.authorizeRequests()
+				.antMatchers("/web/**")
+				.authenticated()
 				.and()
 				.formLogin()
-				.loginPage("/login")
+				.loginPage("/web/login")
 				.permitAll()
 				.and()
 				.logout()
+				.logoutUrl("/web/logout")
 				.permitAll();
+	}
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/api/**");
 	}
 
 	@Bean
@@ -33,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		UserDetails user =
 				User.withDefaultPasswordEncoder()
 						.username("user")
-						.password("password")
+						.password("pass")
 						.roles("USER")
 						.build();
 
