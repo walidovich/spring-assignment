@@ -13,8 +13,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -39,21 +42,39 @@ public class LoginControllerTest {
 	}
 
 	@Test
-	public void redirectNonLoggedInUserTest() throws Exception {
+	public void nonLoggedUserRedirectionTest() throws Exception {
 		mockMvc.perform(get("/web/animal/list"))
 				.andExpect(redirectedUrl("http://localhost/web/login"));
 	}
 
 	@Test
-	public void redirectLoggedInUserTest() throws Exception {
+	public void loggedUserRedirectionTest() throws Exception {
 		mockMvc.perform(get("/web/animal/list")
 				.with(user("user").password("pass")))
 				.andExpect(authenticated().withUsername("user"));
 	}
 
 	@Test
+	public void correctUserCredentialsTest() throws Exception {
+		mockMvc.perform(formLogin("/web/login").user("user").password("pass"))
+				.andExpect(authenticated().withUsername("user"));
+	}
+
+	@Test
+	public void incorrectUserCredentialsTest() throws Exception {
+		// wrong password:
+		mockMvc.perform(formLogin("/web/login").user("user").password("wrong password"))
+				.andExpect(unauthenticated());
+
+		// wrong username
+		mockMvc.perform(formLogin("/web/login").user("wrong user").password("pass"))
+				.andExpect(unauthenticated());
+	}
+
+	@Test
 	public void redirectLoggedOffUserTest() throws Exception {
-		mockMvc.perform(get("/web/logout"))
-				.andExpect(redirectedUrl("http://localhost/web/login"));
+		mockMvc.perform(logout("/web/logout"))
+				.andExpect(redirectedUrl("/web/login?logout"))
+				.andExpect(unauthenticated());
 	}
 }
