@@ -18,10 +18,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 				.authorizeRequests()
-				.antMatchers("/api/**")
-				.permitAll()
-				.and()
-				.authorizeRequests()
 				.antMatchers("/web/**")
 				.authenticated()
 				.and()
@@ -35,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Override
-	public void configure(WebSecurity web) throws Exception {
+	public void configure(WebSecurity web) {
 		web.ignoring().antMatchers("/api/**");
 	}
 

@@ -9,6 +9,11 @@ public class HomeController {
 
 	@GetMapping("/")
 	public ModelAndView home() {
-		return new ModelAndView("redirect:/web/login");
+		return new ModelAndView("redirect:/web");
+	}
+
+	@GetMapping("/web")
+	public ModelAndView homeIndex() {
+		return new ModelAndView("index");
 	}
 }

@@ -21,9 +21,4 @@ public class LoginController {
 	public ModelAndView logout() {
 		return new ModelAndView("redirect:/web/login");
 	}
-
-	@GetMapping("/")
-	public ModelAndView home() {
-		return new ModelAndView("index");
-	}
 }

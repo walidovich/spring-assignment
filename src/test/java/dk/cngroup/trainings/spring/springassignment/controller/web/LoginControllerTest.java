@@ -17,7 +17,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -54,7 +53,7 @@ public class LoginControllerTest {
 
 	@Test
 	public void redirectLoggedOffUserTest() throws Exception {
-		mockMvc.perform(post("/web/logout"))
+		mockMvc.perform(get("/web/logout"))
 				.andExpect(redirectedUrl("http://localhost/web/login"));
 	}
 }

@@ -40,6 +40,7 @@ public class CareTakerServiceImpl implements CareTakerService {
 	@Override
 	public CareTaker addCareTaker(CareTaker careTaker) throws InvalidCareTakerException {
 		CareTakerValidationService.validate(careTaker);
+		careTaker.setId(null);
 		return careTakerRepository.save(careTaker);
 	}
 

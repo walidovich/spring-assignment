@@ -47,6 +47,7 @@ public class AnimalServiceImpl implements AnimalService {
 	@Override
 	public Animal addAnimal(Animal animal) throws InvalidAnimalException {
 		AnimalValidationService.validate(animal);
+		animal.setId(null);
 		return animalRepository.save(animal);
 	}
 
