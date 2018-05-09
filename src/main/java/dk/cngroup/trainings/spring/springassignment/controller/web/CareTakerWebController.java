@@ -22,7 +22,7 @@ import java.util.List;
 public class CareTakerWebController {
 
 	private final CareTakerService careTakerService;
-	private final String VIEW_PATH = "views/careTaker";
+	private final String VIEW_PATH = "views/careTaker/";
 
 	public CareTakerWebController(CareTakerService careTakerService) {
 		this.careTakerService = careTakerService;
@@ -30,7 +30,7 @@ public class CareTakerWebController {
 
 	@GetMapping("/list")
 	public ModelAndView list() {
-		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_list");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "careTaker_list");
 		List<CareTaker> careTakers = careTakerService.getCareTakers();
 		modelAndView.addObject("careTakers", careTakers);
 		return modelAndView;
@@ -38,7 +38,7 @@ public class CareTakerWebController {
 
 	@GetMapping("/add")
 	public ModelAndView add() {
-		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_form");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "careTaker_form");
 		CareTakerCreateDTO careTakerCreateDTO = new CareTakerCreateDTO();
 		modelAndView.addObject("careTakerCreateDTO", careTakerCreateDTO);
 		return modelAndView;
@@ -49,7 +49,7 @@ public class CareTakerWebController {
 							BindingResult bindingResult)
 			throws InvalidCareTakerException {
 		if (bindingResult.hasErrors()) {
-			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_form");
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "careTaker_form");
 			return modelAndView;
 		} else {
 			// add new
@@ -61,7 +61,7 @@ public class CareTakerWebController {
 
 	@GetMapping("/update/{id}")
 	public ModelAndView update(@PathVariable("id") Long id) throws CareTakerNotFoundException {
-		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_update_form");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "careTaker_update_form");
 		CareTaker careTaker = careTakerService.getCareTakerById(id);
 		modelAndView.addObject("careTaker", careTaker);
 		return modelAndView;
@@ -73,7 +73,7 @@ public class CareTakerWebController {
 							   BindingResult bindingResult)
 			throws CareTakerNotFoundException, InvalidCareTakerException {
 		if (bindingResult.hasErrors()) {
-			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_update_form");
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "careTaker_update_form");
 			return modelAndView;
 		} else {
 			// add new
@@ -99,7 +99,7 @@ public class CareTakerWebController {
 
 	@GetMapping("/list/{id}")
 	public ModelAndView getCareTakerById(@PathVariable("id") Long id) throws CareTakerNotFoundException {
-		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_details");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "careTaker_details");
 		CareTaker careTaker = careTakerService.getCareTakerById(id);
 		modelAndView.addObject("careTaker", careTaker);
 		AnimalCreateDTO animalCreateDTO = new AnimalCreateDTO();
@@ -113,7 +113,7 @@ public class CareTakerWebController {
 														BindingResult bindingResult)
 			throws InvalidAnimalException, CareTakerNotFoundException {
 		if (bindingResult.hasErrors()) {
-			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_details");
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "careTaker_details");
 			CareTaker careTaker = careTakerService.getCareTakerById(id);
 			modelAndView.addObject("careTaker", careTaker);
 			return modelAndView;
@@ -128,7 +128,7 @@ public class CareTakerWebController {
 	public ModelAndView linkExistingAnimalToExistingCareTakerForm(@PathVariable("id") Long id)
 			throws CareTakerNotFoundException {
 		CareTaker careTaker = careTakerService.getCareTakerById(id);
-		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_link");
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "careTaker_link");
 		modelAndView.addObject("careTaker", careTaker);
 		AnimalLinkIdDTO animalLinkDto = new AnimalLinkIdDTO();
 		modelAndView.addObject("animalLinkDto", animalLinkDto);
@@ -141,7 +141,7 @@ public class CareTakerWebController {
 															 BindingResult bindingResult)
 			throws AnimalNotFoundException, AnimalAndCareTakerAlreadyLinked, CareTakerNotFoundException {
 		if (bindingResult.hasErrors()) {
-			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "/careTaker_link");
+			ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "careTaker_link");
 			CareTaker careTaker = careTakerService.getCareTakerById(id);
 			modelAndView.addObject("careTaker", careTaker);
 			return modelAndView;

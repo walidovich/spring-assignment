@@ -10,11 +10,11 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/web")
 public class LoginController {
 
-	private final String VIEW_PATH = "views/authentication";
+	private final String VIEW_PATH = "views/authentication/";
 
 	@GetMapping("/login")
 	public ModelAndView loginForm() {
-		return new ModelAndView(VIEW_PATH + "/login");
+		return new ModelAndView(VIEW_PATH + "login");
 	}
 
 	@PostMapping("/logout")
