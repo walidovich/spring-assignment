@@ -5,6 +5,8 @@ import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
+import dk.cngroup.trainings.spring.springassignment.service.animal.AnimalService;
+import dk.cngroup.trainings.spring.springassignment.service.animal.AnimalServiceImpl;
 import liquibase.util.StringUtils;
 import org.hamcrest.Matchers;
 import org.junit.Assert;

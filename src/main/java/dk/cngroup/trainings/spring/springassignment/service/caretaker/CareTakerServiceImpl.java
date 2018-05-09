@@ -1,9 +1,10 @@
-package dk.cngroup.trainings.spring.springassignment.service;
+package dk.cngroup.trainings.spring.springassignment.service.caretaker;
 
 import dk.cngroup.trainings.spring.springassignment.exception.*;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
+import dk.cngroup.trainings.spring.springassignment.service.animal.AnimalService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalValidationService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.CareTakerValidationService;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package dk.cngroup.trainings.spring.springassignment.service;
+package dk.cngroup.trainings.spring.springassignment.service.caretaker;
 
 import dk.cngroup.trainings.spring.springassignment.exception.*;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;

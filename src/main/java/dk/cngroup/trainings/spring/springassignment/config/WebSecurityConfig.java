@@ -28,11 +28,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.logout()
 				.logoutUrl("/web/logout")
 				.permitAll();
+
+		http.csrf().disable();
+		http.headers().frameOptions().disable();
 	}
 
 	@Override
 	public void configure(WebSecurity web) {
-		web.ignoring().antMatchers("/api/**");
+		web.ignoring().antMatchers("/api/**").and().ignoring().antMatchers("/signup");
 	}
 
 	@Bean
@@ -40,7 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public UserDetailsService userDetailsService() {
 		UserDetails user =
 				User.withDefaultPasswordEncoder()
-						.username("user")
+						.username("user@email.com")
 						.password("pass")
 						.roles("USER")
 						.build();

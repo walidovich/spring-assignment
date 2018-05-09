@@ -8,7 +8,7 @@ import dk.cngroup.trainings.spring.springassignment.controller.dto.caretaker.Car
 import dk.cngroup.trainings.spring.springassignment.exception.*;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
-import dk.cngroup.trainings.spring.springassignment.service.CareTakerService;
+import dk.cngroup.trainings.spring.springassignment.service.caretaker.CareTakerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
