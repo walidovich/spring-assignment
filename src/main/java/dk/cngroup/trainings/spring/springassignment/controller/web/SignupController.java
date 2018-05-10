@@ -2,6 +2,7 @@ package dk.cngroup.trainings.spring.springassignment.controller.web;
 
 import dk.cngroup.trainings.spring.springassignment.controller.dto.user.UserEntityDtoConverter;
 import dk.cngroup.trainings.spring.springassignment.controller.dto.user.UserSignupDTO;
+import dk.cngroup.trainings.spring.springassignment.exception.UserEmailExistsException;
 import dk.cngroup.trainings.spring.springassignment.exception.UserPasswordsNotMatchingException;
 import dk.cngroup.trainings.spring.springassignment.model.User;
 import dk.cngroup.trainings.spring.springassignment.service.helper.UserDtoValidatorService;
@@ -44,22 +45,22 @@ public class SignupController {
 		} else {
 			try {
 				UserDtoValidatorService.checkMatchingPasswords(userSignupDTO);
-			} catch (UserPasswordsNotMatchingException e) {
-				bindingResult.rejectValue("password", "error.user", "passwords don't match");
-				ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "signup");
-				modelAndView.addAllObjects(bindingResult.getModel());
-				return modelAndView;
-			}
-			if (userService.existsByEmail(userSignupDTO.getEmail())) {
-				bindingResult.rejectValue("email", "error.user", "email already used");
-				ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "signup");
-				modelAndView.addAllObjects(bindingResult.getModel());
-				return modelAndView;
-			} else {
 				User user = UserEntityDtoConverter.toUserEntity(userSignupDTO);
 				userService.addUser(user);
-				return new ModelAndView("redirect:/web/login");
+			} catch (UserPasswordsNotMatchingException e) {
+				return specialError("password", "passwords don't match", bindingResult);
+			} catch (UserEmailExistsException e) {
+				return specialError("email", "email already used", bindingResult);
 			}
+			return new ModelAndView("redirect:/web/login");
+
 		}
+	}
+
+	private ModelAndView specialError(String field, String errorMessage, BindingResult bindingResult) {
+		bindingResult.rejectValue(field, "error.user", errorMessage);
+		ModelAndView modelAndView = new ModelAndView(VIEW_PATH + "signup");
+		modelAndView.addAllObjects(bindingResult.getModel());
+		return modelAndView;
 	}
 }
