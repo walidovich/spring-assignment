@@ -1,6 +1,6 @@
 package dk.cngroup.trainings.spring.springassignment.service.helper;
 
-import dk.cngroup.trainings.spring.springassignment.exception.InvalidCareTakerException;
+import dk.cngroup.trainings.spring.springassignment.exception.caretaker.InvalidCareTakerException;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 
 public class CareTakerValidationService {

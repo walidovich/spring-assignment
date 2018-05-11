@@ -1,6 +1,6 @@
 package dk.cngroup.trainings.spring.springassignment.controller.web;
 
-import dk.cngroup.trainings.spring.springassignment.exception.AnimalNotFoundException;
+import dk.cngroup.trainings.spring.springassignment.exception.animal.AnimalNotFoundException;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.service.animal.AnimalService;
 import org.junit.Before;

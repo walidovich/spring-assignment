@@ -1,7 +1,7 @@
 package dk.cngroup.trainings.spring.springassignment.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dk.cngroup.trainings.spring.springassignment.exception.CareTakerNotFoundException;
+import dk.cngroup.trainings.spring.springassignment.exception.caretaker.CareTakerNotFoundException;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.service.animal.AnimalService;

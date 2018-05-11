@@ -1,4 +1,4 @@
-package dk.cngroup.trainings.spring.springassignment.exception;
+package dk.cngroup.trainings.spring.springassignment.exception.animal;
 
 public class AnimalNotFoundInCareTakerAnimalsListException extends Exception {
 	public AnimalNotFoundInCareTakerAnimalsListException(long careTakerId, long animalId) {

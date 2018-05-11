@@ -1,6 +1,10 @@
 package dk.cngroup.trainings.spring.springassignment.controller.advice;
 
-import dk.cngroup.trainings.spring.springassignment.exception.*;
+import dk.cngroup.trainings.spring.springassignment.exception.animal.*;
+import dk.cngroup.trainings.spring.springassignment.exception.caretaker.CareTakerNotFoundException;
+import dk.cngroup.trainings.spring.springassignment.exception.caretaker.CareTakerNotInTheAnimalCareTakersListException;
+import dk.cngroup.trainings.spring.springassignment.exception.caretaker.CareTakersListEmptyException;
+import dk.cngroup.trainings.spring.springassignment.exception.caretaker.InvalidCareTakerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -8,7 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice(annotations = Controller.class)
-public class ControllerExceptionsAdvice {
+public class RestControllerExceptionsAdvice {
 
 	@ExceptionHandler(value = AnimalNotFoundException.class)
 	public ResponseEntity<String> animalNotFound(Exception e) {

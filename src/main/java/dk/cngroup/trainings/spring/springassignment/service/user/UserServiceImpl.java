@@ -1,6 +1,6 @@
 package dk.cngroup.trainings.spring.springassignment.service.user;
 
-import dk.cngroup.trainings.spring.springassignment.exception.UserEmailExistsException;
+import dk.cngroup.trainings.spring.springassignment.exception.user.UserEmailExistsException;
 import dk.cngroup.trainings.spring.springassignment.model.MyUserDetails;
 import dk.cngroup.trainings.spring.springassignment.model.User;
 import dk.cngroup.trainings.spring.springassignment.repository.UserRepository;
@@ -18,9 +18,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	private UserRepository userRepository;
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+	public UserServiceImpl(UserRepository userRepository) {
 		this.userRepository = userRepository;
-		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+		this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
 	}
 
 	@Override

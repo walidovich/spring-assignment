@@ -5,7 +5,9 @@ import dk.cngroup.trainings.spring.springassignment.controller.dto.animal.Animal
 import dk.cngroup.trainings.spring.springassignment.controller.dto.animal.AnimalLinkIdDTO;
 import dk.cngroup.trainings.spring.springassignment.controller.dto.caretaker.CareTakerCreateDTO;
 import dk.cngroup.trainings.spring.springassignment.controller.dto.caretaker.CareTakerEntityDtoConverter;
-import dk.cngroup.trainings.spring.springassignment.exception.*;
+import dk.cngroup.trainings.spring.springassignment.exception.animal.*;
+import dk.cngroup.trainings.spring.springassignment.exception.caretaker.CareTakerNotFoundException;
+import dk.cngroup.trainings.spring.springassignment.exception.caretaker.InvalidCareTakerException;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.service.caretaker.CareTakerService;

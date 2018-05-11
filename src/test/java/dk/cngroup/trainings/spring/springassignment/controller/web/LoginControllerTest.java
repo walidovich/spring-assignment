@@ -1,11 +1,16 @@
 package dk.cngroup.trainings.spring.springassignment.controller.web;
 
 import dk.cngroup.trainings.spring.springassignment.config.WebSecurityConfig;
+import dk.cngroup.trainings.spring.springassignment.service.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -30,6 +35,12 @@ public class LoginControllerTest {
 
 	@Autowired
 	private WebApplicationContext context;
+
+	@MockBean
+	private UserService userService;
+
+	@MockBean
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	private MockMvc mockMvc;
 
@@ -56,7 +67,9 @@ public class LoginControllerTest {
 
 	@Test
 	public void correctUserCredentialsTest() throws Exception {
-		mockMvc.perform(formLogin("/web/login").user("user").password("pass"))
+		Mockito.when(userService.existsByEmail(ArgumentMatchers.anyString())).thenReturn(true);
+
+		mockMvc.perform(formLogin("/web/login").user("user@email.com").password("pass"))
 				.andExpect(authenticated().withUsername("user"));
 	}
 

@@ -1,4 +1,4 @@
-package dk.cngroup.trainings.spring.springassignment.exception;
+package dk.cngroup.trainings.spring.springassignment.exception.animal;
 
 public class AnimalsListEmptyException extends Exception {
 	public AnimalsListEmptyException(long id) {
