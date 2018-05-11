@@ -33,7 +33,15 @@ public class User {
 	public User() {
 	}
 
-	public User(Long id, @NotNull @NotEmpty @Size(min = 2, max = 20) String firstName, @NotNull @NotEmpty @Size(min = 2, max = 20) String lastName, @NotNull @NotEmpty String email, @NotNull @NotEmpty String password) {
+	public User(User user) {
+		this.id = user.id;
+		this.firstName = user.firstName;
+		this.lastName = user.lastName;
+		this.email = user.email;
+		this.password = user.password;
+	}
+
+	public User(Long id, String firstName, String lastName, String email, String password) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;

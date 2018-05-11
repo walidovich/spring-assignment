@@ -32,6 +32,9 @@
             <column name="animal_id" type="long">
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="02" author="walid">
         <createTable tableName="users">
             <column name="id" type="long">
                 <constraints nullable="false" unique="true" primaryKey="true"/>

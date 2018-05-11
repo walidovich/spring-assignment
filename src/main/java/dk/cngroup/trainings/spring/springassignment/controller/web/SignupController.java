@@ -2,10 +2,10 @@ package dk.cngroup.trainings.spring.springassignment.controller.web;
 
 import dk.cngroup.trainings.spring.springassignment.controller.dto.user.UserEntityDtoConverter;
 import dk.cngroup.trainings.spring.springassignment.controller.dto.user.UserSignupDTO;
+import dk.cngroup.trainings.spring.springassignment.controller.helper.UserDtoValidatorService;
 import dk.cngroup.trainings.spring.springassignment.exception.UserEmailExistsException;
 import dk.cngroup.trainings.spring.springassignment.exception.UserPasswordsNotMatchingException;
 import dk.cngroup.trainings.spring.springassignment.model.User;
-import dk.cngroup.trainings.spring.springassignment.service.helper.UserDtoValidatorService;
 import dk.cngroup.trainings.spring.springassignment.service.user.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
