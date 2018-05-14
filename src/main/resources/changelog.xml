@@ -32,6 +32,26 @@
             <column name="animal_id" type="long">
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="02" author="walid">
+        <createTable tableName="users">
+            <column name="id" type="long">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="firstname" type="varchar(255)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="lastname" type="varchar(255)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+        </createTable>
         <createSequence sequenceName="HIBERNATE_SEQUENCE"/>
     </changeSet>
 

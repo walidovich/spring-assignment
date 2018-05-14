@@ -1,19 +1,25 @@
-package dk.cngroup.trainings.spring.springassignment.service;
+package dk.cngroup.trainings.spring.springassignment.service.animal;
 
-import dk.cngroup.trainings.spring.springassignment.exception.*;
+import dk.cngroup.trainings.spring.springassignment.exception.animal.AnimalAndCareTakerAlreadyLinked;
+import dk.cngroup.trainings.spring.springassignment.exception.animal.AnimalNotFoundException;
+import dk.cngroup.trainings.spring.springassignment.exception.animal.InvalidAnimalException;
+import dk.cngroup.trainings.spring.springassignment.exception.caretaker.CareTakerNotFoundException;
+import dk.cngroup.trainings.spring.springassignment.exception.caretaker.CareTakerNotInTheAnimalCareTakersListException;
+import dk.cngroup.trainings.spring.springassignment.exception.caretaker.CareTakersListEmptyException;
+import dk.cngroup.trainings.spring.springassignment.exception.caretaker.InvalidCareTakerException;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
 import dk.cngroup.trainings.spring.springassignment.model.CareTaker;
 import dk.cngroup.trainings.spring.springassignment.repository.AnimalRepository;
 import dk.cngroup.trainings.spring.springassignment.repository.CareTakerRepository;
 import dk.cngroup.trainings.spring.springassignment.service.helper.AnimalValidationService;
 import dk.cngroup.trainings.spring.springassignment.service.helper.CareTakerValidationService;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
 public class AnimalServiceImpl implements AnimalService {
 
 	private final AnimalRepository animalRepository;

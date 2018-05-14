@@ -1,10 +1,10 @@
 package dk.cngroup.trainings.spring.springassignment.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dk.cngroup.trainings.spring.springassignment.exception.AnimalNotFoundException;
-import dk.cngroup.trainings.spring.springassignment.exception.InvalidAnimalException;
+import dk.cngroup.trainings.spring.springassignment.exception.animal.AnimalNotFoundException;
+import dk.cngroup.trainings.spring.springassignment.exception.animal.InvalidAnimalException;
 import dk.cngroup.trainings.spring.springassignment.model.Animal;
-import dk.cngroup.trainings.spring.springassignment.service.AnimalService;
+import dk.cngroup.trainings.spring.springassignment.service.animal.AnimalService;
 import liquibase.util.StringUtils;
 import org.hamcrest.Matchers;
 import org.junit.Assert;

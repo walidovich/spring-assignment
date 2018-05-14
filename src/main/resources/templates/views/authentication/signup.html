@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/header_up_footer_down_layout}">
+<body>
+<div layout:fragment="content">
+    <h2>Sign up form:</h2>
+    <form action="#" th:action="@{/signup}" th:object="${userSignupDto}" method="POST">
+        <table>
+            <tr>
+                <td><label>First Name:</label></td>
+                <td><input th:field="*{firstName}"/></td>
+                <td><p th:each="error: ${#fields.errors('firstName')}" th:text="${error}">first name error</p></td>
+            </tr>
+            <p></p>
+            <tr>
+                <td><label>Last Name:</label></td>
+                <td><input th:field="*{lastName}"/></td>
+                <td><p th:each="error : ${#fields.errors('lastName')}" th:text="${error}">last name error</p></td>
+            </tr>
+            <p></p>
+            <tr>
+                <td><label>Email:</label></td>
+                <td><input type="email" th:field="*{email}"/></td>
+                <td><p th:each="error : ${#fields.errors('email')}" th:text="${error}">email error</p></td>
+            </tr>
+            <p></p>
+            <tr>
+                <td><label>Password</label></td>
+                <td><input type="password" th:field="*{password}"/></td>
+                <td><p th:each="error : ${#fields.errors('password')}" th:text="${error}">password error</p></td>
+            </tr>
+            <p></p>
+            <tr>
+                <td><label>Password<br>confirmation</label></td>
+                <td><input type="password" th:field="*{matchingPassword}"/></td>
+            </tr>
+            <tr>
+                <td><p></p></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button type="submit">Sign Up</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <p></p>
+    <form action="/web/login">
+        <input type="submit" value="Log In"/>
+    </form>
+</div>
+</body>
+</html>
